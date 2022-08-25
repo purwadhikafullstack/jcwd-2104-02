@@ -6,7 +6,7 @@ module.exports = {
       args: 'start',
       env: {
         NODE_ENV: 'production',
-        PORT: 3402, //format groupnumber and batch ex: 3401
+        PORT: 3402, //format groupnumber and batch, ex: 3401
       },
     },
   ],
