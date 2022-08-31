@@ -18,6 +18,12 @@ module.exports = (sequelize, DataTypes) => {
   }
   transactions.init(
     {
+      transaction_id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
       prescription_id: {
         type: DataTypes.INTEGER,
         references: {
@@ -37,7 +43,14 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'SET NULL',
       },
       status: {
-        type: DataTypes.ENUM('Pending', 'Success', 'Failed'),
+        type: DataTypes.ENUM(
+          'awaiting payment',
+          'awaiting payment confirmation',
+          'processing order',
+          'order cancelled',
+          'delivering order',
+          'order confirmed',
+        ),
       },
     },
     {

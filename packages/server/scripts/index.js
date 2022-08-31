@@ -19,9 +19,9 @@ async function addUser() {
   try {
     await users.create({
       name: 'user1',
-      email: 'user1@mail.com',
+      email: 'user2@mail.com',
       gender: 'Male',
-      birthDate: '12/17/2004 07:00:00',
+      birthDate: '12/17/2004',
       phoneNumber: '3213212878',
       isAdmin: false,
       avatar: 'sdawwdij',
@@ -31,5 +31,14 @@ async function addUser() {
     console.log({ error });
   }
 }
-addUser();
+
+function test() {
+  const date = new Date();
+
+  console.log(date);
+}
+
+test();
+
+// addUser();
 // addProduct();

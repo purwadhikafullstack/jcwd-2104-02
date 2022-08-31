@@ -27,7 +27,14 @@ module.exports = {
         onDelete: 'SET NULL',
       },
       status: {
-        type: Sequelize.ENUM('Pending', 'Success', 'Failed'),
+        type: Sequelize.ENUM(
+          'awaiting payment',
+          'awaiting payment confirmation',
+          'processing order',
+          'order cancelled',
+          'delivering order',
+          'order confirmed',
+        ),
       },
       createdAt: {
         allowNull: false,

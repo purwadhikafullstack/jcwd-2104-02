@@ -55,6 +55,7 @@ module.exports = (sequelize, DataTypes) => {
       phoneNumber: {
         type: DataTypes.STRING(15),
         allowNull: false,
+        unique: true,
       },
       isVerified: {
         type: DataTypes.BOOLEAN,
@@ -64,7 +65,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
       },
       avatar: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(255),
       },
       password: {
         type: DataTypes.STRING,

@@ -17,12 +17,16 @@ module.exports = {
       productImage: {
         type: Sequelize.STRING(255),
       },
+      description: {
+        type: Sequelize.STRING,
+      },
       productStock: {
         type: Sequelize.INTEGER,
       },
       isPublic: {
         type: Sequelize.BOOLEAN,
       },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
