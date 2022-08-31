@@ -1,4 +1,5 @@
 const { products } = require('../models');
+const { users } = require('../models');
 
 async function addProduct() {
   try {
@@ -14,4 +15,21 @@ async function addProduct() {
   }
 }
 
-addProduct();
+async function addUser() {
+  try {
+    await users.create({
+      name: 'user1',
+      email: 'user1@mail.com',
+      gender: 'Male',
+      birthDate: '12/17/2004 07:00:00',
+      phoneNumber: '3213212878',
+      isAdmin: false,
+      avatar: 'sdawwdij',
+      password: 'sdawsdjbniu',
+    });
+  } catch (error) {
+    console.log({ error });
+  }
+}
+addUser();
+// addProduct();
