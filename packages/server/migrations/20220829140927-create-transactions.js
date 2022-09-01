@@ -35,6 +35,7 @@ module.exports = {
           'delivering_order',
           'order_confirmed',
         ),
+        defaultValue: 'awaiting_payment',
       },
       createdAt: {
         allowNull: false,

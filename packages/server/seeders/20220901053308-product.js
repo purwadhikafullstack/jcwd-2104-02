@@ -4,6 +4,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert('products', [
       {
+        product_id: 1,
         productName: 'obat',
         productPrice: 20000,
         productImage: 'obat',
@@ -16,6 +17,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
+        product_id: 2,
         productName: 'obat2',
         productPrice: 69000,
         productImage: 'obat',
@@ -28,6 +30,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
+        product_id: 3,
         productName: 'obat3',
         productPrice: 54000,
         productImage: 'obat',

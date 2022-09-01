@@ -51,6 +51,7 @@ module.exports = (sequelize, DataTypes) => {
           'delivering_order',
           'order_confirmed',
         ),
+        defaultValue: 'awaiting_payment',
       },
     },
     {
