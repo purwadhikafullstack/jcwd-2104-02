@@ -51,6 +51,12 @@ module.exports = (sequelize, DataTypes) => {
       isPublic: {
         type: DataTypes.BOOLEAN,
       },
+      packageType: {
+        type: DataTypes.STRING,
+      },
+      servingType: {
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,

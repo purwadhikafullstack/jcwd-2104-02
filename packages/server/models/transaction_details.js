@@ -21,6 +21,12 @@ module.exports = (sequelize, DataTypes) => {
   }
   transaction_details.init(
     {
+      transaction_details_id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
       transaction_id: {
         type: DataTypes.INTEGER,
         references: {

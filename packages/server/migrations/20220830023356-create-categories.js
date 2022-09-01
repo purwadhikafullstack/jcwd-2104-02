@@ -8,8 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      categoryName: {
-        type: Sequelize.STRING,
+      category_lists_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'categories_lists',
+          key: 'category_lists_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       product_id: {
         type: Sequelize.INTEGER,
@@ -19,6 +25,9 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
+      },
+      categoryName: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,

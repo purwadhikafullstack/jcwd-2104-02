@@ -28,12 +28,12 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM(
-          'awaiting payment',
-          'awaiting payment confirmation',
-          'processing order',
-          'order cancelled',
-          'delivering order',
-          'order confirmed',
+          'awaiting_payment',
+          'awaiting_payment_confirmation',
+          'processing_order',
+          'order_cancelled',
+          'delivering_order',
+          'order_confirmed',
         ),
       },
       createdAt: {

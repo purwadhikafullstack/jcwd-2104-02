@@ -11,12 +11,27 @@ module.exports = (sequelize, DataTypes) => {
       categories.hasOne(models.products, {
         foreignKey: 'product_id',
       });
+      categories.hasOne(models.categories_list, {
+        foreignKey: 'category_lists_id',
+      });
     }
   }
   categories.init(
     {
-      categoryName: {
-        type: DataTypes.STRING,
+      category_id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
+      category_lists_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'categories_lists',
+          key: 'category_lists_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       product_id: {
         type: DataTypes.INTEGER,
@@ -26,6 +41,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
+      },
+      categoryName: {
+        type: DataTypes.STRING,
       },
     },
     {

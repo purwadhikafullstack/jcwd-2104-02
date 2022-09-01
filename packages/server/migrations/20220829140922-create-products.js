@@ -26,7 +26,12 @@ module.exports = {
       isPublic: {
         type: Sequelize.BOOLEAN,
       },
-
+      packageType: {
+        type: Sequelize.STRING,
+      },
+      servingType: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
