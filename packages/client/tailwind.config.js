@@ -8,7 +8,6 @@ module.exports = {
     extend: {},
     screens: {
       desktop: '1440px',
-      // => @media (min-width: 1440px) { ... }
     },
   },
   plugins: [],

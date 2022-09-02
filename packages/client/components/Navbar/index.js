@@ -7,7 +7,7 @@ function Navbar() {
       <div className="flex w-[100%] h-[70px] items-center justify-between">
         <div className="flex ml-[7vw] h-[70%] items-center">
           <Image
-            src="/Medbox.png"
+            src="/landing page/Medbox.png"
             alt="medbox-logo"
             layout="fixed"
             width={136}
@@ -16,21 +16,21 @@ function Navbar() {
         </div>
         <div className="flex mr-[7vw] h-[70%] items-center w-[25vw] justify-between">
           <Image
-            src="/Bell.png"
+            src="/landing page/Bell.png"
             alt="bell-logo"
             layout="fixed"
             width={16.8}
             height={19.2}
           />
           <Image
-            src="/Cart.png"
+            src="/landing page/Cart.png"
             alt="cart-logo"
             layout="fixed"
             width={19.2}
             height={20.4}
           />
           <Image
-            src="/Menu.png"
+            src="/landing page/Menu.png"
             alt="menu-logo"
             layout="fixed"
             width={18}
