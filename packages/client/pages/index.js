@@ -14,91 +14,6 @@ export default function Home() {
       categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
     },
     {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
-      category_list_id: 1,
-      category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:5000/categoriesImage/Batuk.png',
-    },
-    {
       category_list_id: 2,
       category: 'Asma',
       categoryImage: 'http://localhost:5000/categoriesImage/Asthma.png',
@@ -128,6 +43,70 @@ export default function Home() {
       category: 'Pusing',
       categoryImage: 'http://localhost:5000/categoriesImage/Pusing.png',
     },
+    {
+      category_list_id: 8,
+      category: 'Pencernaan',
+      categoryImage: 'http://localhost:5000/categoriesImage/Pencernaan.png',
+    },
+    {
+      category_list_id: 9,
+      category: 'Minyak angin & Balsem',
+      categoryImage:
+        'http://localhost:5000/categoriesImage/Minyak-angin-balsem.png',
+    },
+  ];
+
+  const productsTestArray = [
+    {
+      product_id: 1,
+      productName: 'Vitamin B1 50 mg 10 tablet',
+      productPrice: 1300,
+      description: 'Product desc',
+      productStock: 23,
+      productImage: 'http://localhost:5000/testProductImage/VitaminB1.png',
+      packageType: 'Per Strip',
+      servingType: 'Kapsul',
+    },
+    {
+      product_id: 2,
+      productName: 'Vitamin C 100 mg 10 Tablet',
+      productPrice: 1000,
+      description: 'Product desc',
+      productStock: 23,
+      productImage: 'http://localhost:5000/testProductImage/VitaminC.png',
+      packageType: 'Per Strip',
+      servingType: 'Kapsul',
+    },
+    {
+      product_id: 3,
+      productName: 'Vitamin B12 IPI 45 Tablet',
+      productPrice: 5100,
+      description: 'Product desc',
+      productStock: 23,
+      productImage: 'http://localhost:5000/testProductImage/B12.png',
+      packageType: 'Per Botol',
+      servingType: 'Kapsul',
+    },
+    {
+      product_id: 4,
+      productName: 'Blackmores Vitamin C 500  mg 60 Tablet',
+      productPrice: 109800,
+      description: 'Product desc',
+      productStock: 23,
+      productImage: 'http://localhost:5000/testProductImage/Blackmores.png',
+      packageType: 'Per Botol',
+      servingType: 'Kapsul',
+    },
+    {
+      product_id: 5,
+      productName: 'Vitamin A IPI 45 Tablet',
+      productPrice: 3700,
+      description: 'Product desc',
+      productStock: 23,
+      productImage: 'http://localhost:5000/testProductImage/AIPI.png',
+      packageType: 'Per Botol',
+      servingType: 'Kapsul',
+    },
   ];
 
   function categoriesMap() {
@@ -135,20 +114,72 @@ export default function Home() {
       return (
         <div
           key={category.category_list_id}
-          className="flex flex-col bg-gray-500 h-[10vh] items-center justify-center w-[25%]"
+          className="flex flex-col flex-none items-center justify-start w-[25%]"
         >
-          <Image
-            unoptimized
-            alt="resep-logo"
-            layout="fixed"
-            width={35}
-            height={35}
-            src={category.categoryImage}
-            loader={() => {
-              return category.categoryImage;
-            }}
-          />
-          <p>{category.category}</p>
+          <div className="w-[35px] h-[35px]">
+            <Image
+              unoptimized
+              alt="resep-logo"
+              layout="responsive"
+              width={35}
+              height={35}
+              src={category.categoryImage}
+              loader={() => {
+                return category.categoryImage;
+              }}
+            />
+          </div>
+          <p className="text-[12px]">{category.category}</p>
+        </div>
+      );
+    });
+  }
+
+  function productsMap() {
+    return productsTestArray.map((product) => {
+      return (
+        <div
+          key={product.product_id}
+          className="w-[35vw] mx-[3vw] h-[100%] flex-none flex flex-col items-center bg-gray"
+        >
+          <div className="w-[100%] my-[3vh]">
+            <Image
+              unoptimized
+              alt="resep-logo"
+              layout="responsive"
+              width={102}
+              height={66}
+              src={product.productImage}
+              loader={() => {
+                return product.productImage;
+              }}
+            />
+          </div>
+          <p className="text-[12px] w-[100%]">
+            {product.productName.length <= 25
+              ? product.productName
+              : `${product.productName.slice(0, 20)}...`}
+          </p>
+          <div className="flex bg-white w-[100%] items-center text-[#6E6E6E]">
+            <p className="text-[10px] font-[400]">{product.packageType}</p>
+            <p className="text-[10px] font-[400] mx-[1vw]">-</p>
+            <p className="text-[10px] font-[400]">
+              Stok {product.productStock}
+            </p>
+          </div>
+          <p className="font-[500] text-[12px] w-[100%]">
+            Rp.{product.productPrice.toLocaleString('id')}
+          </p>
+          <div className="grow" />
+          <div className="w-[100%]">
+            <Button
+              variant="outline"
+              colorScheme="linkedin"
+              sx={{ width: '100%', height: '5vh', marginBottom: '6vh' }}
+            >
+              <p className="text-[12px]">Tambah</p>
+            </Button>
+          </div>
         </div>
       );
     });
@@ -159,7 +190,7 @@ export default function Home() {
       <Navbar />
       <div id="box biru" className="bg-[#1068A3] h-[53px] desktop:hidden" />
       <div id="hero-desktop" className="relative hidden desktop:inline">
-        <p className="absolute z-[2] text-white font-[400] text-[45px] left-[15vw] bottom-[200px]">
+        <p className="absolute z-[2] text-white font-[400] text-[4vw] left-[15vw] bottom-[200px]">
           Your Pharmacy, <br /> Everywhere
         </p>
         <p className="absolute z-[2] text-white font-[500] text-[14px] bottom-[55px] left-[15vw] underline underline-offset-4 decoration-white hover:cursor-pointer">
@@ -259,15 +290,12 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div
-          id="kategori obat"
-          className="mt-[4 vh] desktop:w-[70%] flex flex-col"
-        >
-          <p className="flex pl-[4vw] font-[500] text-[16px] desktop:text-[22px] w-[100%] desktop:pl-0">
+        <div id="kategori obat" className="mt-[4 vh] desktop:w-[70%]">
+          <p className="flex pl-[4vw] mt-[3vh] mb-[2vh] font-[500] text-[16px] desktop:text-[22px] w-[100%] desktop:pl-0">
             Jelajahi Kategori Obat
           </p>
-          <div className="overflow-auto h-[15vh] desktop:h-[70vh]">
-            <div className="inline-flex">{categoriesMap()}</div>
+          <div className="w-[100%] h-[13vh] items-start desktop:h-[70vh] flex flex-nowrap overflow-x-auto">
+            {categoriesMap()}
           </div>
         </div>
         <div
@@ -277,7 +305,9 @@ export default function Home() {
           <p className="flex pl-[4vw] font-[500] text-[16px] desktop:text-[22px] w-[100%] desktop:pl-0">
             Rekomendasi Obat & Vitamin
           </p>
-          <div className="bg-gray-900 w-[100%] h-[40vh]"></div>
+          <div className="w-[100%] h-[40vh] flex overflow-x-auto">
+            {productsMap()}
+          </div>
         </div>
       </div>
     </div>
