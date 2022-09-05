@@ -114,9 +114,9 @@ export default function Home() {
       return (
         <div
           key={category.category_list_id}
-          className="flex flex-col flex-none items-center justify-start w-[25%]"
+          className="flex flex-col flex-none items-center justify-start w-[25%] desktop:flex-row desktop:h-[9vh] desktop:w-[31%] desktop:bg-white desktop:shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]"
         >
-          <div className="w-[35px] h-[35px]">
+          <div className="w-[35px] h-[35px] desktop:w-[3.5vw] desktop:h-[3.5vw] desktop:mx-[1vw]">
             <Image
               unoptimized
               alt="resep-logo"
@@ -129,7 +129,9 @@ export default function Home() {
               }}
             />
           </div>
-          <p className="text-[12px]">{category.category}</p>
+          <p className="text-[12px] desktop:text-[14px] desktop:font-[500] desktop:font-[#262626]">
+            {category.category}
+          </p>
         </div>
       );
     });
@@ -140,7 +142,7 @@ export default function Home() {
       return (
         <div
           key={product.product_id}
-          className="w-[35vw] mx-[3vw] h-[100%] flex-none flex flex-col items-center bg-gray"
+          className="w-[35vw] mx-[3vw] h-[100%] flex-none flex flex-col items-center desktop:w-[10vw]"
         >
           <div className="w-[100%] my-[3vh]">
             <Image
@@ -186,7 +188,7 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-white w-[100%] h-[100vh] relative z-[1]">
+    <div className="bg-white w-[100%] h-[100vh] relative z-[1] desktop:scrollbar">
       <Navbar />
       <div id="box biru" className="bg-[#1068A3] h-[53px] desktop:hidden" />
       <div id="hero-desktop" className="relative hidden desktop:inline">
@@ -294,7 +296,7 @@ export default function Home() {
           <p className="flex pl-[4vw] mt-[3vh] mb-[2vh] font-[500] text-[16px] desktop:text-[22px] w-[100%] desktop:pl-0">
             Jelajahi Kategori Obat
           </p>
-          <div className="w-[100%] h-[13vh] items-start desktop:h-[70vh] flex flex-nowrap overflow-x-auto">
+          <div className="w-[100%] h-[13vh] items-start flex flex-nowrap overflow-x-auto desktop:h-[70vh] desktop:flex-wrap desktop:h-[30vh] desktop:justify-evenly">
             {categoriesMap()}
           </div>
         </div>

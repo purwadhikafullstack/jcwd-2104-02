@@ -26,38 +26,38 @@ function Navbar() {
           </div>
         </div>
         <div className="flex mr-[7vw] h-[70%] items-center w-[25vw] desktop:w-[10vw] justify-between">
-          <div>
+          <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer">
             <Image
               src="/landing page/Bell.png"
               alt="bell-logo"
-              layout="fixed"
+              layout="responsive"
               width={16.8}
               height={19.2}
             />
           </div>
-          <div>
+          <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer">
             <Image
               src="/landing page/Cart.png"
               alt="cart-logo"
-              layout="fixed"
+              layout="responsive"
               width={19.2}
               height={20.4}
             />
           </div>
-          <div className="desktop:hidden">
+          <div className="desktop:hidden w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer">
             <Image
               src="/landing page/Menu.png"
               alt="menu-logo"
-              layout="fixed"
+              layout="responsive"
               width={18}
               height={12}
             />
           </div>
-          <div className="hidden desktop:inline">
+          <div className="hidden desktop:inline w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer">
             <Image
               src="/landing page/Account.png"
               alt="menu-logo"
-              layout="fixed"
+              layout="responsive"
               width={20}
               height={20}
             />

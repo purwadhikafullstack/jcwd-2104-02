@@ -47,11 +47,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       gender: {
         type: DataTypes.ENUM('Male', 'Female'),
-        allowNull: false,
       },
       birthDate: {
         type: DataTypes.DATE,
-        allowNull: false,
       },
       phoneNumber: {
         type: DataTypes.STRING(15),
@@ -64,11 +62,19 @@ module.exports = (sequelize, DataTypes) => {
       },
       isAdmin: {
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
       avatar: {
         type: DataTypes.STRING(255),
       },
       password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      user_token: {
+        type: DataTypes.STRING,
+      },
+      password_token: {
         type: DataTypes.STRING,
       },
     },
