@@ -231,19 +231,17 @@ export default function Home() {
       >
         <InputGroup>
           <Input variant="filled" placeholder="Cari Obat" size="lg" />
-          <InputRightElement
-            children={
-              <div className="flex items-end h-[65%]">
-                <Image
-                  src="/landing page/Search.png"
-                  alt="search-logo"
-                  layout="fixed"
-                  width={18}
-                  height={18}
-                />
-              </div>
-            }
-          />
+          <InputRightElement>
+            <div className="flex items-end h-[65%]">
+              <Image
+                src="/landing page/Search.png"
+                alt="search-logo"
+                layout="fixed"
+                width={18}
+                height={18}
+              />
+            </div>
+          </InputRightElement>
         </InputGroup>
       </div>
       <div className="w-[100%] desktop:flex desktop:flex-col desktop:items-center">
