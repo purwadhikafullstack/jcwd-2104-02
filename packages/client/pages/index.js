@@ -144,7 +144,7 @@ export default function Home() {
           key={product.product_id}
           className="w-[35vw] mx-[3vw] h-[100%] flex-none flex flex-col items-center desktop:w-[10vw]"
         >
-          <div className="w-[100%] my-[3vh]">
+          <div className="w-[100%] my-[3vh] hover:cursor-pointer">
             <Image
               unoptimized
               alt="resep-logo"
