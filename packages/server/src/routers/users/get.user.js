@@ -21,6 +21,8 @@ const verifyUserController = async (req, res, next) => {
 
     const verifiedToken = verifyToken(token);
 
+
+
     const IsVerifiedStatus = await users.update(
       { isVerified: true },
       {
