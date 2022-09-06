@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import { Button } from '@chakra-ui/react';
 
 function Navbar() {
+  const [login, setLogin] = useState(false);
+
   return (
     <div className="h-[100px] flex items-end desktop:h-[72px]">
       <div className="flex w-[100%] h-[70px] desktop:h-[100%] items-center justify-between">
@@ -25,8 +28,9 @@ function Navbar() {
             </p>
           </div>
         </div>
-        <div className="flex mr-[7vw] h-[70%] items-center w-[25vw] desktop:w-[10vw] justify-between">
-          <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer">
+        <div className="grow" />
+        <div className="flex mr-[7vw] h-[70%] items-center w-[25vw] desktop:w-[10vw]">
+          <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
             <Image
               src="/landing page/Bell.png"
               alt="bell-logo"
@@ -35,7 +39,7 @@ function Navbar() {
               height={19.2}
             />
           </div>
-          <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer">
+          <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
             <Image
               src="/landing page/Cart.png"
               alt="cart-logo"
@@ -44,7 +48,7 @@ function Navbar() {
               height={20.4}
             />
           </div>
-          <div className="desktop:hidden w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer">
+          <div className="desktop:hidden w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
             <Image
               src="/landing page/Menu.png"
               alt="menu-logo"
@@ -53,16 +57,38 @@ function Navbar() {
               height={12}
             />
           </div>
-          <div className="hidden desktop:inline w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer">
-            <Image
-              src="/landing page/Account.png"
-              alt="menu-logo"
-              layout="responsive"
-              width={20}
-              height={20}
-            />
-          </div>
+          {login ? (
+            <div className="hidden desktop:inline w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer ml-[4.5vw] desktop:ml-[2vw]">
+              <Image
+                src="/landing page/Account.png"
+                alt="menu-logo"
+                layout="responsive"
+                width={20}
+                height={20}
+              />
+            </div>
+          ) : (
+            ''
+          )}
         </div>
+        {login ? (
+          ''
+        ) : (
+          <div className="hidden desktop:flex desktop:ml-[-8vw]">
+            <Button
+              variant="outline"
+              colorScheme="linkedin"
+              sx={{
+                width: '6vw',
+                height: '5vh',
+                borderRadius: '1.2vh',
+                marginRight: '2vw',
+              }}
+            >
+              Login
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
