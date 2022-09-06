@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { users } = require('../../../../models');
-const { verifyToken } = require('../../../lib/token');
+const { users } = require('../../../models');
+const { verifyToken } = require('../../lib/token');
 
 const verifyUserController = async (req, res, next) => {
   try {

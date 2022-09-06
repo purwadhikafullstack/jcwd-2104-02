@@ -7,7 +7,7 @@ const bearerToken = require('express-bearer-token');
 
 const PORT = process.env.PORT || 8000;
 
-const userRouter = require('./routers/user');
+const userRouter = require('./routers/users');
 
 
 app.use(cors());

@@ -1,11 +1,11 @@
-require("../../../../config/config.js")
+require("../../../config/config.js")
 const express = require('express');
 const router = express.Router();
-const { isFieldEmpties } = require("../../../helpers");
-const { hash } = require('../../../lib/bcryptjs');
-const { createToken } = require('../../../lib/token');
-const { users } = require("../../../../models")
-const { sendMail } = require('../../../lib/nodemailer');
+const { isFieldEmpties } = require("../../helpers");
+const { hash } = require('../../lib/bcryptjs');
+const { createToken } = require('../../lib/token');
+const { users } = require("../../../models")
+const { sendMail } = require('../../lib/nodemailer');
 const { Op } = require("sequelize")
 
 const registerUserController = async (req, res, next) =>{
