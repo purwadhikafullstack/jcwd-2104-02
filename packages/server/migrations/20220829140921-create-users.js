@@ -19,11 +19,9 @@ module.exports = {
       },
       gender: {
         type: Sequelize.ENUM('Male', 'Female'),
-        allowNull: false,
       },
       birthDate: {
         type: Sequelize.DATE,
-        allowNull: false,
       },
       phoneNumber: {
         type: Sequelize.STRING(15),
@@ -36,11 +34,20 @@ module.exports = {
       },
       isAdmin: {
         type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       avatar: {
         type: Sequelize.STRING(255),
+        defaultValue: 'http://localhost:7000/avatar/default-profile-icon.png',
       },
       password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      user_token: {
+        type: Sequelize.STRING,
+      },
+      password_token: {
         type: Sequelize.STRING,
       },
       createdAt: {
