@@ -11,48 +11,50 @@ export default function Home() {
     {
       category_list_id: 1,
       category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:3000/categories/Batuk.png',
+      categoryImage: 'http://localhost:3000/landingpage/categories/Batuk.png',
     },
     {
       category_list_id: 2,
       category: 'Asma',
-      categoryImage: 'http://localhost:3000/categoriesImage/Asthma.png',
+      categoryImage: 'http://localhost:3000/landingpage/categories/Asthma.png',
     },
     {
       category_list_id: 3,
       category: 'Antibiotik',
-      categoryImage: 'http://localhost:3000/categoriesImage/Antibiotik.png',
+      categoryImage:
+        'http://localhost:3000/landingpage/categories/Antibiotik.png',
     },
     {
       category_list_id: 4,
       category: 'Mata',
-      categoryImage: 'http://localhost:3000/categoriesImage/Mata.png',
+      categoryImage: 'http://localhost:3000/landingpage/categories/Mata.png',
     },
     {
       category_list_id: 5,
       category: 'P3K',
-      categoryImage: 'http://localhost:3000/categoriesImage/P3K.png',
+      categoryImage: 'http://localhost:3000/landingpage/categories/P3K.png',
     },
     {
       category_list_id: 6,
       category: 'Vitamin',
-      categoryImage: 'http://localhost:3000/categoriesImage/Vitamin.png',
+      categoryImage: 'http://localhost:3000/landingpage/categories/Vitamin.png',
     },
     {
       category_list_id: 7,
       category: 'Pusing',
-      categoryImage: 'http://localhost:3000/categoriesImage/Pusing.png',
+      categoryImage: 'http://localhost:3000/landingpage/categories/Logo-pusing.png',
     },
     {
       category_list_id: 8,
       category: 'Pencernaan',
-      categoryImage: 'http://localhost:3000/categoriesImage/Pencernaan.png',
+      categoryImage:
+        'http://localhost:3000/landingpage/categories/Pencernaan.png',
     },
     {
       category_list_id: 9,
       category: 'Minyak angin & Balsem',
       categoryImage:
-        'http://localhost:3000/categoriesImage/Minyak-angin-balsem.png',
+        'http://localhost:3000/landingpage/categories/Minyak-angin-balsem.png',
     },
   ];
 
@@ -294,7 +296,7 @@ export default function Home() {
           <p className="flex pl-[4vw] mt-[3vh] mb-[2vh] font-[500] text-[16px] desktop:text-[22px] w-[100%] desktop:pl-0">
             Jelajahi Kategori Obat
           </p>
-          <div className="w-[100%] h-[13vh] items-start flex flex-nowrap overflow-x-auto desktop:h-[70vh] desktop:flex-wrap desktop:h-[30vh] desktop:justify-evenly">
+          <div className="w-[100%] h-[13vh] items-start flex flex-nowrap overflow-x-auto  desktop:flex-wrap desktop:h-[30vh] desktop:justify-evenly">
             {categoriesMap()}
           </div>
         </div>
