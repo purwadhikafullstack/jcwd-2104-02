@@ -67,7 +67,7 @@ const verifyUserController = async (req, res, next) => {
         <i class="checkmark">✓</i>
       </div>
         <h1>Success</h1> 
-        <p>We received your verification<br/> Go to Homepage <a href="#">link</a></p>
+        <p>We received your verification<br/> Go to Homepage <a href="http://localhost:3000">link</a></p>
       </div>
     </body>
 </html>`);
