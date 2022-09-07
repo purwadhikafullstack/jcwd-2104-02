@@ -50,3 +50,11 @@ a {
     background: black;
   }
 }
+
+
+
+.error {
+  position: absolute;
+  color: red;
+  font-size: .8rem;
+}
