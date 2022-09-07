@@ -50,3 +50,13 @@ a {
     background: black;
   }
 }
+
+Input.form-control, Input.form-control:focus {
+  background: #F0F0FF;
+}
+
+.error {
+  position: absolute;
+  color: red;
+  font-size: .8rem;
+}
