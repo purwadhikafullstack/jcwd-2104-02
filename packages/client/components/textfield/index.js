@@ -8,7 +8,7 @@ export const TextField = ({ label, ...props }) => {
     <div className="mb-2">
       <label htmlFor={field.name}>{label}</label>
       <Input
-        className={`form-control shadow-none ${
+        className={`${
           meta.touched && meta.error && 'is-invalid'
         }`}
         {...field}

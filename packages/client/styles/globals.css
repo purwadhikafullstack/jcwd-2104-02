@@ -51,9 +51,7 @@ a {
   }
 }
 
-Input.form-control, Input.form-control:focus {
-  background: #F0F0FF;
-}
+
 
 .error {
   position: absolute;
