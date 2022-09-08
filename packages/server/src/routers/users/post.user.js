@@ -2,7 +2,7 @@ require('../../../config/config.js');
 const express = require('express');
 const router = express.Router();
 const { isFieldEmpties } = require('../../helpers');
-const { hash } = require('../../lib/bcryptjs');
+const { hash, compare } = require('../../lib/bcryptjs');
 const { createToken, verifyToken } = require('../../lib/token');
 const { users } = require('../../../models');
 const { sendMail, sendResetPasswordMail } = require('../../lib/nodemailer');
@@ -103,9 +103,11 @@ async function resetPassword(req, res, next) {
 
     const { email } = verifiedToken;
 
+    const hashedPassword = hash(req.body.newPassword);
+
     const user = await users.findOne({ where: { email } });
 
-    await user.update({ password: req.body.newPassword });
+    await user.update({ password: hashedPassword });
 
     const resUpdatePassword = await user.save();
 
@@ -118,8 +120,57 @@ async function resetPassword(req, res, next) {
   }
 }
 
+const loginUser = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const resFindUser = await users.findOne({
+      where: { email },
+    });
+
+    if (resFindUser) {
+      const user = resFindUser.dataValues;
+
+      const isPasswordMatch = compare(password, user.password);
+      if (!isPasswordMatch) {
+        throw {
+          code: 401,
+          message: `Password or email is incorrect`,
+        };
+      }
+
+      const token = createToken({
+        user_id: user.user_id,
+        name: user.name,
+      });
+
+      res.send({
+        status: 'success',
+        message: 'login success',
+        data: {
+          result: {
+            user_id: user.user_id,
+            email: user.email,
+            username: user.username,
+            user_token: token,
+          },
+        },
+      });
+    }
+    //  else {
+    //   throw {
+    //     code: 405,
+    //     message: 'incorrect email or password',
+    //     errorType: 'Incorrect Login',
+    //   };
+    // }
+  } catch (error) {
+    next(error);
+  }
+};
+
 router.post('/sendResetPasswordMail', sendResetPasswordMailController);
 router.post('/resetPassword/:token', resetPassword);
 router.post('/register', registerUserController);
+router.post('/login', loginUser);
 
 module.exports = router;

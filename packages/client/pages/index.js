@@ -117,7 +117,7 @@ export default function Home() {
       return (
         <div
           key={category.category_list_id}
-          className="flex flex-col flex-none items-center justify-start w-[25%] desktop:flex-row desktop:h-[9vh] desktop:w-[31%] desktop:bg-white desktop:shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]"
+          className="flex flex-col hover:cursor-pointer flex-none items-center justify-start w-[25%] desktop:flex-row desktop:h-[9vh] desktop:w-[31%] desktop:bg-white desktop:shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]"
         >
           <div className="w-[35px] h-[35px] desktop:w-[3.5vw] desktop:h-[3.5vw] desktop:mx-[1vw]">
             <Image
@@ -221,7 +221,7 @@ export default function Home() {
           </div>
         </div>
         <Image
-          src="/landingpage/Hero-desktop.png"
+          src="/landingpage/Hero-desktop.svg"
           alt="arrow-logo"
           layout="responsive"
           width={1440}
@@ -288,7 +288,7 @@ export default function Home() {
                 colorScheme="linkedin"
                 sx={{ width: '8vw', height: '6vh' }}
               >
-                Unggah Resep
+                <p className="font-[500] text-[.9rem]">Unggah Resep</p>
               </Button>
             </div>
           </div>
