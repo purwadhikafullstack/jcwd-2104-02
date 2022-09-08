@@ -1,7 +1,4 @@
-import Head from 'next/head';
 import Image from 'next/image';
-import styles from '../styles/Home.module.css';
-import axios from '../src/config/api';
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import { Button, Input, InputGroup, InputRightElement } from '@chakra-ui/react';
@@ -11,50 +8,51 @@ export default function Home() {
     {
       category_list_id: 1,
       category: 'Flu & Batuk',
-      categoryImage: 'http://localhost:3000/landingpage/categories/Batuk.png',
+      categoryImage: 'http://localhost:8000/public/categoriesImage/Batuk.png',
     },
     {
       category_list_id: 2,
       category: 'Asma',
-      categoryImage: 'http://localhost:3000/landingpage/categories/Asthma.png',
+      categoryImage: 'http://localhost:8000/public/categoriesImage/Asthma.png',
     },
     {
       category_list_id: 3,
       category: 'Antibiotik',
       categoryImage:
-        'http://localhost:3000/landingpage/categories/Antibiotik.png',
+        'http://localhost:8000/public/categoriesImage/Antibiotik.png',
     },
     {
       category_list_id: 4,
       category: 'Mata',
-      categoryImage: 'http://localhost:3000/landingpage/categories/Mata.png',
+      categoryImage: 'http://localhost:8000/public/categoriesImage/Mata.png',
     },
     {
       category_list_id: 5,
       category: 'P3K',
-      categoryImage: 'http://localhost:3000/landingpage/categories/P3K.png',
+      categoryImage: 'http://localhost:8000/public/categoriesImage/P3K.png',
     },
     {
       category_list_id: 6,
       category: 'Vitamin',
-      categoryImage: 'http://localhost:3000/landingpage/categories/Vitamin.png',
+      categoryImage: 'http://localhost:8000/public/categoriesImage/Vitamin.png',
     },
     {
       category_list_id: 7,
       category: 'Pusing',
-      categoryImage: 'http://localhost:3000/landingpage/categories/Logo-pusing.png',
+      categoryImage:
+        'http://localhost:8000/public/categoriesImage/Logo-pusing.png',
     },
     {
       category_list_id: 8,
       category: 'Pencernaan',
       categoryImage:
-        'http://localhost:3000/landingpage/categories/Pencernaan.png',
+        'http://localhost:8000/public/categoriesImage/Pencernaan.png',
     },
     {
       category_list_id: 9,
       category: 'Minyak angin & Balsem',
       categoryImage:
-        'http://localhost:3000/landingpage/categories/Minyak-angin-balsem.png',
+        'http://localhost:8000/public/categoriesImage/Minyak-angin-balsem.png',
     },
   ];
 
@@ -65,7 +63,8 @@ export default function Home() {
       productPrice: 1300,
       description: 'Product desc',
       productStock: 23,
-      productImage: 'http://localhost:3000/testProductImage/VitaminB1.png',
+      productImage:
+        'http://localhost:8000/public/testProductImage/VitaminB1.png',
       packageType: 'Per Strip',
       servingType: 'Kapsul',
     },
@@ -75,7 +74,8 @@ export default function Home() {
       productPrice: 1000,
       description: 'Product desc',
       productStock: 23,
-      productImage: 'http://localhost:3000/testProductImage/VitaminC.png',
+      productImage:
+        'http://localhost:8000/public/testProductImage/VitaminC.png',
       packageType: 'Per Strip',
       servingType: 'Kapsul',
     },
@@ -85,7 +85,7 @@ export default function Home() {
       productPrice: 5100,
       description: 'Product desc',
       productStock: 23,
-      productImage: 'http://localhost:3000/testProductImage/B12.png',
+      productImage: 'http://localhost:8000/public/testProductImage/B12.png',
       packageType: 'Per Botol',
       servingType: 'Kapsul',
     },
@@ -95,7 +95,8 @@ export default function Home() {
       productPrice: 109800,
       description: 'Product desc',
       productStock: 23,
-      productImage: 'http://localhost:3000/testProductImage/Blackmores.png',
+      productImage:
+        'http://localhost:8000/public/testProductImage/Blackmores.png',
       packageType: 'Per Botol',
       servingType: 'Kapsul',
     },
@@ -105,7 +106,7 @@ export default function Home() {
       productPrice: 3700,
       description: 'Product desc',
       productStock: 23,
-      productImage: 'http://localhost:3000/testProductImage/AIPI.png',
+      productImage: 'http://localhost:8000/public/testProductImage/AIPI.png',
       packageType: 'Per Botol',
       servingType: 'Kapsul',
     },
@@ -211,7 +212,7 @@ export default function Home() {
           />
           <div className="bg-[#008DEB] flex items-center justify-center w-[20%] hover:cursor-pointer">
             <Image
-              src="/landing page/Search-desktop.png"
+              src="/landingpage/Search-desktop.png"
               alt="arrow-logo"
               layout="fixed"
               width={24}
@@ -220,7 +221,7 @@ export default function Home() {
           </div>
         </div>
         <Image
-          src="/landing page/Hero-desktop.png"
+          src="/landingpage/Hero-desktop.png"
           alt="arrow-logo"
           layout="responsive"
           width={1440}
@@ -236,7 +237,7 @@ export default function Home() {
           <InputRightElement>
             <div className="flex items-end h-[65%]">
               <Image
-                src="/landing page/Search.png"
+                src="/landingpage/Search.png"
                 alt="search-logo"
                 layout="fixed"
                 width={18}
@@ -254,7 +255,7 @@ export default function Home() {
           <div className="flex bg-[#F2F8FC] items-center w-[94vw] h-[10vh] mt-[7vh] ml-[3vw] desktop:w-[100%] desktop:mt-0 desktop:ml-0">
             <div className="mx-[25px] mt-[10px]">
               <Image
-                src="/landing page/Punya-resep.png"
+                src="/landingpage/Punya-resep.png"
                 alt="resep-logo"
                 layout="fixed"
                 width={35}
@@ -274,7 +275,7 @@ export default function Home() {
             </div>
             <div className="w-[18px] h-[14px] desktop:hidden">
               <Image
-                src="/landing page/Arrow.png"
+                src="/landingpage/Arrow.png"
                 alt="arrow-logo"
                 layout="responsive"
                 width={18}

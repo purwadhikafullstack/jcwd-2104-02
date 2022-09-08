@@ -10,7 +10,7 @@ function Navbar() {
       <div className="flex w-[100%] h-[70px] desktop:h-[100%] items-center justify-between">
         <div className="flex ml-[7vw] h-[70%] items-center">
           <Image
-            src="/landing page/Medbox.png"
+            src="/landingpage/Medbox.png"
             alt="medbox-logo"
             layout="fixed"
             width={136}
@@ -32,7 +32,7 @@ function Navbar() {
         <div className="flex mr-[7vw] h-[70%] items-center w-[25vw] desktop:w-[10vw]">
           <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
             <Image
-              src="/landing page/Bell.png"
+              src="/landingpage/Bell.png"
               alt="bell-logo"
               layout="responsive"
               width={16.8}
@@ -41,7 +41,7 @@ function Navbar() {
           </div>
           <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
             <Image
-              src="/landing page/Cart.png"
+              src="/landingpage/Cart.png"
               alt="cart-logo"
               layout="responsive"
               width={19.2}
@@ -50,7 +50,7 @@ function Navbar() {
           </div>
           <div className="desktop:hidden w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
             <Image
-              src="/landing page/Menu.png"
+              src="/landingpage/Menu.png"
               alt="menu-logo"
               layout="responsive"
               width={18}
@@ -60,7 +60,7 @@ function Navbar() {
           {login ? (
             <div className="hidden desktop:inline w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer ml-[4.5vw] desktop:ml-[2vw]">
               <Image
-                src="/landing page/Account.png"
+                src="/landingpage/Account.png"
                 alt="menu-logo"
                 layout="responsive"
                 width={20}
