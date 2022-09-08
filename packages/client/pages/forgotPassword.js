@@ -4,9 +4,8 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
-function forgotPassword() {
+function ForgotPassword() {
   const [email, setEmail] = useState('');
-
   const router = useRouter();
 
   function emailChangeHandler(event) {
@@ -94,4 +93,4 @@ function forgotPassword() {
   );
 }
 
-export default forgotPassword;
+export default ForgotPassword;
