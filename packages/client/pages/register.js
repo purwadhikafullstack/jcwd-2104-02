@@ -11,21 +11,21 @@ import {
   Input,
   Stack,
   Image,
-  ChakraProvider
+  ChakraProvider,
 } from '@chakra-ui/react';
-import { Formik, Form, Field} from 'formik';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from '../components/textfield';
-import '@fontsource/poppins'
+import '@fontsource/poppins';
 import theme from '../components/theme';
-
 
 export default function Register() {
   const [disabled, setDisabled] = useState(false);
   const router = useRouter();
 
   const { data: session } = useSession();
-  if (session) router.replace('/');
+  // if (session) router.replace('/');
+  console.log({ session });
 
   const validate = Yup.object({
     fullName: Yup.string()
@@ -40,13 +40,21 @@ export default function Register() {
       .required('Phone Number is Required'),
   });
 
-  const onRegisterClick = async ({fullName, email, password, phoneNumber}) => {
+  const onRegisterClick = async ({
+    fullName,
+    email,
+    password,
+    phoneNumber,
+  }) => {
     try {
-      const body ={
-        name: fullName, email, password, phoneNumber
-      }
+      const body = {
+        name: fullName,
+        email,
+        password,
+        phoneNumber,
+      };
       const res = await axiosInstance.post('/users/register', body);
-      alert(res.data.message)
+      alert(res.data.message);
       window.location.reload();
     } catch (error) {
       if (error.response?.data) return alert(error.response.data.message);

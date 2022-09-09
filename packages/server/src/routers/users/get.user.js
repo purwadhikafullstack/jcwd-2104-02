@@ -9,8 +9,6 @@ const verifyUserController = async (req, res, next) => {
 
     const verifiedToken = verifyToken(token);
 
-
-
     const IsVerifiedStatus = await users.update(
       { isVerified: true },
       {
@@ -77,7 +75,24 @@ const verifyUserController = async (req, res, next) => {
   }
 };
 
-    
+const getUser = async (req, res, next) => {
+  try {
+    const { user_id } = req.params;
+
+    const resGetUser = await users.findOne({
+      where: { user_id },
+    });
+
+    const { dataValues } = resGetUser;
+
+    res.send({ dataValues });
+  } catch (error) {
+    console.log(error);
+    res.send(error);
+  }
+};
+
 router.get('/verification/:token', verifyUserController);
+router.get('/:user_id', getUser);
 
 module.exports = router;
