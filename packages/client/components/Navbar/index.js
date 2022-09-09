@@ -81,14 +81,15 @@ function Navbar() {
           </div>
           {session ? (
             <div className="hidden desktop:inline w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer ml-[4.5vw] desktop:ml-[2vw]">
-              <Image
-                onClick={onLogoutClick}
-                src="/landingpage/Account.svg"
-                alt="menu-logo"
-                layout="responsive"
-                width={20}
-                height={20}
-              />
+              <Link href="/profile">
+                <Image
+                  src="/landingpage/Account.svg"
+                  alt="menu-logo"
+                  layout="responsive"
+                  width={20}
+                  height={20}
+                />
+              </Link>
             </div>
           ) : (
             ''
