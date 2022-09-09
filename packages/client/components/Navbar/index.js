@@ -42,16 +42,14 @@ function Navbar() {
     <div className="h-[100px] flex items-end desktop:h-[72px] shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]">
       <div className="flex w-[100%] h-[70px] desktop:h-[100%] items-center justify-between">
         <div className="flex ml-[7vw] h-[70%] items-center">
-          <Link href="/">
-            <Image
-              className="hover:cursor-pointer"
-              src="/landingpage/Medbox.svg"
-              alt="medbox-logo"
-              layout="fixed"
-              width={136}
-              height={32}
-            />
-          </Link>
+          <Image
+            className="hover:cursor-pointer"
+            src="/landingpage/Medbox.svg"
+            alt="medbox-logo"
+            layout="fixed"
+            width={136}
+            height={32}
+          />
           <div className="desktop:flex ml-[5vw] justify-between w-[20vw] hidden">
             <Link href="/">
               <p className="duration-300 ease-in-out bg-white text-[1vw] font-[500] hover:cursor-pointer hover:shadow-[0px_5px_0px_-2px_rgba(0,141,235,1)]">
