@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { auth } = require('../../helpers/auth');
 const { users } = require('../../../models');
 const { verifyToken } = require('../../lib/token');
 
@@ -92,6 +93,34 @@ const getUser = async (req, res, next) => {
   }
 };
 
+const getUserProfileController = async (req, res, next) => {
+  try {
+    const user_id = req.params;
+
+    const resGetUser = await users.findAll({
+      where: user_id,
+      raw: true,
+    });
+
+    if (!resGetUser.length) throw { message: 'User not found' };
+
+    const result = {
+      status: 'Success',
+      message: 'User Profile',
+      data: {
+        result: resGetUser[0],
+      },
+    };
+
+    console.log(result);
+
+    res.send(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+router.get('/profile/:user_id', auth, getUserProfileController);
 router.get('/verification/:token', verifyUserController);
 router.get('/:user_id', getUser);
 

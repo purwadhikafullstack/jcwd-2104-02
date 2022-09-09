@@ -3,9 +3,8 @@ const { users } = require('../../../models');
 
 const auth = async (req, res, next) => {
   try {
-    console.log('3213');
-
     const token = req.token;
+
     if (!token) {
       throw new Error('failed');
     }

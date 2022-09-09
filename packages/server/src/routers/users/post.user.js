@@ -55,7 +55,7 @@ const registerUserController = async (req, res, next) => {
       email: email,
       avatar: '/public/profile-pict.png',
       password: encryptedPassword,
-      phoneNumber: phoneNumber,
+      phoneNumber: `${phoneNumber}`,
     });
 
     const userId = newUser.dataValues.user_id;
@@ -155,14 +155,13 @@ const loginUser = async (req, res, next) => {
           },
         },
       });
+    } else {
+      throw {
+        code: 405,
+        message: 'incorrect email or password',
+        errorType: 'Incorrect Login',
+      };
     }
-    //  else {
-    //   throw {
-    //     code: 405,
-    //     message: 'incorrect email or password',
-    //     errorType: 'Incorrect Login',
-    //   };
-    // }
   } catch (error) {
     next(error);
   }
