@@ -98,33 +98,34 @@ async function sendResetPasswordMailController(req, res, next) {
 async function resetPassword(req, res, next) {
   try {
     const { token } = req.params;
-    const resendEmailVerification = async (req, res, next) => {
-      try {
-        const { email, userId } = req.body;
+const resendEmailVerification = async (req, res, next) => {
+try {
+  const { email, userId } = req.body;
 
-        const token = createToken({ userId, email });
+  const token = createToken({ userId, email });
 
-        await users.update(
-          { user_token: token },
-          { where: { user_id: userId } },
-        );
+  await users.update({ user_token: token }, { where: { user_id: userId } });
 
-        await sendMail({ email, token });
+  await sendMail({ email, token });
 
-        res.send({
-          status: 'success',
-          message: 'success resend verification',
-          data: {
-            result: updateToken,
-          },
-        });
-      } catch (error) {
-        next(error);
-      }
-    };
+  res.send({
+    status: 'success',
+    message: 'success resend verification',
+    data: {
+      result: updateToken,
+    },
+  });
 
-    router.post('/register', registerUserController);
-    router.post('/resendVerif', resendEmailVerification);
+
+} catch (error) {
+  next(error)
+}
+}
+
+
+
+router.post("/register", registerUserController)
+router.post("/resendVerif", resendEmailVerification)
 
     const verifiedToken = verifyToken(token);
 
