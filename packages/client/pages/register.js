@@ -12,32 +12,49 @@ import {
   Stack,
   Image,
   ChakraProvider,
+  Link,
+  Text,
+  VStack,
 } from '@chakra-ui/react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from '../components/textfield';
 import '@fontsource/poppins';
 import theme from '../components/theme';
+import { useToast } from '@chakra-ui/react';
 
 export default function Register() {
   const [disabled, setDisabled] = useState(false);
   const router = useRouter();
 
+  const toast = useToast();
+
   const { data: session } = useSession();
-  // if (session) router.replace('/');
-  console.log({ session });
+  if (session) router.replace('/');
+
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
   const validate = Yup.object({
     fullName: Yup.string()
       .max(15, 'Must be 15 characters or less')
-      .required('Full Name is Required'),
+      .required('Full Name is Required')
+      .matches(/^[A-Za-z ]*$/, 'Please enter valid name'),
     email: Yup.string().email('Email is invalid').required('Email is Required'),
     password: Yup.string()
       .min(6, 'Password must be at least 6 charaters')
-      .required('Password is Required'),
+      .required('Password is Required')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/,
+        'Must Contain at least 6 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character',
+      ),
     phoneNumber: Yup.string()
-      .max(15, 'Must be 15 characters or less')
-      .required('Phone Number is Required'),
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .max(15)
+      .required('A phone number is required'),
+    confirmPassword: Yup.string()
+      .required('Confirm Password Required')
+      .oneOf([Yup.ref('password'), null], 'Passwords must match'),
   });
 
   const onRegisterClick = async ({
@@ -54,8 +71,19 @@ export default function Register() {
         phoneNumber,
       };
       const res = await axiosInstance.post('/users/register', body);
-      alert(res.data.message);
-      window.location.reload();
+      toast({
+        title: 'Account created.',
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      setTimeout(() => {
+        router.replace('/login');
+      }, 5000);
+
+      // window.location.reload();
     } catch (error) {
       if (error.response?.data) return alert(error.response.data.message);
     }
@@ -69,6 +97,7 @@ export default function Register() {
           email: '',
           password: '',
           phoneNumber: '',
+          confirmPassword: '',
         }}
         validationSchema={validate}
         onSubmit={(values) => {
@@ -143,6 +172,17 @@ export default function Register() {
                     />
                   )}
                 </Field>
+                <br />
+                <Field name="confirmPassword">
+                  {({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Confirm Password"
+                      name="confirmPassword"
+                      type="password"
+                    />
+                  )}
+                </Field>
                 <Stack spacing={6}>
                   <Stack
                     direction={{ base: 'column', sm: 'row' }}
@@ -159,6 +199,14 @@ export default function Register() {
                     Sign up
                   </Button>
                 </Stack>
+                <VStack>
+                  <Text>
+                    Already Have an Account?{' '}
+                    <Link color="linkedin.500" href="/login">
+                      Click Here!
+                    </Link>
+                  </Text>
+                </VStack>
               </Stack>
             </Flex>
           </Stack>
