@@ -374,7 +374,7 @@ function Profile(props) {
                   </Box>
                 </VStack>
                 <VStack>
-                  <Image src="/profile/line.png" width={327} height={2} />
+                  <Image src="/profile/line.png" width={327} height={1} />
                 </VStack>
                 <VStack
                   fontSize={14}
@@ -396,7 +396,7 @@ function Profile(props) {
               </VStack>
               <VStack>
                 <VStack>
-                  <Image src="/profile/line.png" width={327} height={1} />
+                  <Image src="/profile/line.png" width={327} height={1.5} />
                 </VStack>
                 <VStack>
                   <NextLink href="/change-password">
