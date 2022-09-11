@@ -33,7 +33,8 @@ function Profile(props) {
       </Show>
       <Container>
         <Box
-          marginBlock={{ md: '1' }}
+          marginTop={{ md: '3' }}
+          marginBottom={{ md: '8' }}
           boxShadow={{ md: 'xl' }}
           p={{ md: '12' }}
           rounded={{ md: 'md' }}
@@ -67,7 +68,7 @@ function Profile(props) {
                 return imgSource;
               }}
             />
-            <VStack align="left" paddingLeft={{ md: '2' }}>
+            <VStack align="left">
               <Text
                 fontSize={{ base: '16', md: '18' }}
                 paddingLeft={3}
@@ -146,7 +147,37 @@ function Profile(props) {
                 <VStack
                   fontSize={14}
                   fontWeight={600}
-                  paddingBlock={4}
+                  paddingBlock={3}
+                  width="full"
+                >
+                  <Box width="full">
+                    <NextLink href="/history">
+                      <Link>
+                        <VStack align="start" fontWeight={800} fontSize={15}>
+                          <VStack>
+                            <Text>Alamat</Text>
+                          </VStack>
+                          <VStack>
+                            <Text
+                              fontWeight={500}
+                              fontSize={15}
+                              color="gray.600"
+                            >
+                              Not selected yet
+                            </Text>
+                          </VStack>
+                        </VStack>
+                      </Link>
+                    </NextLink>
+                  </Box>
+                </VStack>
+                <VStack>
+                  <Image src="/profile/line.png" width={327} height={2} />
+                </VStack>
+                <VStack
+                  fontSize={14}
+                  fontWeight={600}
+                  paddingBlock={3}
                   width="full"
                 >
                   <Box width="full">
@@ -160,8 +191,27 @@ function Profile(props) {
                     </NextLink>
                   </Box>
                 </VStack>
+              </VStack>
+              <VStack>
                 <VStack>
-                  <Image src="/profile/line.png" width={327} height={2} />
+                  <Image src="/profile/line.png" width={327} height={1} />
+                </VStack>
+                <VStack>
+                  <NextLink href="/change-password">
+                    <Link>
+                      <HStack marginTop={4}>
+                        <LockIcon
+                          w={4}
+                          h={4}
+                          color="#004776
+"
+                        />
+                        <Text fontWeight={600} fontSize={14} paddingLeft={2}>
+                          Ubah Password
+                        </Text>
+                      </HStack>
+                    </Link>
+                  </NextLink>
                 </VStack>
               </VStack>
             </Show>

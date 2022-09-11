@@ -53,7 +53,7 @@ const registerUserController = async (req, res, next) => {
     const newUser = await users.create({
       name: name,
       email: email,
-      avatar: '/public/avatar/default-profile-icon.png',
+      avatar: '/public/avatar/default-profile-icon.jpg',
       password: encryptedPassword,
       phoneNumber: `${phoneNumber}`,
     });
