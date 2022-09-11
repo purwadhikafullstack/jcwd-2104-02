@@ -274,29 +274,52 @@ function Profile(props) {
                   paddingBlock={3}
                   width="full"
                 >
-                  <Box width="full">
-                    <NextLink href="/history">
-                      <Link>
-                        <VStack align="start" fontWeight={800} fontSize={15}>
-                          <VStack>
-                            <Text>Alamat</Text>
-                          </VStack>
-                          <VStack>
+                  <Box width={320}>
+                    <VStack align="start" fontWeight={700} fontSize={15}>
+                      <HStack>
+                        <HStack>
+                          <Text>Alamat</Text>
+                        </HStack>
+                        <HStack paddingBottom={0.5}>
+                          <AddIcon w={3} h={3} color="#004776" marginLeft={1} />
+                        </HStack>
+                      </HStack>
+                      <Box
+                        paddingY={2}
+                        paddingLeft={2}
+                        border="2px"
+                        borderColor="gray.300"
+                        borderRadius="md"
+                        width={320}
+                      >
+                        <HStack justifyContent="space-between">
+                          <VStack align="start">
                             <Text
                               fontWeight={500}
-                              fontSize={15}
+                              fontSize={12}
                               color="gray.600"
                             >
-                              Not selected yet
+                              Jalan Tongkol Raya BA/12 Kedayutamaa
+                            </Text>
+                            <Text
+                              fontWeight={500}
+                              fontSize={12}
+                              color="gray.600"
+                            >
+                              Kota Depok, Jawa Barat, ID 16454
                             </Text>
                           </VStack>
-                        </VStack>
-                      </Link>
-                    </NextLink>
+                          <HStack paddingRight={3}>
+                            <EditIcon w={3.5} h={3.5} color="#004776" />
+                            <DeleteIcon w={3.5} h={3.5} color="#004776" />
+                          </HStack>
+                        </HStack>
+                      </Box>
+                    </VStack>
                   </Box>
                 </VStack>
                 <VStack>
-                  <Image src="/profile/line.png" width={327} height={2} />
+                  <Image src="/profile/line.png" width={327} height={1} />
                 </VStack>
                 <VStack
                   fontSize={14}
@@ -318,7 +341,7 @@ function Profile(props) {
               </VStack>
               <VStack>
                 <VStack>
-                  <Image src="/profile/line.png" width={327} height={1} />
+                  <Image src="/profile/line.png" width={327} height={1.5} />
                 </VStack>
                 <VStack>
                   <NextLink href="/change-password">
