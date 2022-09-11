@@ -112,7 +112,9 @@ function Edit(propsuser, props) {
 
   return (
     <ChakraProvider theme={theme}>
-      <Navbar />
+      <Show above="md">
+        <Navbar />
+      </Show>
       <Container>
         <Box
           marginBlock={{ md: '8' }}
@@ -125,7 +127,7 @@ function Edit(propsuser, props) {
             <HStack marginTop={9} marginLeft={4} marginBottom={5}>
               <NextLink href="/profile">
                 <Link>
-                  <Image src="/back.png" width={16} height={16} />
+                  <Image src="/profile/back.png" width={16} height={16} />
                 </Link>
               </NextLink>
               <Text
@@ -159,7 +161,7 @@ function Edit(propsuser, props) {
             </VStack>
             <HStack paddingBottom={3}>
               <Button onClick={onSaveAvatarUpdate} size="sm" bgColor="white">
-                <Image src="/edit-blue.png" width={12} height={12} />
+                <Image src="/profile/edit-blue.png" width={12} height={12} />
                 <Text
                   paddingLeft={2}
                   fontWeight={600}
@@ -170,7 +172,7 @@ function Edit(propsuser, props) {
                 </Text>
               </Button>
             </HStack>
-            <Image src="/line.png" width={327} height={2} />
+            <Image src="/profile/line.png" width={327} height={2} />
             <VStack
               alignSelf="start"
               paddingLeft={3}
@@ -234,7 +236,6 @@ function Edit(propsuser, props) {
                     fontSize={14}
                     marginBottom={3}
                   >
-                    {/* <option value="gender">Gender</option> */}
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                   </Select>
@@ -248,6 +249,7 @@ function Edit(propsuser, props) {
                   </VStack>
                   <VStack fontSize={13} marginBottom={2}>
                     <DatePicker
+                      bgColor="red"
                       selected={values.startDate}
                       dateFormat="yyyy-MM-d"
                       className="form-control w-80 h-8"
@@ -257,7 +259,6 @@ function Edit(propsuser, props) {
                         setFieldValue('startDate', date);
                       }}
                     />
-                    <p>{birthDate ? birthDate.slice(0, 10) : ''}</p>
                   </VStack>
                   <Button
                     colorScheme="messenger"

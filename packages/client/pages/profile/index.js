@@ -28,7 +28,9 @@ function Profile(props) {
 
   return (
     <ChakraProvider theme={theme}>
-      <Navbar />
+      <Show above="md">
+        <Navbar />
+      </Show>
       <Container>
         <Box
           marginBlock={{ md: '1' }}
@@ -59,8 +61,8 @@ function Profile(props) {
             <Image
               className="rounded-full"
               src={imgSource}
-              width={86}
-              height={86}
+              width={70}
+              height={70}
               loader={() => {
                 return imgSource;
               }}
@@ -93,7 +95,7 @@ function Profile(props) {
                     width={327}
                     marginTop={4}
                     color="white"
-                    fontWeight={{ base: '500', md: '800' }}
+                    fontWeight={{ base: '500', md: '600' }}
                     fontSize={15}
                     variant={{ base: 'solid', md: 'outline' }}
                   >
