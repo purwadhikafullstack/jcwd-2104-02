@@ -117,7 +117,8 @@ function Edit(propsuser, props) {
       </Show>
       <Container>
         <Box
-          marginBlock={{ md: '8' }}
+          marginTop={{ md: '3' }}
+          marginBottom={{ md: '8' }}
           boxShadow={{ md: 'xl' }}
           p={{ md: '6' }}
           rounded={{ md: 'md' }}
@@ -234,7 +235,7 @@ function Edit(propsuser, props) {
                     height={8}
                     fontWeight={500}
                     fontSize={14}
-                    marginBottom={3}
+                    marginBottom={4}
                   >
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -251,7 +252,7 @@ function Edit(propsuser, props) {
                     <DatePicker
                       bgColor="red"
                       selected={values.startDate}
-                      dateFormat="yyyy-MM-d"
+                      dateFormat="yyyy-MM-dd"
                       className="form-control w-80 h-8"
                       name="startDate"
                       onChange={(date) => {
