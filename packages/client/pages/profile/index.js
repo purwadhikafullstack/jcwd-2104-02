@@ -274,28 +274,25 @@ function Profile(props) {
                   paddingBlock={3}
                   width="full"
                 >
-                  <Box width={320}>
-                    <VStack align="start" fontWeight={700} fontSize={15}>
-                      <HStack>
-                        <HStack>
-                          <Text>Alamat</Text>
-                        </HStack>
-                        <HStack paddingBottom={0.5}>
-                          <Button
-                            height={4}
-                            width={1}
-                            colorScheme="white"
-                            variant="solid"
-                            size="xs"
-                            onClick={onOpen}
-                          >
-                            <AddIcon w={3} h={3} color="#004776" />
-                            <AddAddress isOpen={isOpen} onClose={onClose} />
-                          </Button>
-                        </HStack>
-                      </HStack>
-                      <VStack>{renderAddresses()}</VStack>
-                    </VStack>
+                  <Box width="full">
+                    <NextLink href="/history">
+                      <Link>
+                        <VStack align="start" fontWeight={800} fontSize={15}>
+                          <VStack>
+                            <Text>Alamat</Text>
+                          </VStack>
+                          <VStack>
+                            <Text
+                              fontWeight={500}
+                              fontSize={15}
+                              color="gray.600"
+                            >
+                              Not selected yet
+                            </Text>
+                          </VStack>
+                        </VStack>
+                      </Link>
+                    </NextLink>
                   </Box>
                 </VStack>
                 <VStack>
@@ -321,7 +318,7 @@ function Profile(props) {
               </VStack>
               <VStack>
                 <VStack>
-                  <Image src="/profile/line.png" width={327} height={1.5} />
+                  <Image src="/profile/line.png" width={327} height={1} />
                 </VStack>
                 <VStack>
                   <NextLink href="/change-password">
