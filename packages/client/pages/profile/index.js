@@ -18,7 +18,7 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { api_origin } from '../../constraint';
 import theme from '../../components/theme';
-import { LockIcon } from '@chakra-ui/icons';
+import { LockIcon, AddIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 
 function Profile(props) {
   const [user, setUser] = useState(props.user);
@@ -112,7 +112,7 @@ function Profile(props) {
                 </VStack>
                 <VStack
                   align="start"
-                  fontWeight={800}
+                  fontWeight={700}
                   fontSize={15}
                   paddingBlock={3}
                 >
@@ -129,7 +129,7 @@ function Profile(props) {
                   </VStack>
                   <VStack paddingBottom={2}>
                     <Text fontWeight={500} fontSize={15} color="gray.600">
-                      {gender ? gender : 'Not selected yet'}
+                      {gender ? gender : 'Belum dipilih'}
                     </Text>
                   </VStack>
                   <VStack>
@@ -137,7 +137,7 @@ function Profile(props) {
                   </VStack>
                   <VStack>
                     <Text fontWeight={500} fontSize={15} color="gray.600">
-                      {birthDate ? birthDate.slice(0, 10) : 'Not selected yet'}
+                      {birthDate ? birthDate.slice(0, 10) : 'Belum dipilih'}
                     </Text>
                   </VStack>
                 </VStack>
@@ -150,29 +150,52 @@ function Profile(props) {
                   paddingBlock={3}
                   width="full"
                 >
-                  <Box width="full">
-                    <NextLink href="/history">
-                      <Link>
-                        <VStack align="start" fontWeight={800} fontSize={15}>
-                          <VStack>
-                            <Text>Alamat</Text>
-                          </VStack>
-                          <VStack>
+                  <Box width={320}>
+                    <VStack align="start" fontWeight={700} fontSize={15}>
+                      <HStack>
+                        <HStack>
+                          <Text>Alamat</Text>
+                        </HStack>
+                        <HStack paddingBottom={0.5}>
+                          <AddIcon w={3} h={3} color="#004776" marginLeft={1} />
+                        </HStack>
+                      </HStack>
+                      <Box
+                        paddingY={2}
+                        paddingLeft={2}
+                        border="2px"
+                        borderColor="gray.300"
+                        borderRadius="md"
+                        width={320}
+                      >
+                        <HStack justifyContent="space-between">
+                          <VStack align="start">
                             <Text
                               fontWeight={500}
-                              fontSize={15}
+                              fontSize={12}
                               color="gray.600"
                             >
-                              Not selected yet
+                              Jalan Tongkol Raya BA/12 Kedayutamaa
+                            </Text>
+                            <Text
+                              fontWeight={500}
+                              fontSize={12}
+                              color="gray.600"
+                            >
+                              Kota Depok, Jawa Barat, ID 16454
                             </Text>
                           </VStack>
-                        </VStack>
-                      </Link>
-                    </NextLink>
+                          <HStack paddingRight={3}>
+                            <EditIcon w={3.5} h={3.5} color="#004776" />
+                            <DeleteIcon w={3.5} h={3.5} color="#004776" />
+                          </HStack>
+                        </HStack>
+                      </Box>
+                    </VStack>
                   </Box>
                 </VStack>
                 <VStack>
-                  <Image src="/profile/line.png" width={327} height={2} />
+                  <Image src="/profile/line.png" width={327} height={1} />
                 </VStack>
                 <VStack
                   fontSize={14}
@@ -194,18 +217,13 @@ function Profile(props) {
               </VStack>
               <VStack>
                 <VStack>
-                  <Image src="/profile/line.png" width={327} height={1} />
+                  <Image src="/profile/line.png" width={327} height={1.5} />
                 </VStack>
                 <VStack>
                   <NextLink href="/change-password">
                     <Link>
                       <HStack marginTop={4}>
-                        <LockIcon
-                          w={4}
-                          h={4}
-                          color="#004776
-"
-                        />
+                        <LockIcon w={4} h={4} color="#004776"/>
                         <Text fontWeight={600} fontSize={14} paddingLeft={2}>
                           Ubah Password
                         </Text>
@@ -218,18 +236,52 @@ function Profile(props) {
             <Show below="md">
               <VStack paddingTop={3}>
                 <Image src="/profile/line.png" width={327} height={2} />
-                <VStack alignSelf="start" paddingTop={2}>
-                  <Text fontWeight={600} fontSize={16}>
+                <HStack alignSelf="start" paddingTop={1}>
+                  <Text fontWeight={600} fontSize={14}>
+                    Alamat
+                  </Text>
+                  <HStack>
+                    <AddIcon w={3} h={3} color="#004776" marginLeft={1} />
+                  </HStack>
+                </HStack>
+                <VStack paddingTop={1} alignSelf="start" paddingBottom={5}>
+                  <Box
+                    paddingY={2}
+                    paddingLeft={2}
+                    border="2px"
+                    borderColor="gray.300"
+                    borderRadius="md"
+                    width={327}
+                  >
+                    <HStack justifyContent="space-between">
+                      <VStack align="start">
+                        <Text fontWeight={500} fontSize={12} color="gray.600">
+                          Jalan Tongkol Raya BA/12 Kedayutamaa
+                        </Text>
+                        <Text fontWeight={500} fontSize={12} color="gray.600">
+                          Kota Depok, Jawa Barat, ID 16454
+                        </Text>
+                      </VStack>
+                      <HStack paddingRight={3}>
+                        <EditIcon w={3.5} h={3.5} color="#004776" />
+                        <DeleteIcon w={3.5} h={3.5} color="#004776" />
+                      </HStack>
+                    </HStack>
+                  </Box>
+                </VStack>
+                <Image src="/profile/line.png" width={327} height={1.5} />
+                <VStack alignSelf="start" paddingTop={1}>
+                  <Text fontWeight={600} fontSize={14}>
                     Aktivitas Saya
                   </Text>
                 </VStack>
-                <VStack paddingTop={5}>
-                  <Text fontWeight={500} fontSize={14} color="#B7B7B7">
+                <VStack alignSelf="start" paddingTop={1.5}>
+                  <Text fontWeight={500} fontSize={13} color="#B7B7B7">
                     Belum ada transaksi
                   </Text>
                 </VStack>
-                <VStack paddingTop={5} paddingBottom={5}>
-                  <Image src="/profile/line.png" width={327} height={1} />
+                <VStack paddingTop={3} paddingBottom={5}>
+                  <Image src="/profile/line.png" width={327} height={1.5} />
                 </VStack>
                 <VStack alignSelf="start">
                   <NextLink href="/">
@@ -252,7 +304,7 @@ function Profile(props) {
                           width={14}
                           height={16}
                         />
-                        <Text fontWeight={600} fontSize={14} paddingLeft={2}>
+                        <Text fontWeight={600} fontSize={14} paddingLeft={2.5}>
                           Toko Obat
                         </Text>
                       </HStack>
@@ -268,7 +320,7 @@ function Profile(props) {
                           width={14}
                           height={16}
                         />
-                        <Text fontWeight={600} fontSize={14} paddingLeft={2}>
+                        <Text fontWeight={600} fontSize={14} paddingLeft={2.5}>
                           Riwayat
                         </Text>
                       </HStack>
@@ -278,14 +330,19 @@ function Profile(props) {
                 <VStack alignSelf="start">
                   <NextLink href="/change-password">
                     <Link>
-                      <HStack paddingTop={6}>
+                      <HStack paddingTop={5} marginBottom={10}>
                         <LockIcon
-                          w={4}
-                          h={4}
+                          w={3.5}
+                          h={3.5}
                           color="#004776
 "
                         />
-                        <Text fontWeight={600} fontSize={14} paddingLeft={2}>
+                        <Text
+                          fontWeight={600}
+                          fontSize={14}
+                          paddingLeft={2.5}
+                          paddingTop={1}
+                        >
                           Ubah Password
                         </Text>
                       </HStack>
