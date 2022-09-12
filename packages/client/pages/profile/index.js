@@ -281,7 +281,17 @@ function Profile(props) {
                           <Text>Alamat</Text>
                         </HStack>
                         <HStack paddingBottom={0.5}>
-                          <AddIcon w={3} h={3} color="#004776" marginLeft={1} />
+                          <Button
+                            height={4}
+                            width={1}
+                            colorScheme="white"
+                            variant="solid"
+                            size="xs"
+                            onClick={onOpen}
+                          >
+                            <AddIcon w={3} h={3} color="#004776" />
+                            <AddAddress isOpen={isOpen} onClose={onClose} />
+                          </Button>
                         </HStack>
                       </HStack>
                       <VStack>{renderAddresses()}</VStack>
