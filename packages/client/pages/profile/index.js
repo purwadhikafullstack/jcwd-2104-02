@@ -26,6 +26,55 @@ function Profile(props) {
 
   const { name, email, gender, birthDate, phoneNumber } = user;
 
+  const addresses = [
+    {
+      address: 'Jalan Asia',
+      city: 'Depok',
+      province: 'Jawa Barat',
+      postalCode: '16454',
+    },
+    {
+      address: 'Jalan Afrika',
+      city: 'Kediri',
+      province: 'Jawa Timur',
+      postalCode: '16499',
+    },
+    {
+      address: 'Jalan Eropa',
+      city: 'Bandung',
+      province: 'Jawa Barat',
+      postalCode: '16498',
+    },
+  ];
+
+  const renderAddresses = () => {
+    return addresses.map((address) => (
+      <Box
+        paddingY={2}
+        paddingLeft={2}
+        border="2px"
+        borderColor="gray.300"
+        borderRadius="md"
+        width={320}
+      >
+        <HStack justifyContent="space-between">
+          <VStack align="start">
+            <Text fontWeight={500} fontSize={12} color="gray.600">
+              {address.address}
+            </Text>
+            <Text fontWeight={500} fontSize={12} color="gray.600">
+              {address.city}, {address.province}, {address.postalCode}
+            </Text>
+          </VStack>
+          <HStack paddingRight={3}>
+            <EditIcon w={3.5} h={3.5} color="#004776" />
+            <DeleteIcon w={3.5} h={3.5} color="#004776" />
+          </HStack>
+        </HStack>
+      </Box>
+    ));
+  };
+
   return (
     <ChakraProvider theme={theme}>
       <Show above="md">
@@ -160,37 +209,7 @@ function Profile(props) {
                           <AddIcon w={3} h={3} color="#004776" marginLeft={1} />
                         </HStack>
                       </HStack>
-                      <Box
-                        paddingY={2}
-                        paddingLeft={2}
-                        border="2px"
-                        borderColor="gray.300"
-                        borderRadius="md"
-                        width={320}
-                      >
-                        <HStack justifyContent="space-between">
-                          <VStack align="start">
-                            <Text
-                              fontWeight={500}
-                              fontSize={12}
-                              color="gray.600"
-                            >
-                              Jalan Tongkol Raya BA/12 Kedayutamaa
-                            </Text>
-                            <Text
-                              fontWeight={500}
-                              fontSize={12}
-                              color="gray.600"
-                            >
-                              Kota Depok, Jawa Barat, ID 16454
-                            </Text>
-                          </VStack>
-                          <HStack paddingRight={3}>
-                            <EditIcon w={3.5} h={3.5} color="#004776" />
-                            <DeleteIcon w={3.5} h={3.5} color="#004776" />
-                          </HStack>
-                        </HStack>
-                      </Box>
+                      <VStack>{renderAddresses()}</VStack>
                     </VStack>
                   </Box>
                 </VStack>
@@ -223,7 +242,7 @@ function Profile(props) {
                   <NextLink href="/change-password">
                     <Link>
                       <HStack marginTop={4}>
-                        <LockIcon w={4} h={4} color="#004776"/>
+                        <LockIcon w={4} h={4} color="#004776" />
                         <Text fontWeight={600} fontSize={14} paddingLeft={2}>
                           Ubah Password
                         </Text>
