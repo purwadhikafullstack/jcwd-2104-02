@@ -284,37 +284,7 @@ function Profile(props) {
                           <AddIcon w={3} h={3} color="#004776" marginLeft={1} />
                         </HStack>
                       </HStack>
-                      <Box
-                        paddingY={2}
-                        paddingLeft={2}
-                        border="2px"
-                        borderColor="gray.300"
-                        borderRadius="md"
-                        width={320}
-                      >
-                        <HStack justifyContent="space-between">
-                          <VStack align="start">
-                            <Text
-                              fontWeight={500}
-                              fontSize={12}
-                              color="gray.600"
-                            >
-                              Jalan Tongkol Raya BA/12 Kedayutamaa
-                            </Text>
-                            <Text
-                              fontWeight={500}
-                              fontSize={12}
-                              color="gray.600"
-                            >
-                              Kota Depok, Jawa Barat, ID 16454
-                            </Text>
-                          </VStack>
-                          <HStack paddingRight={3}>
-                            <EditIcon w={3.5} h={3.5} color="#004776" />
-                            <DeleteIcon w={3.5} h={3.5} color="#004776" />
-                          </HStack>
-                        </HStack>
-                      </Box>
+                      <VStack>{renderAddresses()}</VStack>
                     </VStack>
                   </Box>
                 </VStack>
