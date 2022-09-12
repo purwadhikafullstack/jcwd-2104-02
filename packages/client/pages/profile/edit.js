@@ -27,14 +27,12 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
 
-function Edit(propsuser, props) {
+function Edit(props) {
   const router = useRouter();
   const [avatar, setAvatar] = useState({});
-  const [user, setUser] = useState(propsuser.user);
+  const [user, setUser] = useState(props.user);
   const [birthDateIsSet, setBirthDateIsSet] = useState(false);
-  const [imgSource, setimgSource] = useState(
-    api_origin + propsuser.user.avatar,
-  );
+  const [imgSource, setimgSource] = useState(api_origin + props.user.avatar);
 
   const { name, email, gender, birthDate, phoneNumber } = user;
 
