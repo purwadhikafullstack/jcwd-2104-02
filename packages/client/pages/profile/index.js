@@ -13,16 +13,19 @@ import {
   HStack,
   ChakraProvider,
   Container,
+  useDisclosure,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { api_origin } from '../../constraint';
 import theme from '../../components/theme';
 import { LockIcon, AddIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
+import AddAddress from '../../components/AddAddress';
 
 function Profile(props) {
   const [user, setUser] = useState(props.user);
   const [imgSource, setimgSource] = useState(api_origin + props.user.avatar);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { name, email, gender, birthDate, phoneNumber } = user;
 
@@ -63,12 +66,28 @@ function Profile(props) {
               {address.address}
             </Text>
             <Text fontWeight={500} fontSize={12} color="gray.600">
-              {address.city}, {address.province}, {address.postalCode}
+              {address.city}, {address.province} {address.postalCode}
             </Text>
           </VStack>
           <HStack paddingRight={3}>
-            <EditIcon w={3.5} h={3.5} color="#004776" />
-            <DeleteIcon w={3.5} h={3.5} color="#004776" />
+            <Button
+              height={4}
+              width={4}
+              colorScheme="white"
+              variant="solid"
+              size="xxs"
+            >
+              <EditIcon w={3.5} h={3.5} color="#004776" />
+            </Button>
+            <Button
+              height={4}
+              width={4}
+              colorScheme="white"
+              variant="solid"
+              size="xxs"
+            >
+              <DeleteIcon w={3.5} h={3.5} color="#004776" />
+            </Button>
           </HStack>
         </HStack>
       </Box>
@@ -206,7 +225,17 @@ function Profile(props) {
                           <Text>Alamat</Text>
                         </HStack>
                         <HStack paddingBottom={0.5}>
-                          <AddIcon w={3} h={3} color="#004776" marginLeft={1} />
+                          <Button
+                            height={4}
+                            width={1}
+                            colorScheme="white"
+                            variant="solid"
+                            size="xs"
+                            onClick={onOpen}
+                          >
+                            <AddIcon w={3} h={3} color="#004776" />
+                            <AddAddress isOpen={isOpen} onClose={onClose} />
+                          </Button>
                         </HStack>
                       </HStack>
                       <VStack>{renderAddresses()}</VStack>
@@ -259,34 +288,22 @@ function Profile(props) {
                   <Text fontWeight={600} fontSize={14}>
                     Alamat
                   </Text>
-                  <HStack>
-                    <AddIcon w={3} h={3} color="#004776" marginLeft={1} />
+                  <HStack paddingBottom={0.5}>
+                    <Button
+                      height={4}
+                      width={1}
+                      colorScheme="white"
+                      variant="solid"
+                      size="xs"
+                      onClick={onOpen}
+                    >
+                      <AddIcon w={3} h={3} color="#004776" />
+                      <AddAddress isOpen={isOpen} onClose={onClose} />
+                    </Button>
                   </HStack>
                 </HStack>
                 <VStack paddingTop={1} alignSelf="start" paddingBottom={5}>
-                  <Box
-                    paddingY={2}
-                    paddingLeft={2}
-                    border="2px"
-                    borderColor="gray.300"
-                    borderRadius="md"
-                    width={327}
-                  >
-                    <HStack justifyContent="space-between">
-                      <VStack align="start">
-                        <Text fontWeight={500} fontSize={12} color="gray.600">
-                          Jalan Tongkol Raya BA/12 Kedayutamaa
-                        </Text>
-                        <Text fontWeight={500} fontSize={12} color="gray.600">
-                          Kota Depok, Jawa Barat, ID 16454
-                        </Text>
-                      </VStack>
-                      <HStack paddingRight={3}>
-                        <EditIcon w={3.5} h={3.5} color="#004776" />
-                        <DeleteIcon w={3.5} h={3.5} color="#004776" />
-                      </HStack>
-                    </HStack>
-                  </Box>
+                  <VStack>{renderAddresses()}</VStack>
                 </VStack>
                 <Image src="/profile/line.png" width={327} height={1.5} />
                 <VStack alignSelf="start" paddingTop={1}>

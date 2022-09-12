@@ -231,8 +231,8 @@ function Edit(props) {
                     value={values.gender}
                     width={320}
                     height={8}
-                    fontWeight={500}
-                    fontSize={14}
+                    fontWeight={400}
+                    fontSize={13.5}
                     marginBottom={4}
                   >
                     <option value="male">Male</option>
