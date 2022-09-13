@@ -29,8 +29,16 @@ module.exports = {
         type: Sequelize.STRING(5),
         allowNull: false,
       },
+      province_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       province: {
         type: Sequelize.STRING(50),
+        allowNull: false,
+      },
+      city_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       city: {
@@ -39,6 +47,7 @@ module.exports = {
       },
       isDefault: {
         type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       createdAt: {
         allowNull: false,

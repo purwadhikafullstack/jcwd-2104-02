@@ -57,7 +57,7 @@ function AddAddress(props) {
               <option value="Male">Jawa Barat</option>
               <option value="Female">Jawa Timur</option>
             </Select>
-            <Text paddingTop={2}>Tanggal Lahir</Text>
+            <Text paddingTop={2}>Kota</Text>
             <Select
               _focusVisible
               name="gender"
