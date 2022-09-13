@@ -7,7 +7,7 @@ import { faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
-function productCatalog(props) {
+function ProductCatalog(props) {
   const [selected, setSelected] = useState('');
   const [showCategories, setShowCategories] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
@@ -93,6 +93,7 @@ function productCatalog(props) {
     return props.categoriesLists.categories.map((category) => {
       return (
         <div
+          key={category.category_id}
           onClick={() => {
             router.replace(`/productCatalog/${category.category}=1`);
             setCurrentPage(1);
@@ -418,4 +419,4 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default productCatalog;
+export default ProductCatalog;

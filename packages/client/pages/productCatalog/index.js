@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
-function index() {
+function Index() {
   const router = useRouter();
 
   useEffect(() => {
@@ -11,4 +11,4 @@ function index() {
   return <div></div>;
 }
 
-export default index;
+export default Index;
