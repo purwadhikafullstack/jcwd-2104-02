@@ -3,7 +3,7 @@ import { getSession } from 'next-auth/react';
 import axiosInstance from '../../src/config/api';
 import '@fontsource/poppins';
 import { Formik, Form } from 'formik';
-import { TextField } from '../../components/textFieldProfile';
+import { TextFieldProfile } from '../../components/textFieldProfile';
 import * as Yup from 'yup';
 import Navbar from '../../components/Navbar';
 import {
@@ -212,14 +212,14 @@ function Edit(props) {
             >
               {({ values, handleSubmit, setFieldValue }) => (
                 <Form>
-                  <TextField label="Nama" name="fullName" type="text" />
-                  <TextField
+                  <TextFieldProfile label="Nama" name="fullName" type="text" />
+                  <TextFieldProfile
                     label="Nomor Telepon"
                     name="phoneNumber"
                     type="text"
                     disabled
                   />
-                  <TextField label="Email" name="email" type="text" />
+                  <TextFieldProfile label="Email" name="email" type="text" />
                   <Text marginBottom={2} fontWeight={600} fontSize={14}>
                     Gender
                   </Text>

@@ -11,6 +11,7 @@ const userRouter = require('./routers/users');
 const productsRouter = require('./routers/products');
 const categoriesRouter = require('./routers/categories');
 const cartsRouter = require('./routers/carts');
+const addressRouter = require('./routers/addresses');
 
 app.use(cors());
 app.use(bearerToken());
@@ -21,6 +22,7 @@ app.use('/users', userRouter);
 app.use('/products', productsRouter);
 app.use('/categories', categoriesRouter);
 app.use('/carts', cartsRouter);
+app.use('/addresses', addressRouter);
 
 app.get('/api', (req, res) => {
   res.send(`Hello, this is my API`);

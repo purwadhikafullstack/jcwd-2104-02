@@ -42,8 +42,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(5),
         allowNull: false,
       },
+      province_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       province: {
         type: DataTypes.STRING(50),
+        allowNull: false,
+      },
+      city_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       city: {
@@ -52,6 +60,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       isDefault: {
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     {
