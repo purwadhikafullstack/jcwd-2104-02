@@ -1,4 +1,4 @@
-import { Button, Input, InputGroup, InputLeftAddon } from '@chakra-ui/react';
+import { Button, Input } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import axiosInstance from '../../src/config/api';
