@@ -24,31 +24,13 @@ import AddAddress from '../../components/AddAddress';
 
 function Profile(props) {
   const [user, setUser] = useState(props.user);
+  const [addresses, setAddress] = useState(props.addresses);
   const [imgSource, setimgSource] = useState(api_origin + props.user.avatar);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { name, email, gender, birthDate, phoneNumber } = user;
 
-  const addresses = [
-    {
-      address: 'Jalan Asia',
-      city: 'Depok',
-      province: 'Jawa Barat',
-      postalCode: '16454',
-    },
-    {
-      address: 'Jalan Afrika',
-      city: 'Kediri',
-      province: 'Jawa Timur',
-      postalCode: '16499',
-    },
-    {
-      address: 'Jalan Eropa',
-      city: 'Bandung',
-      province: 'Jawa Barat',
-      postalCode: '16498',
-    },
-  ];
+  const [] = addresses;
 
   const renderAddresses = () => {
     return addresses.map((address) => (
@@ -63,10 +45,13 @@ function Profile(props) {
         <HStack justifyContent="space-between">
           <VStack align="start">
             <Text fontWeight={500} fontSize={12} color="gray.600">
+              Penerima: {address.recipient}
+            </Text>
+            <Text fontWeight={500} fontSize={12} color="gray.600">
               {address.address}
             </Text>
             <Text fontWeight={500} fontSize={12} color="gray.600">
-              {address.city}, {address.province} {address.postalCode}
+              {address.city}, {address.province}, {address.postalCode}
             </Text>
           </VStack>
           <HStack paddingRight={3}>
@@ -138,7 +123,7 @@ function Profile(props) {
             />
             <VStack align="left">
               <Text
-                fontSize={{ base: '16', md: '18' }}
+                fontSize={{ base: '16', md: '17' }}
                 paddingLeft={3}
                 fontWeight={600}
                 color="#262626"
@@ -409,10 +394,21 @@ export async function getServerSideProps(context) {
     };
 
     const user_id = session.user.user_id;
-    const res = await axiosInstance.get(`/users/profile/${user_id}`, config);
+    const userRes = await axiosInstance.get(
+      `/users/profile/${user_id}`,
+      config,
+    );
+    const addressRes = await axiosInstance.get(
+      `/addresses/useraddresslists`,
+      config,
+    );
 
     return {
-      props: { user: res.data.data.result, session },
+      props: {
+        user: userRes.data.data.result,
+        addresses: addressRes.data.data,
+        session,
+      },
     };
   } catch (error) {
     console.log({ error });

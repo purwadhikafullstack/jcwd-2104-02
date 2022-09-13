@@ -42,6 +42,18 @@ function AddAddress(props) {
             fontSize={{ base: '14', md: '15' }}
             fontWeight={500}
           >
+            <Text paddingTop={2}>Penerima</Text>
+            <Input
+              _focusVisible
+              name="lastName"
+              type="number"
+              fontSize={{ base: '13', md: '14' }}
+              fontWeight={400}
+              // value={lastName}
+              variant="filled"
+              mb={3}
+              // onChange={onHandleChange}
+            />
             <Text>Provinsi</Text>
             <Select
               _focusVisible
