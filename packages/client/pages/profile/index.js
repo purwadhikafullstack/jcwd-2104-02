@@ -24,13 +24,78 @@ import AddAddress from '../../components/AddAddress';
 
 function Profile(props) {
   const [user, setUser] = useState(props.user);
-  const [addresses, setAddress] = useState(props.addresses);
+  const [addresses, setAddresses] = useState(props.addresses);
+  const [address, setAddress] = useState(addresses);
   const [imgSource, setimgSource] = useState(api_origin + props.user.avatar);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { name, email, gender, birthDate, phoneNumber } = user;
+  const {
+    address_id,
+    recipient,
+    province_id,
+    province,
+    city_id,
+    city,
+    addressDetail,
+    postalCode,
+  } = address;
+
+  const userAddress = {
+    address_id,
+    recipient,
+    province_id,
+    province,
+    city_id,
+    city,
+    addressDetail,
+    postalCode,
+  };
+  console.log(userAddress);
 
   const [] = addresses;
+
+  async function onDeleteClick(address_id) {
+    try {
+      const resDeleteAddress = await axiosInstance.delete(
+        `/addresses/${address_id}`,
+      );
+      console.log(resDeleteAddress);
+    } catch (error) {
+      console.log({ error });
+    }
+  }
+
+  // const onAddAddress = async (body) => {
+  //   console.log('x');
+  // try {
+  //   const session = await getSession({ req: context.req });
+
+  //   if (!session) return { redirect: { destination: '/login' } };
+
+  //   console.log({ session });
+  //   console.log(body);
+
+  //   const { user_token } = session.user;
+
+  //   const config = {
+  //     headers: { Authorization: `Bearer ${user_token}` },
+  //   };
+
+  //   await axiosInstance.post('/addresses/add', body, config);
+
+  //   alert('Create Address Success');
+  //   const resGetUserAddress = await axiosInstance.get(
+  //     `/addresses/useraddresslists`,
+  //     config,
+  //   );
+  //   // console.log(resGetUserAddress);
+  //   setAddresses(resGetUserAddress.data.data.result);
+  // } catch (error) {
+  //   console.log({ error });
+  //   alert(error.data.message);
+  // }
+  // };
 
   const renderAddresses = () => {
     return addresses.map((address) => (
@@ -48,7 +113,7 @@ function Profile(props) {
               Penerima: {address.recipient}
             </Text>
             <Text fontWeight={500} fontSize={12} color="gray.600">
-              {address.address}
+              {address.addressDetail}
             </Text>
             <Text fontWeight={500} fontSize={12} color="gray.600">
               {address.city}, {address.province}, {address.postalCode}
@@ -70,6 +135,7 @@ function Profile(props) {
               colorScheme="white"
               variant="solid"
               size="xxs"
+              onClick={() => onDeleteClick(address.address_id)}
             >
               <DeleteIcon w={3.5} h={3.5} color="#004776" />
             </Button>
@@ -219,7 +285,12 @@ function Profile(props) {
                             onClick={onOpen}
                           >
                             <AddIcon w={3} h={3} color="#004776" />
-                            <AddAddress isOpen={isOpen} onClose={onClose} />
+                            <AddAddress
+                              isOpen={isOpen}
+                              onClose={onClose}
+                              userAddress={userAddress}
+                              // onAddAddress={onAddAddress}
+                            />
                           </Button>
                         </HStack>
                       </HStack>
