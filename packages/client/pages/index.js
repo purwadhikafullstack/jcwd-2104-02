@@ -58,10 +58,10 @@ export default function Home() {
 
   const productsTestArray = [
     {
-      product_id: 1,
+      product_id: 4,
       productName: 'Vitamin B1 50 mg 10 tablet',
       productPrice: 1300,
-      description: 'Product desc',
+      description: 'Product desc4',
       productStock: 23,
       productImage:
         'http://localhost:8000/public/testProductImage/VitaminB1.png',
@@ -69,10 +69,10 @@ export default function Home() {
       servingType: 'Kapsul',
     },
     {
-      product_id: 2,
+      product_id: 5,
       productName: 'Vitamin C 100 mg 10 Tablet',
       productPrice: 1000,
-      description: 'Product desc',
+      description: 'Product desc5',
       productStock: 23,
       productImage:
         'http://localhost:8000/public/testProductImage/VitaminC.png',
@@ -80,20 +80,20 @@ export default function Home() {
       servingType: 'Kapsul',
     },
     {
-      product_id: 3,
+      product_id: 6,
       productName: 'Vitamin B12 IPI 45 Tablet',
       productPrice: 5100,
-      description: 'Product desc',
+      description: 'Product desc6',
       productStock: 23,
       productImage: 'http://localhost:8000/public/testProductImage/B12.png',
       packageType: 'Per Botol',
       servingType: 'Kapsul',
     },
     {
-      product_id: 4,
+      product_id: 7,
       productName: 'Blackmores Vitamin C 500  mg 60 Tablet',
       productPrice: 109800,
-      description: 'Product desc',
+      description: 'Product desc7',
       productStock: 23,
       productImage:
         'http://localhost:8000/public/testProductImage/Blackmores.png',
@@ -101,10 +101,10 @@ export default function Home() {
       servingType: 'Kapsul',
     },
     {
-      product_id: 5,
+      product_id: 8,
       productName: 'Vitamin A IPI 45 Tablet',
       productPrice: 3700,
-      description: 'Product desc',
+      description: 'Product desc8',
       productStock: 23,
       productImage: 'http://localhost:8000/public/testProductImage/AIPI.png',
       packageType: 'Per Botol',

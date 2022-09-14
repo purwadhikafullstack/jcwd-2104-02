@@ -25,6 +25,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         unique: true,
       },
+      categoryImage: {
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,
