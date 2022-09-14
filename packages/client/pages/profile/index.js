@@ -25,33 +25,10 @@ import AddAddress from '../../components/AddAddress';
 function Profile(props) {
   const [user, setUser] = useState(props.user);
   const [addresses, setAddresses] = useState(props.addresses);
-  const [address, setAddress] = useState(addresses);
   const [imgSource, setimgSource] = useState(api_origin + props.user.avatar);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { name, email, gender, birthDate, phoneNumber } = user;
-  const {
-    address_id,
-    recipient,
-    province_id,
-    province,
-    city_id,
-    city,
-    addressDetail,
-    postalCode,
-  } = address;
-
-  const userAddress = {
-    address_id,
-    recipient,
-    province_id,
-    province,
-    city_id,
-    city,
-    addressDetail,
-    postalCode,
-  };
-  console.log(userAddress);
 
   const [] = addresses;
 
@@ -60,42 +37,11 @@ function Profile(props) {
       const resDeleteAddress = await axiosInstance.delete(
         `/addresses/${address_id}`,
       );
-      console.log(resDeleteAddress);
+      alert(resDeleteAddress.data.message);
     } catch (error) {
       console.log({ error });
     }
   }
-
-  // const onAddAddress = async (body) => {
-  //   console.log('x');
-  // try {
-  //   const session = await getSession({ req: context.req });
-
-  //   if (!session) return { redirect: { destination: '/login' } };
-
-  //   console.log({ session });
-  //   console.log(body);
-
-  //   const { user_token } = session.user;
-
-  //   const config = {
-  //     headers: { Authorization: `Bearer ${user_token}` },
-  //   };
-
-  //   await axiosInstance.post('/addresses/add', body, config);
-
-  //   alert('Create Address Success');
-  //   const resGetUserAddress = await axiosInstance.get(
-  //     `/addresses/useraddresslists`,
-  //     config,
-  //   );
-  //   // console.log(resGetUserAddress);
-  //   setAddresses(resGetUserAddress.data.data.result);
-  // } catch (error) {
-  //   console.log({ error });
-  //   alert(error.data.message);
-  // }
-  // };
 
   const renderAddresses = () => {
     return addresses.map((address) => (
@@ -285,12 +231,7 @@ function Profile(props) {
                             onClick={onOpen}
                           >
                             <AddIcon w={3} h={3} color="#004776" />
-                            <AddAddress
-                              isOpen={isOpen}
-                              onClose={onClose}
-                              userAddress={userAddress}
-                              // onAddAddress={onAddAddress}
-                            />
+                            <AddAddress isOpen={isOpen} onClose={onClose} />
                           </Button>
                         </HStack>
                       </HStack>
@@ -423,12 +364,7 @@ function Profile(props) {
                   <NextLink href="/change-password">
                     <Link>
                       <HStack paddingTop={5} marginBottom={10}>
-                        <LockIcon
-                          w={3.5}
-                          h={3.5}
-                          color="#004776
-"
-                        />
+                        <LockIcon w={3.5} h={3.5} color="#004776" />
                         <Text
                           fontWeight={600}
                           fontSize={14}
@@ -455,8 +391,6 @@ export async function getServerSideProps(context) {
     const session = await getSession({ req: context.req });
 
     if (!session) return { redirect: { destination: '/login' } };
-
-    console.log({ session });
 
     const { user_token } = session.user;
 
