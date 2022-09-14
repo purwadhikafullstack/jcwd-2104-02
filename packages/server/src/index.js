@@ -12,6 +12,7 @@ const productsRouter = require('./routers/products');
 const categoriesRouter = require('./routers/categories');
 const cartsRouter = require('./routers/carts');
 const addressRouter = require('./routers/addresses');
+const rajaOngkirRouter = require('./routers/rajaongkir');
 
 app.use(cors());
 app.use(bearerToken());
@@ -23,6 +24,9 @@ app.use('/products', productsRouter);
 app.use('/categories', categoriesRouter);
 app.use('/carts', cartsRouter);
 app.use('/addresses', addressRouter);
+app.use('/rajaongkir', rajaOngkirRouter);
+
+app.use(express.urlencoded({ extended: false }));
 
 app.get('/api', (req, res) => {
   res.send(`Hello, this is my API`);

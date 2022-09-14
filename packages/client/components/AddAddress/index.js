@@ -12,16 +12,82 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getSession, signOut } from 'next-auth/react';
+import axiosInstance from '../../src/config/api';
+import { jsx } from '@emotion/react';
 
 function AddAddress(props) {
-  const { isOpen, onClose, userProfile, onAddAdressButton } = props;
-  //   const [user, setUser] = useState(userProfile);
-  //   const { username, bio, firstName, lastName, email, gender } = user;
+  const { isOpen, onClose, userAddress } = props;
+  const [addressUser, setAddresses] = useState({});
+  const {
+    recipient,
+    province_id,
+    province,
+    city_id,
+    city,
+    addressDetail,
+    postalCode,
+  } = addressUser;
+  const [getprovince, setGetProvince] = useState([]);
 
-  // const onHandleChange = (e) => {
-  //     setUser({ ...user, [e.target.name]: e.target.value });
-  //   };
+  useEffect(() => {
+    fetchProvince();
+  }, []);
+
+  const onAddAddress = async (body) => {
+    console.log('x');
+  };
+
+  const onHandleChange = (e) => {
+    setAddresses({ ...addressUser, [e.target.name]: e.target.value });
+  };
+
+  // function loadProvinsi() {
+  //   fetch('/api/provinsi')
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       let temp =
+  //         '<option value="" selected="" disabled="">-- Pilih Provinsi --</option>';
+  //       data.rajaongkir.results.forEach((rs) => {
+  //         temp += `<option value="${rs.province_id}">${rs.province}</option>`;
+  //       });
+  //       document.getElementById('prov1').innerHTML = temp;
+  //       document.getElementById('prov2').innerHTML = temp;
+  //     })
+  //     .catch((err) => alert(err));
+  // }
+
+  // function loadKota(id, el) {
+  //   fetch(`/api/kota/${id}`)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       let temp =
+  //         '<option value="" selected="" disabled="">-- Pilih Kota --</option>';
+  //       data.rajaongkir.results.forEach((rs) => {
+  //         temp += `<option value="${rs.city_id}">${rs.city_name}</option>`;
+  //       });
+  //       document.getElementById(el).innerHTML = temp;
+  //     })
+  //     .catch((err) => alert(err));
+  // }
+
+  const renderProvince = () => {
+    return getprovince.map((province) => (
+      <option value={province.province_id}>{province.province}</option>
+    ));
+  };
+
+  const fetchProvince = async () => {
+    try {
+      const resGetProvince = await axiosInstance.get('/rajaongkir/provinsi');
+      setGetProvince(resGetProvince.data.rajaongkir.results);
+      console.log(resGetProvince.data.rajaongkir.results);
+    } catch (error) {
+      console.log({ error });
+      // alert(error.data.message);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -45,68 +111,77 @@ function AddAddress(props) {
             <Text paddingTop={2}>Penerima</Text>
             <Input
               _focusVisible
-              name="lastName"
-              type="number"
+              name="recipient"
+              type="text"
               fontSize={{ base: '13', md: '14' }}
               fontWeight={400}
-              // value={lastName}
+              value={recipient}
               variant="filled"
               mb={3}
-              // onChange={onHandleChange}
+              onChange={onHandleChange}
             />
             <Text>Provinsi</Text>
             <Select
+              id="prov1"
+              // onchange="loadKota(this.value, 'kot1')"
               _focusVisible
-              name="gender"
+              name="province"
               fontSize={{ base: '13', md: '14' }}
               fontWeight={400}
               placeholder="Pilih Provinsi"
-              // value={gender}
+              value={province_id}
               variant="filled"
-              // onChange={onHandleChange}
+              onChange={onHandleChange}
             >
-              <Text>Kota</Text>
-              <option value="Male">Jawa Barat</option>
-              <option value="Female">Jawa Timur</option>
+              <option value="" selected="" disabled="">
+                -- Pilih Provinsi --
+              </option>
+              {renderProvince()}{' '}
+              {/* <option value="Jawa Barat">Jawa Barat</option>
+              <option value="Jawa Timur">Jawa Timur</option> */}
             </Select>
             <Text paddingTop={2}>Kota</Text>
             <Select
               _focusVisible
-              name="gender"
+              name="city"
               fontSize={{ base: '13', md: '14' }}
               fontWeight={400}
               placeholder="Pilih Kota"
-              // value={gender}
+              value={city}
               variant="filled"
-              // onChange={onHandleChange}
+              onChange={onHandleChange}
               mb={3}
             >
-              <option value="Male">Depok</option>
-              <option value="Female">Kediri</option>
+              {' '}
+              <option value="" selected="" disabled="">
+                -- Pilih Kota --
+              </option>
+              {/* <option value="Depok">Depok</option>
+              <option value="Kediri">Kediri</option> */}
             </Select>
             <Text paddingTop={2}>Detail Alamat</Text>
             <Input
               _focusVisible
-              name="lastName"
+              name="addressDetail"
               type="text"
               fontSize={{ base: '13', md: '14' }}
               fontWeight={400}
-              // value={lastName}
+              value={addressDetail}
               variant="filled"
               mb={3}
-              // onChange={onHandleChange}
+              onChange={onHandleChange}
             />
             <Text paddingTop={2}>Kode Pos</Text>
             <Input
               _focusVisible
-              name="lastName"
+              name="postalCode"
               type="number"
               fontSize={{ base: '13', md: '14' }}
               fontWeight={400}
-              // value={lastName}
+              value={postalCode}
               variant="filled"
               mb={3}
-              // onChange={onHandleChange}
+              onChange={onHandleChange}
             />
           </VStack>
         </ModalBody>
@@ -117,7 +192,10 @@ function AddAddress(props) {
             fontSize={15}
             fontWeight={500}
             colorScheme="messenger"
-            onClick={() => onSaveProfileUpdate(user)}
+            onClick={() => {
+              console.log(addressUser);
+              onAddAddress(addressUser);
+            }}
           >
             Simpan
           </Button>

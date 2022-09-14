@@ -13,7 +13,7 @@ const addAddress = async (req, res, next) => {
       province,
       city_id,
       city,
-      address,
+      addressDetail,
       postalCode,
     } = req.body;
 
@@ -23,7 +23,7 @@ const addAddress = async (req, res, next) => {
       province,
       city_id,
       city,
-      address,
+      addressDetail,
       postalCode,
     });
 
@@ -43,7 +43,7 @@ const addAddress = async (req, res, next) => {
         province,
         city_id,
         city,
-        address,
+        addressDetail,
         postalCode,
       },
       {
