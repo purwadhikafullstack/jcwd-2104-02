@@ -174,8 +174,6 @@ function AddAddress(props) {
             />
             <Text>Provinsi</Text>
             <Select
-              id="prov1"
-              // onchange="loadKota(this.value, 'kot1')"
               _focusVisible
               name="province_id"
               fontSize={{ base: '13', md: '14' }}
