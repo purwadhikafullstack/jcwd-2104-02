@@ -13,67 +13,83 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { getSession, signOut } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import axiosInstance from '../../src/config/api';
-import { jsx } from '@emotion/react';
 
 function AddAddress(props) {
-  const { isOpen, onClose, userAddress } = props;
-  const [addressUser, setAddresses] = useState({});
+  const { isOpen, onClose } = props;
+  const [userAddress, setUserAddress] = useState({});
+  const [getProvince, setGetProvince] = useState([]);
+
   const {
     recipient,
     province_id,
     province,
-    city_id,
+    // city_id,
     city,
     addressDetail,
     postalCode,
-  } = addressUser;
-  const [getprovince, setGetProvince] = useState([]);
+  } = userAddress;
 
   useEffect(() => {
     fetchProvince();
   }, []);
 
-  const onAddAddress = async (body) => {
-    console.log('x');
+  const onAddAddress = async ({
+    recipient,
+    province_id,
+    province,
+    // city_id,
+    city,
+    addressDetail,
+    postalCode,
+  }) => {
+    try {
+      const session = await getSession();
+
+      const { user_token } = session.user;
+
+      const config = {
+        headers: { Authorization: `Bearer ${user_token}` },
+      };
+
+      const body = {
+        recipient,
+        province_id,
+        // city_id,
+        city,
+        addressDetail,
+        postalCode,
+      };
+
+      var filteredProvince = getProvince.filter(function (province) {
+        return province.province_id == province_id;
+      });
+
+      if (filteredProvince.length > 0) {
+        body['province'] = filteredProvince[0].province;
+      }
+
+      const res = await axiosInstance.post('/addresses/add', body, config);
+
+      alert(res.data.message);
+      // const resGetUserAddress = await axiosInstance.get(
+      //   `/addresses/useraddresslists`,
+      //   config,
+      // );
+      // setAddresses(resGetUserAddress.data.data.result);
+    } catch (error) {
+      console.log({ error });
+      alert(error.response.data.message);
+    }
   };
 
   const onHandleChange = (e) => {
-    setAddresses({ ...addressUser, [e.target.name]: e.target.value });
+    setUserAddress({ ...userAddress, [e.target.name]: e.target.value });
   };
 
-  // function loadProvinsi() {
-  //   fetch('/api/provinsi')
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       let temp =
-  //         '<option value="" selected="" disabled="">-- Pilih Provinsi --</option>';
-  //       data.rajaongkir.results.forEach((rs) => {
-  //         temp += `<option value="${rs.province_id}">${rs.province}</option>`;
-  //       });
-  //       document.getElementById('prov1').innerHTML = temp;
-  //       document.getElementById('prov2').innerHTML = temp;
-  //     })
-  //     .catch((err) => alert(err));
-  // }
-
-  // function loadKota(id, el) {
-  //   fetch(`/api/kota/${id}`)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       let temp =
-  //         '<option value="" selected="" disabled="">-- Pilih Kota --</option>';
-  //       data.rajaongkir.results.forEach((rs) => {
-  //         temp += `<option value="${rs.city_id}">${rs.city_name}</option>`;
-  //       });
-  //       document.getElementById(el).innerHTML = temp;
-  //     })
-  //     .catch((err) => alert(err));
-  // }
-
   const renderProvince = () => {
-    return getprovince.map((province) => (
+    return getProvince.map((province) => (
       <option value={province.province_id}>{province.province}</option>
     ));
   };
@@ -82,10 +98,8 @@ function AddAddress(props) {
     try {
       const resGetProvince = await axiosInstance.get('/rajaongkir/provinsi');
       setGetProvince(resGetProvince.data.rajaongkir.results);
-      console.log(resGetProvince.data.rajaongkir.results);
     } catch (error) {
       console.log({ error });
-      // alert(error.data.message);
     }
   };
 
@@ -122,23 +136,15 @@ function AddAddress(props) {
             />
             <Text>Provinsi</Text>
             <Select
-              id="prov1"
-              // onchange="loadKota(this.value, 'kot1')"
               _focusVisible
-              name="province"
+              name="province_id"
               fontSize={{ base: '13', md: '14' }}
               fontWeight={400}
               placeholder="Pilih Provinsi"
-              value={province_id}
               variant="filled"
               onChange={onHandleChange}
             >
-              <option value="" selected="" disabled="">
-                -- Pilih Provinsi --
-              </option>
-              {renderProvince()}{' '}
-              {/* <option value="Jawa Barat">Jawa Barat</option>
-              <option value="Jawa Timur">Jawa Timur</option> */}
+              {renderProvince()}
             </Select>
             <Text paddingTop={2}>Kota</Text>
             <Select
@@ -152,12 +158,8 @@ function AddAddress(props) {
               onChange={onHandleChange}
               mb={3}
             >
-              {' '}
-              <option value="" selected="" disabled="">
-                -- Pilih Kota --
-              </option>
-              {/* <option value="Depok">Depok</option>
-              <option value="Kediri">Kediri</option> */}
+              <option value="Depok">Depok</option>
+              <option value="Kediri">Kediri</option>
             </Select>
             <Text paddingTop={2}>Detail Alamat</Text>
             <Input
@@ -192,10 +194,7 @@ function AddAddress(props) {
             fontSize={15}
             fontWeight={500}
             colorScheme="messenger"
-            onClick={() => {
-              console.log(addressUser);
-              onAddAddress(addressUser);
-            }}
+            onClick={() => onAddAddress(userAddress)}
           >
             Simpan
           </Button>
