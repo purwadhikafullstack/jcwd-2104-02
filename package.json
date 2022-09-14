@@ -1,6 +1,7 @@
 {
   "name": "final-project-template-next",
   "scripts": {
+    "migrate": "lerna run migrate --stream",
     "start": "lerna run start --stream",
     "build": "lerna run build --stream",
     "serve": "lerna run serve --stream",
