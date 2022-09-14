@@ -31,6 +31,28 @@ function Profile(props) {
   const [modalEdit, setModalEdit] = useState(false);
 
   const { name, email, gender, birthDate, phoneNumber } = user;
+  const {
+    address_id,
+    recipient,
+    province_id,
+    province,
+    city_id,
+    city,
+    addressDetail,
+    postalCode,
+  } = address;
+
+  const userAddress = {
+    address_id,
+    recipient,
+    province_id,
+    province,
+    city_id,
+    city,
+    addressDetail,
+    postalCode,
+  };
+  console.log(userAddress);
 
   const [] = addresses;
 
@@ -290,7 +312,12 @@ function Profile(props) {
                             onClick={onOpen}
                           >
                             <AddIcon w={3} h={3} color="#004776" />
-                            <AddAddress isOpen={isOpen} onClose={onClose} />
+                            <AddAddress
+                              isOpen={isOpen}
+                              onClose={onClose}
+                              userAddress={userAddress}
+                              // onAddAddress={onAddAddress}
+                            />
                           </Button>
                         </HStack>
                       </HStack>
