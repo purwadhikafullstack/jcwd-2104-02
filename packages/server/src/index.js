@@ -5,7 +5,7 @@ const app = express();
 const bearerToken = require('express-bearer-token');
 // const { join } = require('path');
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.CUSTOM_PORT || 8000;
 
 const userRouter = require('./routers/users');
 const productsRouter = require('./routers/products');
