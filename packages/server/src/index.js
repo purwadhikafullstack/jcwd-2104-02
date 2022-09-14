@@ -10,6 +10,8 @@ const PORT = process.env.PORT || 8000;
 const userRouter = require('./routers/users');
 const productsRouter = require('./routers/products');
 const categoriesRouter = require('./routers/categories');
+const cartRouter = require('./routers/cart')
+
 
 app.use(cors());
 app.use(bearerToken());
@@ -19,6 +21,7 @@ app.use('/public', express.static('public'));
 app.use('/users', userRouter);
 app.use('/products', productsRouter);
 app.use('/categories', categoriesRouter);
+app.use('/carts', cartRouter);
 
 app.get('/api', (req, res) => {
   res.send(`Hello, this is my API`);

@@ -8,14 +8,16 @@ const verifyUserController = async (req, res, next) => {
   try {
     const { token } = req.params;
 
-    const getUserToken = await users.findOne({
-      where: { token },
-    });
+    console.log({token});
 
-    if (!getUserToken)
-      return res.send(
-        '<h2>your token has expired, please use the new token</h2>',
-      );
+    // const getUserToken = await users.findOne({
+    //   where: { token },
+    // });
+
+    // if (!getUserToken)
+    //   return res.send(
+    //     '<h2>your token has expired, please use the new token</h2>',
+    //   );
 
     const verifiedToken = verifyToken(token);
 
