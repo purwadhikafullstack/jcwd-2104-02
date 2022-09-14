@@ -31,7 +31,6 @@ module.exports = {
       },
       province_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
       },
       province: {
         type: Sequelize.STRING(50),
@@ -39,7 +38,6 @@ module.exports = {
       },
       city_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
       },
       city_name: {
         type: Sequelize.STRING(50),
