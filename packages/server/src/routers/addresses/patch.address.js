@@ -68,6 +68,24 @@ const defaultAddressController = async (req, res, next) => {
   try {
     const { address_id } = req.params;
 
+    const getAddress = await addresses.findOne({
+      where: {
+        address_id,
+      },
+      raw: true,
+    });
+
+    const user_id = getAddress.user_id;
+
+    const undefaultAllAdrress = await addresses.update(
+      { isDefault: false },
+      {
+        where: {
+          user_id: user_id,
+        },
+      },
+    );
+
     const resSetDefaultAddress = await addresses.update(
       { isDefault: true },
       {
@@ -76,6 +94,7 @@ const defaultAddressController = async (req, res, next) => {
         },
       },
     );
+
     if (resSetDefaultAddress.affectedRows)
       throw { message: 'Failed to set default address' };
 

@@ -23,18 +23,19 @@ const getUserAddresses = async (req, res, next) => {
   }
 };
 
-const getOneUserAddress = async (req, res, next) => {
+const getUserDefaultAddress = async (req, res, next) => {
   try {
-    const { address_id } = req.params;
+    const { user_id } = req.user;
 
     const resGetUserAddresses = await addresses.findOne({
-      where: { address_id },
+      where: { user_id, isDefault: true },
     });
+
     if (!resGetUserAddresses) throw { message: 'Address not found' };
 
     res.send({
       status: 'Success',
-      message: 'Success get one user address',
+      message: 'Success get user default address',
       data: resGetUserAddresses,
     });
   } catch (error) {
@@ -43,6 +44,6 @@ const getOneUserAddress = async (req, res, next) => {
 };
 
 router.get('/useraddresslists/', auth, getUserAddresses);
-router.get('/useraddress/:address_id', auth, getOneUserAddress);
+router.get('/userdefaultaddress/', auth, getUserDefaultAddress);
 
 module.exports = router;
