@@ -10,8 +10,7 @@ const PORT = process.env.CUSTOM_PORT || 8000;
 const userRouter = require('./routers/users');
 const productsRouter = require('./routers/products');
 const categoriesRouter = require('./routers/categories');
-const cartRouter = require('./routers/cart')
-
+const cartRouter = require('./routers/cart');
 
 app.use(cors());
 app.use(bearerToken());
