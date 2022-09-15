@@ -21,6 +21,7 @@ import { api_origin } from '../../constraint';
 import theme from '../../components/theme';
 import { LockIcon, AddIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import AddAddress from '../../components/AddAddress';
+import EditAddress from '../../components/EditAddress';
 
 function Profile(props) {
   const [user, setUser] = useState(props.user);
@@ -72,8 +73,14 @@ function Profile(props) {
               colorScheme="white"
               variant="solid"
               size="xxs"
+              onClick={onOpen}
             >
               <EditIcon w={3.5} h={3.5} color="#004776" />
+              <EditAddress
+                isOpen={isOpen}
+                onClose={onClose}
+                address_id={address.address_id}
+              />
             </Button>
             <Button
               height={4}

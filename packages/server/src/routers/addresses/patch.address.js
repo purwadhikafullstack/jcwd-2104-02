@@ -15,7 +15,7 @@ const updateAddress = async (req, res, next) => {
       province,
       city_id,
       city,
-      address,
+      addressDetail,
       postalCode,
     } = req.body;
 
@@ -23,9 +23,9 @@ const updateAddress = async (req, res, next) => {
       recipient,
       province_id,
       province,
-      city_id,
+      // city_id,
       city,
-      address,
+      addressDetail,
       postalCode,
     });
 
@@ -39,13 +39,12 @@ const updateAddress = async (req, res, next) => {
 
     const resUpdateUser = await addresses.update(
       {
-        user_id,
         recipient,
         province_id,
         province,
         city_id,
         city,
-        address,
+        addressDetail,
         postalCode,
       },
       {
