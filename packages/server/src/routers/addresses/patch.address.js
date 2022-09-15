@@ -64,6 +64,31 @@ const updateAddress = async (req, res, next) => {
   }
 };
 
+const defaultAddressController = async (req, res, next) => {
+  try {
+    const { address_id } = req.params;
+
+    const resSetDefaultAddress = await addresses.update(
+      { isDefault: true },
+      {
+        where: {
+          address_id,
+        },
+      },
+    );
+    if (resSetDefaultAddress.affectedRows)
+      throw { message: 'Failed to set default address' };
+
+    res.send({
+      status: 'Success',
+      message: 'Success set default address',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 router.patch('/update/:address_id', auth, updateAddress);
+router.patch('/setdefault/:address_id', defaultAddressController);
 
 module.exports = router;

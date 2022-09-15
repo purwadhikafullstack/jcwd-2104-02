@@ -79,6 +79,8 @@ function EditAddress(props) {
       );
 
       alert(res.data.message);
+      window.location.reload();
+
       // const resGetUserAddress = await axiosInstance.get(
       //   `/addresses/useraddresslists`,
       //   config,
@@ -181,7 +183,6 @@ function EditAddress(props) {
             >
               {renderProvince()}
             </Select>
-            <Text paddingTop={2}>Kota</Text>
             <Text paddingTop={2}>Kota</Text>
             {getCity && (
               <Select
