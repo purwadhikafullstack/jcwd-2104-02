@@ -2,14 +2,40 @@ const express = require('express');
 const { carts } = require('../../../models');
 const { auth } = require('../../helpers/auth');
 const router = express.Router();
+const { products } = require('../../../models');
+
+// const getCartProductController = async (req, res, next) => {
+//   try {
+//     const { user_id } = req.user;
+//     const { product_id } = req.params;
+//     const resGetCartProduct = await carts.findAll({
+//       where: product_id,
+//       //{
+//       //   [Op.and]: [{ product_id }, { user_id }],
+//       // },
+//     });
+//     res.send({
+//       status: 'Success',
+//       message: 'Success get all same product in carts',
+//       data: resGetCartProduct,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 const getCartsController = async (req, res, next) => {
   try {
-    const { user_id } = req.user;
+    const { user_id } = req.params;
+
     const resGetCarts = await carts.findAll({
       raw: true,
       order: [['createdAt', 'DESC']],
+      where: { user_id },
     });
+
+    // console.log({ resGetCarts });
+
     const mappedUser = resGetCarts.map((cart) => {
       return cart.user_id;
     });
@@ -26,10 +52,29 @@ const getCartsController = async (req, res, next) => {
       return cart;
     });
 
+    const productMap = [];
+    const cartMap = [];
+
+    for (let i of resGetCarts) {
+      const cart = await carts.findOne({
+        where: { product_id: i.product_id },
+      });
+      cartMap.push(cart.dataValues);
+    }
+
+    for (let i of resGetCarts) {
+      const product = await products.findOne({
+        where: { product_id: i.product_id },
+      });
+      productMap.push(product.dataValues);
+    }
+
     res.send({
       status: 'Success',
       message: 'Success get all carts',
       data: resGetCarts,
+      productMap,
+      cartMap,
     });
   } catch (error) {
     next(error);
@@ -37,5 +82,6 @@ const getCartsController = async (req, res, next) => {
 };
 
 router.get('/getCarts/:user_id', auth, getCartsController);
+// router.get('/getCartProduct/:product_id', auth, getCartProductController);
 
 module.exports = router;

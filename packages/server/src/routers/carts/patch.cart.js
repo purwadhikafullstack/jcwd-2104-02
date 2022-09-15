@@ -37,5 +37,26 @@ const patchCart = async (req, res, next) => {
   }
 };
 
+const deleteCart = async (req, res, next) => {
+  try {
+    const { product_id } = req.params;
+
+    const cartDelete = await carts.findOne({
+      where: {
+        product_id,
+      },
+    });
+    await cartDelete.destroy({ where: { product_id } });
+
+    res.send({
+      status: 'Success',
+      message: 'Cart Deleted',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 router.patch('/patchCart/:product_id', auth, patchCart);
+router.delete('/:product_id', auth, deleteCart);
 module.exports = router;

@@ -2,31 +2,51 @@ const express = require('express');
 const { carts } = require('../../../models');
 const { auth } = require('../../helpers/auth');
 const router = express.Router();
+const { Op } = require('sequelize');
 
 const addToCartController = async (req, res, next) => {
   try {
-    const { quantity } = req.body;
-    const { user_id } = req.user;
-    const { product_id } = req.params;
+    const { quantity, product_id, user_id } = req.body;
 
-    const resCreateCart = await carts.create({
-      quantity: quantity,
-      product_id: product_id,
-      user_id: user_id,
-    });
+    // console.log({ quantity });
 
-    res.send({
-      status: 'success',
-      message: 'created cart success',
-      data: {
-        result: {
-          user_id: user_id,
-          quantity: quantity,
-          product_id: product_id,
-        },
+    const resFindProduct = await carts.findAll({
+      where: {
+        [Op.and]: [{ product_id }, { user_id }],
       },
-      detail: resCreateCart,
     });
+
+    if (!resFindProduct.length) {
+      const resCreateCart = await carts.create({
+        quantity,
+        product_id,
+        user_id,
+      });
+      res.send({
+        status: 'success',
+        message: 'create cart success!',
+        data: {
+          result: {
+            user_id: user_id,
+            quantity: quantity,
+            product_id: product_id,
+          },
+        },
+        detail: resCreateCart,
+      });
+    } else {
+      await resFindProduct[0].update({
+        quantity: resFindProduct[0].dataValues.quantity + 1,
+      });
+
+      const resUpdateQuantity = await resFindProduct[0].save();
+
+      // console.log({ resUpdateQuantity });
+      res.send({
+        status: 'success',
+        message: 'cart updated!',
+      });
+    }
   } catch (error) {
     next(error);
   }
