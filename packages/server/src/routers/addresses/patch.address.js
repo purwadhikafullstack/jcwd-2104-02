@@ -94,7 +94,6 @@ const defaultAddressController = async (req, res, next) => {
         },
       },
     );
-
     if (resSetDefaultAddress.affectedRows)
       throw { message: 'Failed to set default address' };
 
