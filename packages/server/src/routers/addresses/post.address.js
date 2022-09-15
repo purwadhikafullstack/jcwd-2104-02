@@ -35,21 +35,32 @@ const addAddress = async (req, res, next) => {
       };
     }
 
-    const resUpdateUser = await addresses.create(
-      {
+    let address = {
+      user_id,
+      recipient,
+      province_id,
+      province,
+      city_id,
+      city_name,
+      addressDetail,
+      postalCode,
+    };
+
+    const getAddress = await addresses.findAll({
+      where: {
         user_id,
-        recipient,
-        province_id,
-        province,
-        city_id,
-        city_name,
-        addressDetail,
-        postalCode,
       },
-      {
-        where: { user_id },
-      },
-    );
+      raw: true,
+    });
+
+    let isDefault = true;
+    if (getAddress.length > 0) {
+      isDefault = false;
+    }
+
+    address['isDefault'] = isDefault;
+
+    const resUpdateUser = await addresses.create(address);
 
     if (resUpdateUser.affectedRows)
       throw { message: 'Failed to create address' };
