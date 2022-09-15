@@ -67,6 +67,7 @@ function Profile(props) {
         borderColor="gray.300"
         borderRadius="md"
         width={320}
+        key={address}
       >
         {address.isDefault ? (
           <HStack justifyContent="space-between">

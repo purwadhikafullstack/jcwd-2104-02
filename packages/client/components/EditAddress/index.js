@@ -64,14 +64,6 @@ function EditAddress(props) {
         postalCode,
       };
 
-      // var filteredProvince = getProvince.filter(function (province) {
-      //   return province.province_id == province_id;
-      // });
-
-      // if (filteredProvince.length > 0) {
-      //   body['province'] = filteredProvince[0].province;
-      // }
-
       const res = await axiosInstance.patch(
         `/addresses/update/${address_id}`,
         body,
@@ -106,7 +98,10 @@ function EditAddress(props) {
 
   const renderProvince = () => {
     return getProvince.map((province) => (
-      <option value={`${province.province_id},${province.province}`}>
+      <option
+        key={province}
+        value={`${province.province_id},${province.province}`}
+      >
         {province.province}
       </option>
     ));
@@ -114,7 +109,7 @@ function EditAddress(props) {
 
   const renderCity = () => {
     return getCity.map((city) => (
-      <option value={`${city.city_id},${city.city_name}`}>
+      <option key={city} value={`${city.city_id},${city.city_name}`}>
         {city.city_name}
       </option>
     ));
@@ -123,7 +118,7 @@ function EditAddress(props) {
   const fetchProvince = async () => {
     try {
       const resGetProvince = await axiosInstance.get('/rajaongkir/provinsi');
-      setGetProvince(resGetProvince?.data?.rajaongkir?.results);
+      setGetProvince(resGetProvince.data.rajaongkir.results);
     } catch (error) {
       console.log({ error });
     }
