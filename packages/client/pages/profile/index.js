@@ -28,6 +28,7 @@ function Profile(props) {
   const [addresses, setAddresses] = useState(props.addresses);
   const [imgSource, setimgSource] = useState(api_origin + props.user.avatar);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [modalEdit, setModalEdit] = useState(false);
 
   const { name, email, gender, birthDate, phoneNumber } = user;
 
@@ -63,7 +64,7 @@ function Profile(props) {
               {address.addressDetail}
             </Text>
             <Text fontWeight={500} fontSize={12} color="gray.600">
-              {address.city}, {address.province}, {address.postalCode}
+              {address.city_name}, {address.province}, {address.postalCode}
             </Text>
           </VStack>
           <HStack paddingRight={3}>
@@ -73,12 +74,12 @@ function Profile(props) {
               colorScheme="white"
               variant="solid"
               size="xxs"
-              onClick={onOpen}
+              onClick={() => setModalEdit(true)}
             >
               <EditIcon w={3.5} h={3.5} color="#004776" />
               <EditAddress
-                isOpen={isOpen}
-                onClose={onClose}
+                isOpen={modalEdit}
+                onClose={() => setModalEdit(false)}
                 address_id={address.address_id}
               />
             </Button>
@@ -247,7 +248,7 @@ function Profile(props) {
                   </Box>
                 </VStack>
                 <VStack>
-                  <Image src="/profile/line.png" width={327} height={1} />
+                  <Image src="/profile/line.png" width={327} height={2} />
                 </VStack>
                 <VStack
                   fontSize={14}
@@ -321,7 +322,7 @@ function Profile(props) {
                   </Text>
                 </VStack>
                 <VStack paddingTop={3} paddingBottom={5}>
-                  <Image src="/profile/line.png" width={327} height={1.5} />
+                  <Image src="/profile/line.png" width={327} height={2} />
                 </VStack>
                 <VStack alignSelf="start">
                   <NextLink href="/">

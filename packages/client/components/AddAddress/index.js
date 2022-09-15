@@ -20,30 +20,31 @@ function AddAddress(props) {
   const { isOpen, onClose } = props;
   const [userAddress, setUserAddress] = useState({});
   const [getProvince, setGetProvince] = useState([]);
+  const [getCity, setGetCity] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
 
-  const {
-    recipient,
-    province_id,
-    province,
-    // city_id,
-    city,
-    addressDetail,
-    postalCode,
-  } = userAddress;
+  const splitProvince = selectedProvince.split(',');
+  const province_id = splitProvince[0];
+  const province = splitProvince[1];
+
+  const splitCity = selectedCity.split(',');
+  const city_id = splitCity[0];
+  const city_name = splitCity[1];
+
+  const { recipient, addressDetail, postalCode } = userAddress;
 
   useEffect(() => {
     fetchProvince();
   }, []);
 
-  const onAddAddress = async ({
-    recipient,
-    province_id,
-    province,
-    // city_id,
-    city,
-    addressDetail,
-    postalCode,
-  }) => {
+  useEffect(() => {
+    if (selectedProvince) {
+      fetchCity();
+    }
+  }, [selectedProvince]);
+
+  const onAddAddress = async () => {
     try {
       const session = await getSession();
 
@@ -56,19 +57,12 @@ function AddAddress(props) {
       const body = {
         recipient,
         province_id,
-        // city_id,
-        city,
+        province,
+        city_id,
+        city_name,
         addressDetail,
         postalCode,
       };
-
-      var filteredProvince = getProvince.filter(function (province) {
-        return province.province_id == province_id;
-      });
-
-      if (filteredProvince.length > 0) {
-        body['province'] = filteredProvince[0].province;
-      }
 
       const res = await axiosInstance.post('/addresses/add', body, config);
 
@@ -88,16 +82,45 @@ function AddAddress(props) {
     setUserAddress({ ...userAddress, [e.target.name]: e.target.value });
   };
 
+  const onHandleChangeProvince = (e) => {
+    setSelectedProvince(e.target.value);
+  };
+
+  const onHandleChangeCity = (e) => {
+    setSelectedCity(e.target.value);
+  };
+
   const renderProvince = () => {
     return getProvince.map((province) => (
-      <option value={province.province_id}>{province.province}</option>
+      <option value={`${province.province_id},${province.province}`}>
+        {province.province}
+      </option>
+    ));
+  };
+
+  const renderCity = () => {
+    return getCity.map((city) => (
+      <option value={`${city.city_id},${city.city_name}`}>
+        {city.city_name}
+      </option>
     ));
   };
 
   const fetchProvince = async () => {
     try {
       const resGetProvince = await axiosInstance.get('/rajaongkir/provinsi');
-      setGetProvince(resGetProvince.data.rajaongkir.results);
+      setGetProvince(resGetProvince?.data?.rajaongkir?.results);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  const fetchCity = async () => {
+    try {
+      const resGetCity = await axiosInstance.get(
+        `/rajaongkir/kota/${selectedProvince}`,
+      );
+      setGetCity(resGetCity.data.rajaongkir.results);
     } catch (error) {
       console.log({ error });
     }
@@ -142,25 +165,25 @@ function AddAddress(props) {
               fontWeight={400}
               placeholder="Pilih Provinsi"
               variant="filled"
-              onChange={onHandleChange}
+              onChange={onHandleChangeProvince}
             >
               {renderProvince()}
             </Select>
             <Text paddingTop={2}>Kota</Text>
-            <Select
-              _focusVisible
-              name="city"
-              fontSize={{ base: '13', md: '14' }}
-              fontWeight={400}
-              placeholder="Pilih Kota"
-              value={city}
-              variant="filled"
-              onChange={onHandleChange}
-              mb={3}
-            >
-              <option value="Depok">Depok</option>
-              <option value="Kediri">Kediri</option>
-            </Select>
+            {getCity && (
+              <Select
+                _focusVisible
+                name="city_id"
+                fontSize={{ base: '13', md: '14' }}
+                fontWeight={400}
+                placeholder="Pilih Kota"
+                variant="filled"
+                onChange={onHandleChangeCity}
+                mb={3}
+              >
+                {renderCity()}
+              </Select>
+            )}
             <Text paddingTop={2}>Detail Alamat</Text>
             <Input
               _focusVisible

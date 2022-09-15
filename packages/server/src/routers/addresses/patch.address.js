@@ -14,7 +14,7 @@ const updateAddress = async (req, res, next) => {
       province_id,
       province,
       city_id,
-      city,
+      city_name,
       addressDetail,
       postalCode,
     } = req.body;
@@ -23,8 +23,8 @@ const updateAddress = async (req, res, next) => {
       recipient,
       province_id,
       province,
-      // city_id,
-      city,
+      city_id,
+      city_name,
       addressDetail,
       postalCode,
     });
@@ -43,7 +43,7 @@ const updateAddress = async (req, res, next) => {
         province_id,
         province,
         city_id,
-        city,
+        city_name,
         addressDetail,
         postalCode,
       },

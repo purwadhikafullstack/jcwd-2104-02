@@ -41,7 +41,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      city: {
+      city_name: {
         type: Sequelize.STRING(50),
         allowNull: false,
       },
