@@ -126,15 +126,11 @@ export async function getServerSideProps(context) {
       headers: { Authorization: `Bearer ${user_token}` },
     };
 
-    const { user_id } = context.params;
-    // const res = await axiosInstance.get(`/carts/getCarts/${user_id}`, config);
+    const user_id = session.user.user_id;
+    const res = await axiosInstance.get(`/users/profile/${user_id}`, config);
 
     return {
-      props: {
-        // carts: res.data.data,
-        user_id,
-        user_token,
-      },
+      props: { user: res.data.data.result, session },
     };
   } catch (error) {
     console.log({ error });
