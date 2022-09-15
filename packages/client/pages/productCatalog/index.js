@@ -5,7 +5,7 @@ function Index() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace('/productCatalog/semuaObat+1');
+    router.replace('/productCatalog/semuaObat=1');
   }, []);
 
   return <div></div>;

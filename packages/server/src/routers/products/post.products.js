@@ -5,11 +5,12 @@ const { Sequelize } = require('sequelize');
 const { products, sequelize } = require('../../../models');
 const { categories } = require('../../../models');
 const { categories_list } = require('../../../models');
+const { auth } = require('../../helpers/auth');
 
 async function getAllProductsController(req, res, next) {
   try {
     const { page } = req.body;
-
+    console.log(page);
     const resGetAllProducts = await products.findAll({
       offset: (page - 1) * 10,
       limit: 10,
@@ -164,8 +165,30 @@ async function getAllProductsSortedController(req, res, next) {
   }
 }
 
+const getProductDetail =  async (req, res, next) => {
+  try {
+    const {product_id} = req.params
+
+    const resProductDetail = await products.findOne({
+      where: {
+        product_id
+      }
+    })
+
+    res.send({
+      status: "Success",
+      message: "Success get product detail",
+      data: resProductDetail
+    })
+
+  } catch (error) {
+    next(error)
+  }
+}
+
 router.post('/sort/:sortOrder', getAllProductsSortedController);
 router.post('/:specifics', getSpecificProductsController);
 router.post('/', getAllProductsController);
+router.get('/:product_id', auth, getProductDetail)
 
 module.exports = router;

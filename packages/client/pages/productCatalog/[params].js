@@ -1,4 +1,4 @@
-import { Button, Input } from '@chakra-ui/react';
+import { Button, Input, Link } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import axiosInstance from '../../src/config/api';
@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import { userAgent } from 'next/server';
+import { config } from '@fortawesome/fontawesome-svg-core';
 
 function ProductCatalog(props) {
   const [selected, setSelected] = useState('');
@@ -15,11 +17,12 @@ function ProductCatalog(props) {
   const [productList, setProductList] = useState(props.products);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
+  // const [user, setProduct] = useState(props.users);
 
   const router = useRouter();
 
-  console.log({ props });
-  console.log(props.products);
+  // console.log({ props });
+  // console.log(props.products);
 
   useEffect(() => {
     const { params } = router.query;
@@ -51,8 +54,8 @@ function ProductCatalog(props) {
               unoptimized
               alt="resep-logo"
               layout="responsive"
-              width={102}
-              height={66}
+              width={100}
+              height={70}
               src={product.productImage}
               loader={() => {
                 return product.productImage;
@@ -76,13 +79,33 @@ function ProductCatalog(props) {
           </p>
           <div className="grow" />
           <div className="w-[100%]">
-            <Button
-              variant="outline"
-              colorScheme="linkedin"
-              sx={{ width: '100%', height: '5vh' }}
-            >
-              <p className="text-[12px]">Tambah</p>
-            </Button>
+            <Link href={`/detailPage/${product.product_id}`}>
+              {/* {!props.user.isVerified ? (
+                <Button
+                  variant="outline"
+                  colorScheme="linkedin"
+                  sx={{ width: '100%', height: '5vh' }}
+                  disabled
+                >
+                  <p className="text-[12px]">Tambah</p>
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  colorScheme="linkedin"
+                  sx={{ width: '100%', height: '5vh' }}
+                >
+                  <p className="text-[12px]">Tambah</p>
+                </Button>
+              )} */}
+              <Button
+                variant="outline"
+                colorScheme="linkedin"
+                sx={{ width: '100%', height: '5vh' }}
+              >
+                <p className="text-[12px]">Tambah</p>
+              </Button>
+            </Link>
           </div>
         </div>
       );
@@ -326,7 +349,7 @@ function ProductCatalog(props) {
 
                     const joinParams = splitParams.join('=');
 
-                    console.log({ joinParams });
+                    // console.log({ joinParams });
 
                     router.replace(`/productCatalog/${joinParams}`);
                   }}
@@ -347,7 +370,7 @@ function ProductCatalog(props) {
 
                     const joinParams = splitParams.join('=');
 
-                    console.log({ joinParams });
+                    // console.log({ joinParams });
 
                     router.replace(`/productCatalog/${joinParams}`);
                   }}
@@ -377,7 +400,7 @@ export async function getServerSideProps(context) {
 
       const page = splitParams[1];
 
-      console.log({ page });
+      // console.log({ page });
 
       resGetProducts = await axiosInstance.post('products/', { page });
     } else if (context.params.params.includes('sort')) {
@@ -385,7 +408,7 @@ export async function getServerSideProps(context) {
 
       const page = splitParams[splitParams.length - 1];
 
-      console.log({ page });
+      // console.log({ page });
 
       resGetProducts = await axiosInstance.post(
         `products/sort/${context.params.params}`,
@@ -396,15 +419,15 @@ export async function getServerSideProps(context) {
 
       const page = splitParams[splitParams.length - 1];
 
-      console.log({ page });
+      // console.log({ page });
 
       resGetProducts = await axiosInstance.post(`products/${splitParams[0]}`, {
         page,
       });
     }
 
-    console.log(context.params);
-    console.log({ resGetProducts });
+    // console.log(context.params);
+    // console.log({ resGetProducts });
 
     return {
       props: {
@@ -412,6 +435,7 @@ export async function getServerSideProps(context) {
         categoriesLists: resGetCategoriesLists.data,
         products: resGetProducts.data.products,
         hasMore: resGetProducts.data.hasMore,
+       
       },
     };
   } catch (error) {

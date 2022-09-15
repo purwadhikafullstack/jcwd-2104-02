@@ -111,7 +111,7 @@ export default function Home() {
       servingType: 'Kapsul',
     },
   ];
-
+  
   function categoriesMap() {
     return categoriesTestArray.map((category) => {
       return (
@@ -193,6 +193,7 @@ export default function Home() {
   return (
     <div className="bg-white w-[100%] h-[100vh] relative z-[1] desktop:scrollbar">
       <Navbar />
+        
       <div id="box biru" className="bg-[#1068A3] h-[53px] desktop:hidden" />
       <div id="hero-desktop" className="relative hidden desktop:inline">
         <p className="absolute z-[2] text-white font-[400] text-[4vw] left-[15vw] bottom-[200px]">
