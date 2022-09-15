@@ -52,9 +52,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       city_id: {
         type: DataTypes.INTEGER,
-        // allowNull: false,
+        allowNull: false,
       },
-      city: {
+      city_name: {
         type: DataTypes.STRING(50),
         allowNull: false,
       },
