@@ -299,7 +299,7 @@ function Profile(props) {
                   </Box>
                 </VStack>
                 <VStack>
-                  <Image src="/profile/line.png" width={327} height={1} />
+                  <Image src="/profile/line.png" width={327} height={2} />
                 </VStack>
                 <VStack
                   fontSize={14}
