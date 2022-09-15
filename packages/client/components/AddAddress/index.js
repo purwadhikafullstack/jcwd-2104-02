@@ -117,7 +117,18 @@ function AddAddress(props) {
   const fetchProvince = async () => {
     try {
       const resGetProvince = await axiosInstance.get('/rajaongkir/provinsi');
-      setGetProvince(resGetProvince.data.rajaongkir.results);
+      setGetProvince(resGetProvince?.data?.rajaongkir?.results);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  const fetchCity = async () => {
+    try {
+      const resGetCity = await axiosInstance.get(
+        `/rajaongkir/kota/${selectedProvince}`,
+      );
+      setGetCity(resGetCity.data.rajaongkir.results);
     } catch (error) {
       console.log({ error });
     }
