@@ -9,6 +9,7 @@ const getUserAddresses = async (req, res, next) => {
 
     const resGetUserAddresses = await addresses.findAll({
       where: { user_id },
+      order: [['isDefault', 'DESC']],
     });
     if (!resGetUserAddresses) throw { message: 'Address not found' };
 

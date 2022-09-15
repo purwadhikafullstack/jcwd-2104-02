@@ -67,6 +67,7 @@ function AddAddress(props) {
       const res = await axiosInstance.post('/addresses/add', body, config);
 
       alert(res.data.message);
+      window.location.reload();
       // const resGetUserAddress = await axiosInstance.get(
       //   `/addresses/useraddresslists`,
       //   config,

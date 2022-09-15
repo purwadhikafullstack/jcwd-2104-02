@@ -40,6 +40,19 @@ function Profile(props) {
         `/addresses/${address_id}`,
       );
       alert(resDeleteAddress.data.message);
+      window.location.reload();
+    } catch (error) {
+      console.log({ error });
+    }
+  }
+
+  async function onSetDefaultAddress(address_id) {
+    try {
+      const resSetDefaultAddress = await axiosInstance.patch(
+        `/addresses/setdefault/${address_id}`,
+      );
+      alert(resSetDefaultAddress.data.message);
+      window.location.reload();
     } catch (error) {
       console.log({ error });
     }
@@ -55,46 +68,83 @@ function Profile(props) {
         borderRadius="md"
         width={320}
       >
-        <HStack justifyContent="space-between">
-          <VStack align="start">
-            <Text fontWeight={500} fontSize={12} color="gray.600">
-              Penerima: {address.recipient}
-            </Text>
-            <Text fontWeight={500} fontSize={12} color="gray.600">
-              {address.addressDetail}
-            </Text>
-            <Text fontWeight={500} fontSize={12} color="gray.600">
-              {address.city_name}, {address.province}, {address.postalCode}
-            </Text>
-          </VStack>
-          <HStack paddingRight={3}>
-            <Button
-              height={4}
-              width={4}
-              colorScheme="white"
-              variant="solid"
-              size="xxs"
-              onClick={() => setModalEdit(true)}
-            >
-              <EditIcon w={3.5} h={3.5} color="#004776" />
-              <EditAddress
-                isOpen={modalEdit}
-                onClose={() => setModalEdit(false)}
-                address_id={address.address_id}
-              />
-            </Button>
-            <Button
-              height={4}
-              width={4}
-              colorScheme="white"
-              variant="solid"
-              size="xxs"
-              onClick={() => onDeleteClick(address.address_id)}
-            >
-              <DeleteIcon w={3.5} h={3.5} color="#004776" />
-            </Button>
+        {address.isDefault ? (
+          <HStack justifyContent="space-between">
+            <VStack align="start">
+              <Text fontWeight={500} fontSize={11} color="red">
+                Alamat Utama
+              </Text>
+              <Text fontWeight={500} fontSize={12} color="gray.600">
+                Penerima: {address.recipient}
+              </Text>
+              <Text fontWeight={500} fontSize={12} color="gray.600">
+                {address.addressDetail}
+              </Text>
+              <Text fontWeight={500} fontSize={12} color="gray.600">
+                {address.city_name}, {address.province}, {address.postalCode}
+              </Text>
+            </VStack>
           </HStack>
-        </HStack>
+        ) : (
+          <HStack justifyContent="space-between">
+            <VStack align="start">
+              <Text fontWeight={500} fontSize={12} color="gray.600">
+                Penerima: {address.recipient}
+              </Text>
+              <Text fontWeight={500} fontSize={12} color="gray.600">
+                {address.addressDetail}
+              </Text>
+              <Text fontWeight={500} fontSize={12} color="gray.600">
+                {address.city_name}, {address.province}, {address.postalCode}
+              </Text>
+            </VStack>
+            <VStack>
+              <VStack paddingRight="4" paddingBottom="1">
+                <Button
+                  height={4}
+                  width={4}
+                  colorScheme="white"
+                  variant="solid"
+                  size="xxs"
+                  onClick={() => onSetDefaultAddress(address.address_id)}
+                >
+                  <VStack>
+                    <Text fontSize={10} fontWeight="500" color="red">
+                      Set Default
+                    </Text>
+                  </VStack>
+                </Button>
+              </VStack>
+              <HStack paddingRight={4}>
+                <Button
+                  height={4}
+                  width={4}
+                  colorScheme="white"
+                  variant="solid"
+                  size="xxs"
+                  onClick={() => setModalEdit(true)}
+                >
+                  <EditIcon w={3.5} h={3.5} color="#004776" />
+                  <EditAddress
+                    isOpen={modalEdit}
+                    onClose={() => setModalEdit(false)}
+                    address_id={address.address_id}
+                  />
+                </Button>
+                <Button
+                  height={4}
+                  width={4}
+                  colorScheme="white"
+                  variant="solid"
+                  size="xxs"
+                  onClick={() => onDeleteClick(address.address_id)}
+                >
+                  <DeleteIcon w={3.5} h={3.5} color="#004776" />
+                </Button>
+              </HStack>
+            </VStack>
+          </HStack>
+        )}
       </Box>
     ));
   };
