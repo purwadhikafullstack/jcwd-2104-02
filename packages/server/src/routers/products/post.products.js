@@ -10,15 +10,17 @@ const { auth } = require('../../helpers/auth');
 async function getAllProductsController(req, res, next) {
   try {
     const { page } = req.body;
+    const { limit } = req.body;
+
     console.log(page);
     const resGetAllProducts = await products.findAll({
-      offset: (page - 1) * 10,
-      limit: 10,
+      offset: (page - 1) * limit,
+      limit,
     });
 
     const resGetNextPage = await products.findAll({
-      offset: page * 10,
-      limit: 10,
+      offset: page * limit,
+      limit,
     });
 
     console.log({ resGetNextPage });
@@ -42,12 +44,13 @@ async function getAllProductsController(req, res, next) {
 async function getSpecificProductsController(req, res, next) {
   try {
     const { page } = req.body;
+    const { limit } = req.body;
     const { specifics } = req.params;
 
     const resGetCategories = await categories.findAll({
       where: { categoryName: specifics },
-      offset: (page - 1) * 10,
-      limit: 10,
+      offset: (page - 1) * limit,
+      limit,
     });
 
     const resCheckCategories = await categories_list.findAll({
@@ -59,15 +62,15 @@ async function getSpecificProductsController(req, res, next) {
     if (!resCheckCategories.length) {
       const resGetByKeyword = await sequelize.query(
         `SELECT * FROM medbox.products WHERE productName LIKE '%${specifics}%' LIMIT ${
-          (page - 1) * 10
-        },10;`,
+          (page - 1) * limit
+        },${limit};`,
         { type: QueryTypes.SELECT },
       );
 
       const resGetByKeywordNext = await sequelize.query(
         `SELECT * FROM medbox.products WHERE productName LIKE '%${specifics}%' LIMIT ${
-          page * 10
-        },10;`,
+          page * limit
+        },${limit};`,
         { type: QueryTypes.SELECT },
       );
 
@@ -88,8 +91,8 @@ async function getSpecificProductsController(req, res, next) {
 
     const resGetNextPage = await categories.findAll({
       where: { categoryName: specifics },
-      offset: page * 10,
-      limit: 10,
+      offset: page * limit,
+      limit,
     });
 
     let hasMore = true;
@@ -129,6 +132,7 @@ async function getSpecificProductsController(req, res, next) {
 async function getAllProductsSortedController(req, res, next) {
   try {
     const { page } = req.body;
+    const { limit } = req.body;
 
     const { sortOrder } = req.params;
 
@@ -139,14 +143,14 @@ async function getAllProductsSortedController(req, res, next) {
 
     const resGetAllProducts = await products.findAll({
       order: [[splitOrder[1], splitOrder[2]]],
-      offset: (page - 1) * 10,
-      limit: 10,
+      offset: (page - 1) * limit,
+      limit,
     });
 
     const resGetNextPage = await products.findAll({
       order: [[splitOrder[1], splitOrder[2]]],
-      offset: page * 10,
-      limit: 10,
+      offset: page * limit,
+      limit,
     });
 
     let hasMore = true;
@@ -165,30 +169,29 @@ async function getAllProductsSortedController(req, res, next) {
   }
 }
 
-const getProductDetail =  async (req, res, next) => {
+const getProductDetail = async (req, res, next) => {
   try {
-    const {product_id} = req.params
+    const { product_id } = req.params;
 
     const resProductDetail = await products.findOne({
       where: {
-        product_id
-      }
-    })
+        product_id,
+      },
+    });
 
     res.send({
-      status: "Success",
-      message: "Success get product detail",
-      data: resProductDetail
-    })
-
+      status: 'Success',
+      message: 'Success get product detail',
+      data: resProductDetail,
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 router.post('/sort/:sortOrder', getAllProductsSortedController);
 router.post('/:specifics', getSpecificProductsController);
 router.post('/', getAllProductsController);
-router.get('/:product_id', auth, getProductDetail)
+router.get('/:product_id', auth, getProductDetail);
 
 module.exports = router;

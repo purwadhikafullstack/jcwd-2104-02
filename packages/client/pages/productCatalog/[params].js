@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import axiosInstance from '../../src/config/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { userAgent } from 'next/server';
@@ -47,7 +47,7 @@ function ProductCatalog(props) {
       return (
         <div
           key={product.product_id}
-          className="w-[13%] mx-[2vw] mb-[-2vh] h-[35vh] flex-none flex flex-col items-center"
+          className="w-[13%] mx-[2vw] mb-[-2vh] h-[35vh] flex-none flex flex-col items-center shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]"
         >
           <div className="w-[100%] my-[3vh] hover:cursor-pointer">
             <Image
@@ -185,36 +185,6 @@ function ProductCatalog(props) {
                 {showCategories ? categoriesMap() : ''}
               </div>
             </div>
-            {/* <div id="filters" className="border-b-[.1px] border-black p-[1vh]">
-              <div
-                onClick={showFilterSwitch}
-                className="text-[1.2rem] font-[500] flex hover:cursor-pointer justify-between"
-              >
-                <p className="text-[1.2rem] font-[500]">Filter</p>
-                <div
-                  className={
-                    showFilter
-                      ? 'w-[5%] flex items-center justify-center rotate-90 transition duration-100'
-                      : 'w-[5%] flex items-center justify-center transition duration-100'
-                  }
-                >
-                  <FontAwesomeIcon icon={faCaretRight} />
-                </div>
-              </div>
-              <div className={showFilter ? 'flex flex-col' : 'hidden'}>
-                <p className="text-[1.5rem] mt-[2vh]">Harga</p>
-
-                <InputGroup size="lg" className="my-[1vh]">
-                  <InputLeftAddon>Rp.</InputLeftAddon>
-                  <Input type="tel" placeholder="Min" />
-                </InputGroup>
-
-                <InputGroup size="lg" className="my-[1vh]">
-                  <InputLeftAddon>Rp.</InputLeftAddon>
-                  <Input type="tel" placeholder="Max" />
-                </InputGroup>
-              </div>
-            </div> */}
             <div id="sort" className="border-b-[.1px] border-black p-[1vh]">
               <div
                 onClick={showSortSwitch}
@@ -349,8 +319,6 @@ function ProductCatalog(props) {
 
                     const joinParams = splitParams.join('=');
 
-                    // console.log({ joinParams });
-
                     router.replace(`/productCatalog/${joinParams}`);
                   }}
                 >
@@ -369,8 +337,6 @@ function ProductCatalog(props) {
                       parseInt(splitParams[splitParams.length - 1]) + 1;
 
                     const joinParams = splitParams.join('=');
-
-                    // console.log({ joinParams });
 
                     router.replace(`/productCatalog/${joinParams}`);
                   }}
@@ -400,29 +366,27 @@ export async function getServerSideProps(context) {
 
       const page = splitParams[1];
 
-      // console.log({ page });
-
-      resGetProducts = await axiosInstance.post('products/', { page });
+      resGetProducts = await axiosInstance.post('products/', {
+        page,
+        limit: 10,
+      });
     } else if (context.params.params.includes('sort')) {
       const splitParams = context.params.params.split('=');
 
       const page = splitParams[splitParams.length - 1];
 
-      // console.log({ page });
-
       resGetProducts = await axiosInstance.post(
         `products/sort/${context.params.params}`,
-        { page },
+        { page, limit: 10 },
       );
     } else {
       const splitParams = context.params.params.split('=');
 
       const page = splitParams[splitParams.length - 1];
 
-      // console.log({ page });
-
       resGetProducts = await axiosInstance.post(`products/${splitParams[0]}`, {
         page,
+        limit: 10,
       });
     }
 
@@ -435,7 +399,6 @@ export async function getServerSideProps(context) {
         categoriesLists: resGetCategoriesLists.data,
         products: resGetProducts.data.products,
         hasMore: resGetProducts.data.hasMore,
-       
       },
     };
   } catch (error) {
