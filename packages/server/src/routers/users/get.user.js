@@ -95,9 +95,15 @@ const getUser = async (req, res, next) => {
       where: { user_id },
     });
 
-    const { dataValues } = resGetUser;
+    // const { dataValues } = resGetUser;
 
-    res.send({ dataValues });
+    res.send({
+      status: "Success",
+      message: "Success Get User",
+      data:{
+        resGetUser
+      }
+    });
   } catch (error) {
     console.log(error);
     res.send(error);

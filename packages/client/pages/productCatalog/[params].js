@@ -82,25 +82,7 @@ function ProductCatalog(props) {
           </p>
           <div className="grow" />
           <div className="w-[100%]">
-            <Link href={`/detailPage/${product.product_id}`}>
-              {/* {!props.user.isVerified ? (
-                <Button
-                  variant="outline"
-                  colorScheme="linkedin"
-                  sx={{ width: '100%', height: '5vh' }}
-                  disabled
-                >
-                  <p className="text-[12px]">Tambah</p>
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  colorScheme="linkedin"
-                  sx={{ width: '100%', height: '5vh' }}
-                >
-                  <p className="text-[12px]">Tambah</p>
-                </Button>
-              )} */}
+            
               <Button
                 variant="outline"
                 onClick={() => {
@@ -114,7 +96,15 @@ function ProductCatalog(props) {
               >
                 <p className="text-[12px]">Tambah</p>
               </Button>
-            </Link>
+              {/* <Button
+                variant="outline"
+                colorScheme="linkedin"
+                sx={{ width: '100%', height: '5vh' }}
+                disabled={!props.session?.user.user.isVerified}
+              >
+                <p className="text-[12px]">Tambah</p>
+              </Button> */}
+            
           </div>
         </div>
       );
@@ -364,6 +354,8 @@ export async function getServerSideProps(context) {
   try {
     const session = await getSession({ req: context.req });
     const resGetCategoriesLists = await axiosInstance.get('categories/getAll');
+
+    // console.log({session});
 
     let resGetProducts = '';
 

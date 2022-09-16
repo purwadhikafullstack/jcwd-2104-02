@@ -65,6 +65,7 @@ function Navbar() {
               Riwayat
             </p>
           </div>
+          
         </div>
         <div className="grow" />
         <div className="flex mr-[7vw] h-[70%] items-center w-[25vw] desktop:w-[10vw]">

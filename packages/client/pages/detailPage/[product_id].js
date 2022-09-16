@@ -68,7 +68,7 @@ function DetailPage(props) {
   return (
     <div>
       <Navbar />
-      <div className="container">
+      <div className="container" >
         <div className="flex-col">
           <div className="w-[65%] ml-[1vw] my-[3vh] columns-2">
             <Image
