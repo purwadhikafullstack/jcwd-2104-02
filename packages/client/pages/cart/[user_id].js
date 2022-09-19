@@ -81,7 +81,7 @@ function Cart(props) {
     return carts.map((cart, index) => {
       return (
         <CartCards
-          // key={cart.user_id}
+          key={cart.cart_id}
           // product_id={cart.product_id}
           // productName={cart.productName}
           // productPrice={cart.productPrice}
