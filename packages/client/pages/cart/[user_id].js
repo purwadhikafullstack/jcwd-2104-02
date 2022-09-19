@@ -20,11 +20,25 @@ import {
 import { useState, useEffect } from 'react';
 import CartCards from '../../components/CartCards';
 
-function cart(props) {
+function Cart(props) {
   const [carts, setCarts] = useState([]);
   const [empty, setEmpty] = useState(false);
-  // const { user_id, user_token } = props;
+  const { user_id, user_token } = props;
   const [cartsPrice, setCartsPrice] = useState([]);
+
+  useEffect(() => {
+    fetchCarts();
+  }, []);
+
+  // useEffect(() => {
+  //   if (!carts.length) {
+  //     setEmpty(true);
+  //   }
+  // }, []);
+
+  console.log(carts.length);
+
+  console.log(empty);
 
   const fetchCarts = async () => {
     try {
@@ -39,6 +53,9 @@ function cart(props) {
       const res = await axiosInstance.get(`/carts/getCarts/${user_id}`, config);
       console.log(res.data.data);
       setCarts(res.data.data);
+      if (!res.data.data.length) {
+        setEmpty(true);
+      }
     } catch (error) {
       alert(error.message);
     }
@@ -60,20 +77,11 @@ function cart(props) {
 
   // console.log(`TOTALNYAAAAAAAAAA BOSQQQQQ ${subTotal}`);
 
-  useEffect(() => {
-    if (!cart.length) {
-      setEmpty(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchCarts();
-  }, []);
-
   function mappedProducts() {
     return carts.map((cart, index) => {
       return (
         <CartCards
+          // key={cart.user_id}
           // product_id={cart.product_id}
           // productName={cart.productName}
           // productPrice={cart.productPrice}
@@ -96,20 +104,23 @@ function cart(props) {
           Wah keranjang kamu kosong!
         </div>
       ) : (
-        <></>
+        <div>
+          <div className="text-[20px] font-[400] ml-[10vh] mt-[2vh]">
+            Daftar Pesanan
+          </div>
+          <div className="column-2  gap-4 flex flex-row">
+            <div className="w-[89vw] bg-gray-100 rounded-2xl shadow-md ">
+              {mappedProducts()}
+            </div>
+            <div className="h-[35vh] bg-sky-100 rounded-2xl shadow-md text-center w-[50vw]">
+              <div className="text-[20px] font-[500] mt-5 mb-5">
+                Total Price
+              </div>
+              <div>harga: {countTotalPrice()}</div>
+            </div>
+          </div>
+        </div>
       )}
-      <div className="text-[20px] font-[400] ml-[10vh] mt-[2vh]">
-        Daftar Pesanan
-      </div>
-      <div className="column-2  gap-4 flex flex-row">
-        <div className="w-[89vw] bg-gray-100 rounded-2xl shadow-md ">
-          {mappedProducts()}
-        </div>
-        <div className="h-[35vh] bg-sky-100 rounded-2xl shadow-md text-center w-[50vw]">
-          <div className="text-[20px] font-[500] mt-5 mb-5">Total Price</div>
-          <div>harga: {countTotalPrice()}</div>
-        </div>
-      </div>
     </div>
   );
 }
@@ -138,4 +149,4 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default cart;
+export default Cart;

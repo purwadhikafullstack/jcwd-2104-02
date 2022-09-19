@@ -22,9 +22,9 @@ function Navbar() {
       setUserId(user_id);
     }
 
-    setSession(session);
-    const { user_id } = session.user;
-    setUserId(user_id);
+    // setSession(session);
+    // const { user_id } = session.user;
+    // setUserId(user_id);
   }
   console.log({ session });
 
