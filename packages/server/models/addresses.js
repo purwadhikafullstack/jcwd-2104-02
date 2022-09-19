@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
-      address: {
+      addressDetail: {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
@@ -42,12 +42,25 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(5),
         allowNull: false,
       },
-      city: {
+      province_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      province: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+      },
+      city_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      city_name: {
         type: DataTypes.STRING(50),
         allowNull: false,
       },
       isDefault: {
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     {

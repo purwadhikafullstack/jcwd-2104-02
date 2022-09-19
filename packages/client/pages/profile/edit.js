@@ -3,7 +3,7 @@ import { getSession } from 'next-auth/react';
 import axiosInstance from '../../src/config/api';
 import '@fontsource/poppins';
 import { Formik, Form } from 'formik';
-import { TextField } from '../../components/textFieldProfile';
+import { TextFieldProfile } from '../../components/textFieldProfile';
 import * as Yup from 'yup';
 import Navbar from '../../components/Navbar';
 import {
@@ -27,14 +27,12 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
 
-function Edit(propsuser, props) {
+function Edit(props) {
   const router = useRouter();
   const [avatar, setAvatar] = useState({});
-  const [user, setUser] = useState(propsuser.user);
+  const [user, setUser] = useState(props.user);
   const [birthDateIsSet, setBirthDateIsSet] = useState(false);
-  const [imgSource, setimgSource] = useState(
-    api_origin + propsuser.user.avatar,
-  );
+  const [imgSource, setimgSource] = useState(api_origin + props.user.avatar);
 
   const { name, email, gender, birthDate, phoneNumber } = user;
 
@@ -112,10 +110,13 @@ function Edit(propsuser, props) {
 
   return (
     <ChakraProvider theme={theme}>
-      <Navbar />
+      <Show above="md">
+        <Navbar />
+      </Show>
       <Container>
         <Box
-          marginBlock={{ md: '8' }}
+          marginTop={{ md: '3' }}
+          marginBottom={{ md: '8' }}
           boxShadow={{ md: 'xl' }}
           p={{ md: '6' }}
           rounded={{ md: 'md' }}
@@ -125,7 +126,7 @@ function Edit(propsuser, props) {
             <HStack marginTop={9} marginLeft={4} marginBottom={5}>
               <NextLink href="/profile">
                 <Link>
-                  <Image src="/back.png" width={16} height={16} />
+                  <Image src="/profile/back.png" width={16} height={16} />
                 </Link>
               </NextLink>
               <Text
@@ -159,7 +160,7 @@ function Edit(propsuser, props) {
             </VStack>
             <HStack paddingBottom={3}>
               <Button onClick={onSaveAvatarUpdate} size="sm" bgColor="white">
-                <Image src="/edit-blue.png" width={12} height={12} />
+                <Image src="/profile/edit-blue.png" width={12} height={12} />
                 <Text
                   paddingLeft={2}
                   fontWeight={600}
@@ -170,7 +171,7 @@ function Edit(propsuser, props) {
                 </Text>
               </Button>
             </HStack>
-            <Image src="/line.png" width={327} height={2} />
+            <Image src="/profile/line.png" width={327} height={2} />
             <VStack
               alignSelf="start"
               paddingLeft={3}
@@ -211,14 +212,14 @@ function Edit(propsuser, props) {
             >
               {({ values, handleSubmit, setFieldValue }) => (
                 <Form>
-                  <TextField label="Nama" name="fullName" type="text" />
-                  <TextField
+                  <TextFieldProfile label="Nama" name="fullName" type="text" />
+                  <TextFieldProfile
                     label="Nomor Telepon"
                     name="phoneNumber"
                     type="text"
                     disabled
                   />
-                  <TextField label="Email" name="email" type="text" />
+                  <TextFieldProfile label="Email" name="email" type="text" />
                   <Text marginBottom={2} fontWeight={600} fontSize={14}>
                     Gender
                   </Text>
@@ -230,11 +231,10 @@ function Edit(propsuser, props) {
                     value={values.gender}
                     width={320}
                     height={8}
-                    fontWeight={500}
-                    fontSize={14}
-                    marginBottom={3}
+                    fontWeight={400}
+                    fontSize={13.5}
+                    marginBottom={4}
                   >
-                    {/* <option value="gender">Gender</option> */}
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                   </Select>
@@ -248,8 +248,9 @@ function Edit(propsuser, props) {
                   </VStack>
                   <VStack fontSize={13} marginBottom={2}>
                     <DatePicker
+                      bgColor="red"
                       selected={values.startDate}
-                      dateFormat="yyyy-MM-d"
+                      dateFormat="yyyy-MM-dd"
                       className="form-control w-80 h-8"
                       name="startDate"
                       onChange={(date) => {
@@ -257,7 +258,6 @@ function Edit(propsuser, props) {
                         setFieldValue('startDate', date);
                       }}
                     />
-                    <p>{birthDate ? birthDate.slice(0, 10) : ''}</p>
                   </VStack>
                   <Button
                     colorScheme="messenger"

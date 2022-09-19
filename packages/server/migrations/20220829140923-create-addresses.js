@@ -17,7 +17,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
-      address: {
+      addressDetail: {
         type: Sequelize.STRING(255),
         allowNull: false,
       },
@@ -29,12 +29,25 @@ module.exports = {
         type: Sequelize.STRING(5),
         allowNull: false,
       },
-      city: {
+      province_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      province: {
+        type: Sequelize.STRING(50),
+        allowNull: false,
+      },
+      city_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      city_name: {
         type: Sequelize.STRING(50),
         allowNull: false,
       },
       isDefault: {
         type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       createdAt: {
         allowNull: false,
