@@ -1,47 +1,24 @@
-import { Button, Input } from '@chakra-ui/react';
+import { Button, Icon, Input } from '@chakra-ui/react';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getSession } from 'next-auth/react';
 import axiosInstance from '../../src/config/api';
+import { DeleteIcon, AddIcon, WarningIcon } from '@chakra-ui/icons';
+import axios from 'axios';
 
 export default function CartCards(props) {
-  const { product, quantity, index } = props;
-  const [edit, setEdit] = useState(false);
-  const [quantityItem, setQuantityItem] = useState('');
+  //, totalPrice, fetchCarts
+  const { product, quantity, totalPrice, fetchCarts } = props;
+  const [quantityCart, setQuantityCart] = useState(quantity);
 
-  const onChangeQuantity = (e) => {
-    setQuantityItem(e.target.value);
-  };
+  useEffect(() => {
+    // onClickMinus();
+    // onClickPlus();
+    // totalPrice();
+    // fetchCarts();
+  }, []);
 
-  const saveQuantityUpdate = async () => {
-    try {
-      const session = await getSession();
-
-      const { user_token } = session.user;
-
-      const config = {
-        headers: { Authorization: `Bearer ${user_token}` },
-      };
-
-      const body = {
-        quantity: quantityItem,
-      };
-
-      const product_id = product.product_id;
-      console.log(product_id);
-
-      const res = await axiosInstance.patch(
-        `carts/patchCart/${product_id}`,
-        body,
-        config,
-      );
-      setQuantityItem(res.data.quantityPatched);
-      window.location.reload();
-      alert(res.data.message);
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+  totalPrice(quantityCart);
 
   const deleteProduct = async () => {
     try {
@@ -54,88 +31,106 @@ export default function CartCards(props) {
       };
 
       const product_id = product.product_id;
-      console.log(product_id);
 
       const res = await axiosInstance.delete(`carts/${product_id}`, config);
-
       window.location.reload();
-      alert(res.data.message);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const onClickPlus = async () => {
+    const { product_id } = product;
+    try {
+      setQuantityCart(quantityCart + 1);
+      const session = await getSession();
+
+      const { user_token } = session.user;
+
+      const config = {
+        headers: { Authorization: `Bearer ${user_token}` },
+      };
+
+      const body = { quantity: quantityCart + 1 };
+
+      await axiosInstance.patch(`carts/patchCart/${product_id}`, body, config);
+      fetchCarts();
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const onClickMinus = async () => {
+    const { product_id } = product;
+    try {
+      setQuantityCart(quantityCart - 1);
+      const session = await getSession();
+
+      const { user_token } = session.user;
+
+      const config = {
+        headers: { Authorization: `Bearer ${user_token}` },
+      };
+
+      const body = { quantity: quantityCart - 1 };
+      totalPrice(quantityCart - 1);
+      await axiosInstance.patch(`carts/patchCart/${product_id}`, body, config);
+      fetchCarts();
     } catch (error) {
       alert(error.message);
     }
   };
 
   return (
-    <div className="w-[100%]  my-[3vh] columns-5  ">
+    <div className="w-[100%] ml-[12vh] my-[3vh] columns-5  ">
       <Image
         unoptimized
         alt="resep-logo"
-        // layout="responsive"
         width={70}
         height={70}
         src={product.productImage}
       />
-      <p className="text-[20px]">{product.productName}</p>
+      <p className="text-[13.5px] font-[500]">{product.productName}</p>
       <div className=" text-[#6E6E6E]">
         Price: Rp. {product.productPrice.toLocaleString('id')}
       </div>
       <div className="flex justify-between font-semibold ">
-        {edit ? (
-          <Input
-            type={'text'}
-            placeholder={`${quantity[index].quantity}`}
-            onChange={onChangeQuantity}
-          ></Input>
-        ) : (
-          <div>{`${quantity[index].quantity}`}</div>
-        )}
-        {edit ? (
-          <>
-            <Button
-              onClick={() => {
-                saveQuantityUpdate();
-                setEdit(false);
-              }}
-              mx={'2'}
-              size={'xl'}
-              colorScheme={'green'}
-            >
-              Save
-            </Button>
+        <Button
+          width="50px"
+          onClick={() => {
+            onClickMinus();
+          }}
+          colorScheme="linkedin"
+        >
+          -
+        </Button>
+        <Input
+          htmlSize={4}
+          width="60px"
+          variant="outline"
+          value={quantityCart}
+        />
 
-            <Button
-              onClick={() => {
-                deleteProduct();
-                setEdit(false);
-              }}
-              mx={'2'}
-              size={'xl'}
-              colorScheme={'red'}
-            >
-              Delete
-            </Button>
+        <Button
+          width="50px"
+          onClick={() => {
+            onClickPlus();
+          }}
+          colorScheme="linkedin"
+        >
+          +
+        </Button>
 
-            <Button
-              onClick={() => {
-                setEdit(false);
-              }}
-              mx={'1'}
-              size={'xl'}
-              colorScheme={'yellow'}
-            >
-              Cancel
-            </Button>
-          </>
-        ) : (
-          <Button
-            onClick={() => {
-              setEdit(true);
-            }}
-            colorScheme={'linkedin'}
-          >
-            Edit
-          </Button>
-        )}
+        <Button
+          onClick={() => {
+            deleteProduct();
+          }}
+          size={'xl'}
+          variant={'ghost'}
+          ml={3}
+        >
+          <DeleteIcon></DeleteIcon>
+        </Button>
       </div>
     </div>
   );

@@ -1,4 +1,13 @@
-import { Flex, Box, HStack, Button } from '@chakra-ui/react';
+import {
+  AddIcon,
+  Flex,
+  Box,
+  HStack,
+  Button,
+  ButtonGroup,
+  IconButton,
+  Input,
+} from '@chakra-ui/react';
 import Navbar from '../../components/Navbar';
 import axiosInstance from '../../src/config/api';
 import React, { useEffect, useState } from 'react';
@@ -12,16 +21,19 @@ function DetailPage(props) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const { user_id } = props;
-  const { product_id, quantity } = products;
+  const { product_id } = products;
+  const [quantity, setQuantity] = useState(1);
+
   const toast = useToast();
+  console.log(quantity);
 
   const onAddClick = async () => {
     setLoading(true);
     try {
       const body = {
-        quantity: +1,
+        quantity,
         product_id,
-        user_id,
+        user_id: props.user_id,
       };
 
       const session = await getSession();
@@ -97,9 +109,53 @@ function DetailPage(props) {
                   Add To Cart
                 </Button>
               ) : (
-                <Button onClick={onAddClick} colorScheme="linkedin">
-                  Add To Cart
-                </Button>
+                <>
+                  {quantity == 0 ? (
+                    <Button
+                      isDisabled
+                      width="50px"
+                      onClick={() => {
+                        setQuantity(quantity - 1);
+                      }}
+                      colorScheme="linkedin"
+                      mx={3}
+                    >
+                      -
+                    </Button>
+                  ) : (
+                    <Button
+                      width="50px"
+                      onClick={() => {
+                        setQuantity(quantity - 1);
+                      }}
+                      colorScheme="linkedin"
+                      mx={3}
+                    >
+                      -
+                    </Button>
+                  )}
+
+                  <Input
+                    htmlSize={4}
+                    width="50px"
+                    variant="outline"
+                    placeholder="0"
+                    value={quantity}
+                  />
+                  <Button
+                    width="50px"
+                    onClick={() => {
+                      setQuantity(quantity + 1);
+                    }}
+                    colorScheme="linkedin"
+                    mx={3}
+                  >
+                    +
+                  </Button>
+                  <Button mx={3} onClick={onAddClick} colorScheme="teal">
+                    Add To Cart
+                  </Button>
+                </>
               )}
               {/* <Button colorScheme="linkedin">Add To Cart</Button> */}
               <br />
@@ -114,11 +170,11 @@ function DetailPage(props) {
 export async function getServerSideProps(context) {
   try {
     const session = await getSession({ req: context.req });
-    // console.log("testing");
 
     if (!session) return { redirect: { destination: '/login' } };
-
-    const { user_token, user_id } = session.user;
+    const { user_token } = session.user;
+    const { user_id } = session.user.user;
+    console.log(session.user.user.user_id);
 
     const config = {
       headers: { Authorization: `Bearer ${user_token}` },

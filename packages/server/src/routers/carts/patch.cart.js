@@ -9,27 +9,58 @@ const patchCart = async (req, res, next) => {
     const { cart_id, product_id } = req.params;
     const { quantity } = req.body;
 
-    const quantityDeleted = await carts.destroy({
-      where: {
-        user_id,
-        product_id,
-      },
+    // const quantityDeleted = await carts.destroy({
+    //   where: {
+    //     user_id,
+    //     product_id,
+    //   },
+    // });
+    // if (quantityDeleted) {
+
+    // }
+    const resFindProduct = await carts.findOne({
+      where: { product_id, user_id },
     });
-    if (quantityDeleted) {
-      const quantityPatched = await carts.create({
-        quantity,
-        user_id,
-        product_id,
-      });
+    console.log(resFindProduct.dataValues);
+    console.log(product_id, user_id, quantity);
+
+    if (resFindProduct.dataValues) {
+      const quantityPatched = await carts.update(
+        {
+          quantity,
+        },
+        {
+          where: { product_id, user_id },
+        },
+      );
+
       res.send({
-        status: 'Succsess',
-        message: 'Succsess Edit Cart',
+        status: 'Success',
+        message: 'Success Edit Cart',
         data: {
           quantityPatched,
-          quantityDeleted,
         },
       });
+    } else {
+      throw {
+        code: 408,
+        message: 'you dont have this product in your cart!',
+      };
     }
+
+    // const quantityPatched = await carts.create({
+    //   quantity,
+    //   user_id,
+    //   product_id,
+    // });
+    // res.send({
+    //   status: 'Succsess',
+    //   message: 'Succsess Edit Cart',
+    //   data: {
+    //     quantityPatched,
+    //     quantityDeleted,
+    //   },
+    // });
 
     // console.log(quantityPatched);
   } catch (error) {

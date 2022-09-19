@@ -1,8 +1,7 @@
 const express = require('express');
-const { carts } = require('../../../models');
+const { carts, products } = require('../../../models');
 const { auth } = require('../../helpers/auth');
 const router = express.Router();
-const { products } = require('../../../models');
 
 // const getCartProductController = async (req, res, next) => {
 //   try {
@@ -28,53 +27,53 @@ const getCartsController = async (req, res, next) => {
   try {
     const { user_id } = req.params;
 
-    const resGetCarts = await carts.findAll({
-      raw: true,
-      order: [['createdAt', 'DESC']],
+    // const resGetCarts = await carts.findAll({
+    //   raw: true,
+    //   order: [['createdAt', 'DESC']],
+    //   where: { user_id },
+    // });
+
+    // const mappedUser = resGetCarts.map((cart) => {
+    //   return cart.user_id;
+    // });
+
+    // const userFound = [];
+
+    // for (const user_id of mappedUser) {
+    //   const getCart = await carts.findOne({ where: { user_id } });
+    //   userFound.push(getCart);
+    // }
+
+    // const resCartUser = resGetCarts.map((cart, index) => {
+    //   cart = userFound[index];
+    //   return cart;
+    // });
+
+    // const productMap = [];
+    // const cartMap = [];
+    const cart = await carts.findAll({
       where: { user_id },
+      include: [products],
     });
+    console.log(cart);
+    // for (let i of resGetCarts) {
+    //   const cart = await carts.findOne({
+    //     where: { product_id: i.product_id },
+    //   });
+    //   cartMap.push(cart.dataValues);
+    // }
 
-    // console.log({ resGetCarts });
-
-    const mappedUser = resGetCarts.map((cart) => {
-      return cart.user_id;
-    });
-
-    const userFound = [];
-
-    for (const user_id of mappedUser) {
-      const getCart = await carts.findOne({ where: { user_id } });
-      userFound.push(getCart);
-    }
-
-    const resCartUser = resGetCarts.map((cart, index) => {
-      cart = userFound[index];
-      return cart;
-    });
-
-    const productMap = [];
-    const cartMap = [];
-
-    for (let i of resGetCarts) {
-      const cart = await carts.findOne({
-        where: { product_id: i.product_id },
-      });
-      cartMap.push(cart.dataValues);
-    }
-
-    for (let i of resGetCarts) {
-      const product = await products.findOne({
-        where: { product_id: i.product_id },
-      });
-      productMap.push(product.dataValues);
-    }
+    // for (let i of resGetCarts) {
+    //   const product = await products.findOne({
+    //     where: { product_id: i.product_id },
+    //   });
+    //   productMap.push(product.dataValues);
+    // }
 
     res.send({
       status: 'Success',
       message: 'Success get all carts',
-      data: resGetCarts,
-      productMap,
-      cartMap,
+      data: cart,
     });
   } catch (error) {
     next(error);

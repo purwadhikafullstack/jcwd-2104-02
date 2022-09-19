@@ -17,7 +17,8 @@ function Navbar() {
     const session = await getSession();
 
     if (session) {
-      const { user_id } = session.user;
+      const { user_id } = session.user.user;
+      // console.log(first);
       setUserId(user_id);
     }
 

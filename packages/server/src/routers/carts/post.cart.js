@@ -36,7 +36,7 @@ const addToCartController = async (req, res, next) => {
       });
     } else {
       await resFindProduct[0].update({
-        quantity: resFindProduct[0].dataValues.quantity + 1,
+        quantity: resFindProduct[0].dataValues.quantity + quantity,
       });
 
       const resUpdateQuantity = await resFindProduct[0].save();

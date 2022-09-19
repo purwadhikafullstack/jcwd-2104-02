@@ -3,7 +3,7 @@ import React from 'react';
 import Navbar from '../../components/Navbar';
 import axiosInstance from '../../src/config/api';
 import {
-  Box,
+  Select,
   Center,
   Heading,
   Text,
@@ -15,51 +15,75 @@ import {
   Button,
   ButtonGroup,
   Input,
+  Box,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import CartCards from '../../components/CartCards';
 
 function cart(props) {
-  const { productDetailsMap, cartDetailsMap } = props;
+  const [carts, setCarts] = useState([]);
   const [empty, setEmpty] = useState(false);
+  // const { user_id, user_token } = props;
+  const [cartsPrice, setCartsPrice] = useState([]);
+
+  const fetchCarts = async () => {
+    try {
+      const session = await getSession();
+      const { user_id } = props;
+
+      const { user_token } = session.user;
+
+      const config = {
+        headers: { Authorization: `Bearer ${user_token}` },
+      };
+      const res = await axiosInstance.get(`/carts/getCarts/${user_id}`, config);
+      console.log(res.data.data);
+      setCarts(res.data.data);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  // [] = carts;
+  // console.log(carts);
+  const countTotalPrice = (body) => {
+    const result = carts.reduce(
+      (acc, curr) => acc + curr.quantity * curr.product.productPrice,
+      0,
+    );
+    return result;
+  };
+
+  // const total = countTotalPrice();
+  // const PPN = subTotal * 0.11;
+  // const total = subTotal + PPN;
+
+  // console.log(`TOTALNYAAAAAAAAAA BOSQQQQQ ${subTotal}`);
 
   useEffect(() => {
-    if (!cartDetailsMap.length) {
+    if (!cart.length) {
       setEmpty(true);
     }
   }, []);
 
-  function mappedProducts() {
-    return productDetailsMap.map((product, index) => {
-      return (
-        <CartCards product={product} quantity={cartDetailsMap} index={index} />
-      );
-    });
-  }
+  useEffect(() => {
+    fetchCarts();
+  }, []);
 
-  function mappedCarts() {
-    return cartDetailsMap.map((cart) => {
+  function mappedProducts() {
+    return carts.map((cart, index) => {
       return (
-        <>
-          <Center py={12}>
-            <Box
-              role={'group'}
-              p={6}
-              maxW={'330px'}
-              w={'full'}
-              bg={'white'}
-              boxShadow={'2xl'}
-              rounded={'lg'}
-              pos={'relative'}
-              zIndex={1}
-            >
-              <Box rounded={'lg'} pos={'relative'} height={'300px'}>
-                <Button colorScheme="blue">{cart.quantity}</Button>
-              </Box>
-              <Stack pt={10} align={'center'}></Stack>
-            </Box>
-          </Center>
-        </>
+        <CartCards
+          // product_id={cart.product_id}
+          // productName={cart.productName}
+          // productPrice={cart.productPrice}
+          product={cart.product}
+          quantity={cart.quantity}
+          // index={index}
+          fetchCarts={fetchCarts}
+          totalPrice={countTotalPrice}
+          props={props}
+        />
       );
     });
   }
@@ -74,11 +98,17 @@ function cart(props) {
       ) : (
         <></>
       )}
-
-      <div className="w-[100vw] flex flex-col px-[5vw]">
-        {/* <div className="container shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]"> */}
-        {mappedProducts()}
-        {/* </div> */}
+      <div className="text-[20px] font-[400] ml-[10vh] mt-[2vh]">
+        Daftar Pesanan
+      </div>
+      <div className="column-2  gap-4 flex flex-row">
+        <div className="w-[89vw] bg-gray-100 rounded-2xl shadow-md ">
+          {mappedProducts()}
+        </div>
+        <div className="h-[35vh] bg-sky-100 rounded-2xl shadow-md text-center w-[50vw]">
+          <div className="text-[20px] font-[500] mt-5 mb-5">Total Price</div>
+          <div>harga: {countTotalPrice()}</div>
+        </div>
       </div>
     </div>
   );
@@ -97,13 +127,13 @@ export async function getServerSideProps(context) {
     };
 
     const { user_id } = context.params;
-    const res = await axiosInstance.get(`/carts/getCarts/${user_id}`, config);
+    // const res = await axiosInstance.get(`/carts/getCarts/${user_id}`, config);
 
     return {
       props: {
-        carts: res.data,
-        productDetailsMap: res.data.productMap,
-        cartDetailsMap: res.data.cartMap,
+        // carts: res.data.data,
+        user_id,
+        user_token,
       },
     };
   } catch (error) {
