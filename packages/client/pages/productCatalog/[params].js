@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { userAgent } from 'next/server';
 import { config } from '@fortawesome/fontawesome-svg-core';
+import { getSession } from 'next-auth/react';
 
 function ProductCatalog(props) {
   const [selected, setSelected] = useState('');
@@ -18,9 +19,11 @@ function ProductCatalog(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
   // const [user, setProduct] = useState(props.users);
+  const [verified, setVerified] = useState(false);
 
   const router = useRouter();
-
+  const { session } = props;
+  console.log(session);
   // console.log({ props });
   // console.log(props.products);
 
@@ -100,8 +103,14 @@ function ProductCatalog(props) {
               )} */}
               <Button
                 variant="outline"
+                onClick={() => {
+                  if (props.session?.user.user.isVerified) {
+                    router.replace(`/detailPage/${product.product_id}`);
+                  }
+                }}
                 colorScheme="linkedin"
                 sx={{ width: '100%', height: '5vh' }}
+                disabled={!props.session?.user.user.isVerified}
               >
                 <p className="text-[12px]">Tambah</p>
               </Button>
@@ -357,6 +366,7 @@ function ProductCatalog(props) {
 
 export async function getServerSideProps(context) {
   try {
+    const session = await getSession({ req: context.req });
     const resGetCategoriesLists = await axiosInstance.get('categories/getAll');
 
     let resGetProducts = '';
@@ -389,6 +399,9 @@ export async function getServerSideProps(context) {
         limit: 10,
       });
     }
+    const { user_id } = context.params;
+
+    const res = await axiosInstance.get(`/users/${user_id}`);
 
     // console.log(context.params);
     // console.log({ resGetProducts });
@@ -399,6 +412,8 @@ export async function getServerSideProps(context) {
         categoriesLists: resGetCategoriesLists.data,
         products: resGetProducts.data.products,
         hasMore: resGetProducts.data.hasMore,
+        users: res.data,
+        session,
       },
     };
   } catch (error) {

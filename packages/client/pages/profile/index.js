@@ -263,7 +263,7 @@ export async function getServerSideProps(context) {
       headers: { Authorization: `Bearer ${user_token}` },
     };
 
-    const user_id = session.user.user_id;
+    const user_id = session.user.user.user_id;
     const res = await axiosInstance.get(`/users/profile/${user_id}`, config);
 
     return {

@@ -6,15 +6,27 @@ import { getSession, signOut } from 'next-auth/react';
 
 function Navbar() {
   const [session, setSession] = useState();
-
+  const [userId, setUserId] = useState('');
   useEffect(() => {
     getSessionAsync();
   }, []);
 
+  // console.log({ session });
+
   async function getSessionAsync() {
     const session = await getSession();
+
+    if (session) {
+      const { user_id } = session.user.user;
+      // console.log(first);
+      setUserId(user_id);
+    }
+
     setSession(session);
+    // const { user_id } = session.user;
+    // setUserId(user_id);
   }
+  console.log({ session });
 
   async function onLogoutClick() {
     try {
@@ -23,6 +35,8 @@ function Navbar() {
       console.log({ error });
     }
   }
+
+  console.log(`user id = ${userId}`);
 
   return (
     <div className="h-[100px] flex items-end desktop:h-[72px] shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]">
@@ -66,13 +80,15 @@ function Navbar() {
             />
           </div>
           <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
-            <Image
-              src="/landingpage/Cart.svg"
-              alt="cart-logo"
-              layout="responsive"
-              width={19.2}
-              height={20.4}
-            />
+            <Link href={`/cart/${userId}`}>
+              <Image
+                src="/landingpage/Cart.svg"
+                alt="cart-logo"
+                layout="responsive"
+                width={19.2}
+                height={20.4}
+              />
+            </Link>
           </div>
           <div className="desktop:hidden w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
             <Image
@@ -139,5 +155,19 @@ function Navbar() {
     </div>
   );
 }
+
+// export async function getServerSideProps(context) {
+//   try {
+//     const session = await getSession({ req: context.req });
+
+//     return { props: { session } };
+//   } catch (error) {
+//     return {
+//       props: {
+//         error,
+//       },
+//     };
+//   }
+// }
 
 export default Navbar;

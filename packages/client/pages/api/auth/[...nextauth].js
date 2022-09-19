@@ -12,6 +12,8 @@ const credentialInstance = CredentialsProvider({
       console.log({ res: res.data.data });
       const user = res.data.data.result;
 
+      console.log({ user });
+
       return user;
     } catch (error) {
       console.log(`yang ini boy ${error.response.data.message}`);

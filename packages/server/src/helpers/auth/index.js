@@ -6,7 +6,7 @@ const auth = async (req, res, next) => {
     const token = req.token;
 
     if (!token) {
-      throw new Error('failed');
+      throw new Error('failed token verification');
     }
 
     const verifiedToken = verifyToken(token);

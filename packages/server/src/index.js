@@ -10,8 +10,7 @@ const PORT = process.env.CUSTOM_PORT || 8000;
 const userRouter = require('./routers/users');
 const productsRouter = require('./routers/products');
 const categoriesRouter = require('./routers/categories');
-const cartRouter = require('./routers/cart')
-
+const cartsRouter = require('./routers/carts');
 
 app.use(cors());
 app.use(bearerToken());
@@ -21,7 +20,7 @@ app.use('/public', express.static('public'));
 app.use('/users', userRouter);
 app.use('/products', productsRouter);
 app.use('/categories', categoriesRouter);
-app.use('/carts', cartRouter);
+app.use('/carts', cartsRouter);
 
 app.get('/api', (req, res) => {
   res.send(`Hello, this is my API`);
