@@ -36,7 +36,7 @@ function Cart(props) {
   //   }
   // }, []);
 
-  console.log(carts.length);
+  console.log(carts);
 
   console.log(empty);
 
@@ -47,11 +47,14 @@ function Cart(props) {
 
       const { user_token } = session.user;
 
+      console.log({ user_token });
+
       const config = {
         headers: { Authorization: `Bearer ${user_token}` },
       };
       const res = await axiosInstance.get(`/carts/getCarts/${user_id}`, config);
       console.log(res.data.data);
+      console.log({ cart: res.data.data });
       setCarts(res.data.data);
       if (!res.data.data.length) {
         setEmpty(true);
@@ -60,6 +63,7 @@ function Cart(props) {
       alert(error.message);
     }
   };
+  console.log({ fetchCarts });
 
   // [] = carts;
   // console.log(carts);
@@ -137,11 +141,15 @@ export async function getServerSideProps(context) {
       headers: { Authorization: `Bearer ${user_token}` },
     };
 
-    const user_id = session.user.user_id;
-    const res = await axiosInstance.get(`/users/profile/${user_id}`, config);
+    const { user_id } = context.params;
+    // const res = await axiosInstance.get(`/carts/getCarts/${user_id}`, config);
 
     return {
-      props: { user: res.data.data.result, session },
+      props: {
+        // carts: res.data.data,
+        user_id,
+        user_token,
+      },
     };
   } catch (error) {
     console.log({ error });
