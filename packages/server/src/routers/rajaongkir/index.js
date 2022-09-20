@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+require('dotenv').config();
+
+const { API_KEY_RAJAONGKIR } = process.env;
 
 // Config Defaults Axios dengan Detail Akun Rajaongkir
 axios.defaults.baseURL = 'https://api.rajaongkir.com/starter';
-axios.defaults.headers.common['key'] = 'e0d1f9f728482708c8aa8a42ef43dca6';
+axios.defaults.headers.common['key'] = API_KEY_RAJAONGKIR;
 axios.defaults.headers.post['Content-Type'] =
   'application/x-www-form-urlencoded';
 

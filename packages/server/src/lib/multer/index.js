@@ -10,6 +10,14 @@ const avatarPath = path.join(
   'avatar',
 );
 
+const prescriptionImagePath = path.join(
+  appRoot.path,
+  'packages',
+  'server',
+  'public',
+  'prescriptionImage',
+);
+
 const productImagePath = path.join(
   appRoot.path,
   'packages',
@@ -35,6 +43,17 @@ const productImageStorage = multer.diskStorage({
   filename: function (req, file, cb) {
     const { product_filename } = req.params;
     cb(null, `${product_filename}`);
+  },
+});
+
+const storagePrescriptionImage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, prescriptionImagePath);
+  },
+  filename: function (req, file, cb) {
+    const { user_id } = req.user;
+    const prescriptionCount = req.userPrescription.length;
+    cb(null, `${user_id}-${prescriptionCount}-prescription.jpg`);
   },
 });
 
@@ -80,4 +99,25 @@ const uploadProductImage = multer({
   },
 });
 
-module.exports = { uploadAvatar, uploadProductImage };
+const uploadPrescriptionImage = multer({
+  storage: storagePrescriptionImage,
+  limits: {
+    fileSize: 1048576,
+  },
+  fileFilter(req, file, cb) {
+    const allowedExtension = ['.jpg', '.png'];
+
+    const extname = path.extname(file.originalname);
+
+    if (!allowedExtension.includes(extname)) {
+      const error = new Error(
+        'Invalid file extension. You can only upload jpg or png file',
+      );
+      return cb(error);
+    }
+
+    cb(null, true);
+  },
+});
+
+module.exports = { uploadAvatar, uploadProductImage, uploadPrescriptionImage };
