@@ -69,7 +69,7 @@ const uploadAvatar = multer({
 
     if (!allowedExtension.includes(extname)) {
       const error = new Error(
-        'Invalid file extension. You can only upload jpg, jpeg, png, or gif file',
+        'Invalid file extension. You can only upload jpg, jpeg, png, or gif file.',
       );
       return cb(error);
     }
@@ -111,7 +111,7 @@ const uploadPrescriptionImage = multer({
 
     if (!allowedExtension.includes(extname)) {
       const error = new Error(
-        'Invalid file extension. You can only upload jpg or png file',
+        'Invalid file extension. You can only upload jpg or png file.',
       );
       return cb(error);
     }

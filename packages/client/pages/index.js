@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
+import Link from 'next/link';
 import { Button, Input, InputGroup, InputRightElement } from '@chakra-ui/react';
 
 export default function Home() {
@@ -111,7 +112,7 @@ export default function Home() {
       servingType: 'Kapsul',
     },
   ];
-  
+
   function categoriesMap() {
     return categoriesTestArray.map((category) => {
       return (
@@ -193,7 +194,7 @@ export default function Home() {
   return (
     <div className="bg-white w-[100%] h-[100vh] relative z-[1] desktop:scrollbar">
       <Navbar />
-        
+
       <div id="box biru" className="bg-[#1068A3] h-[53px] desktop:hidden" />
       <div id="hero-desktop" className="relative hidden desktop:inline">
         <p className="absolute z-[2] text-white font-[400] text-[4vw] left-[15vw] bottom-[200px]">
@@ -284,13 +285,15 @@ export default function Home() {
               />
             </div>
             <div className="hidden desktop:inline">
-              <Button
-                variant="outline"
-                colorScheme="linkedin"
-                sx={{ width: '8vw', height: '6vh' }}
-              >
-                <p className="font-[500] text-[.9rem]">Unggah Resep</p>
-              </Button>
+              <Link href="/upload-prescription-image">
+                <Button
+                  variant="outline"
+                  colorScheme="linkedin"
+                  sx={{ width: '8vw', height: '6vh' }}
+                >
+                  <p className="font-[500] text-[.9rem]">Unggah Resep</p>
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
