@@ -14,7 +14,6 @@ const cartsRouter = require('./routers/carts');
 const addressesRouter = require('./routers/addresses');
 const prescriptionsRouter = require('./routers/prescriptions');
 const transactionsRouter = require('./routers/transactions');
-
 const rajaOngkirRouter = require('./routers/rajaongkir');
 
 app.use(cors());
