@@ -32,7 +32,10 @@ module.exports = {
       unitQuantity: {
         type: Sequelize.INTEGER,
       },
-      isCompletetd: {
+      prescriptionImage: {
+        type: Sequelize.STRING(255),
+      },
+      isCompleted: {
         type: Sequelize.BOOLEAN,
       },
       createdAt: {

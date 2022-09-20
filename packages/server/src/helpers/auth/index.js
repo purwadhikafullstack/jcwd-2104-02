@@ -1,5 +1,5 @@
 const { verifyToken } = require('../../lib/token');
-const { users } = require('../../../models');
+const { users, prescriptions } = require('../../../models');
 
 const auth = async (req, res, next) => {
   try {
@@ -16,9 +16,16 @@ const auth = async (req, res, next) => {
       },
     });
 
+    const resGetUserPrescription = await prescriptions.findAll({
+      where: {
+        user_id: verifiedToken.user_id,
+      },
+    });
+
     if (!resGetUser) throw { message: 'User not found' };
 
     req.user = resGetUser.dataValues;
+    req.userPrescription = resGetUserPrescription;
 
     next();
   } catch (error) {
