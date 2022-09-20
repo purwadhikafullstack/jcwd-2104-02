@@ -27,7 +27,7 @@ const createUserPrescriptionImage = async (req, res, next) => {
 
     res.send({
       status: 'Success',
-      message: 'Success create user prescription image',
+      message: 'Success upload prescription image',
     });
   } catch (error) {
     next(error);
@@ -35,7 +35,7 @@ const createUserPrescriptionImage = async (req, res, next) => {
 };
 
 router.post(
-  '/prescriptionImage',
+  '/uploadPrescriptionImage',
   auth,
   uploadPrescriptionImage.single('prescriptionImage'),
   createUserPrescriptionImage,

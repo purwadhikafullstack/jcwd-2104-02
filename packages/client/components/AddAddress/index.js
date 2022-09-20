@@ -68,11 +68,6 @@ function AddAddress(props) {
 
       alert(res.data.message);
       window.location.reload();
-      // const resGetUserAddress = await axiosInstance.get(
-      //   `/addresses/useraddresslists`,
-      //   config,
-      // );
-      // setAddresses(resGetUserAddress.data.data.result);
     } catch (error) {
       console.log({ error });
       alert(error.response.data.message);
