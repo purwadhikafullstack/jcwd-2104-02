@@ -17,7 +17,7 @@ import { getSession } from 'next-auth/react';
 import axiosInstance from '../../src/config/api';
 
 function AddAddress(props) {
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, RenderUserAddresses } = props;
   const [userAddress, setUserAddress] = useState({});
   const [getProvince, setGetProvince] = useState([]);
   const [getCity, setGetCity] = useState([]);
@@ -67,7 +67,7 @@ function AddAddress(props) {
       const res = await axiosInstance.post('/addresses/add', body, config);
 
       alert(res.data.message);
-      window.location.reload();
+      RenderUserAddresses();
     } catch (error) {
       console.log({ error });
       alert(error.response.data.message);
@@ -238,7 +238,9 @@ function AddAddress(props) {
             fontSize={15}
             fontWeight={500}
             colorScheme="messenger"
-            onClick={() => onAddAddress(userAddress)}
+            onClick={() => {
+              onAddAddress(userAddress), onClose();
+            }}
           >
             Simpan
           </Button>
