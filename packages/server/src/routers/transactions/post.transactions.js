@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {transactions, carts, products} = require("../../../models")
+const {transactions, carts, products, transaction_details} = require("../../../models")
 const moment = require('moment')
 const { auth } = require('../../helpers/auth');
 const { Op } = require('sequelize');
@@ -9,74 +9,103 @@ const schedule = require('node-schedule');
 
 const postTransaction = async (req, res, next) =>{
   try {
-    const {user_id} = req.params
+    const {user_id} = req.user
 
     const resFindCarts = await carts.findAll({
       where: {
         user_id,
       },
+      
       // include: [products],
     });
-    // console.log(resFindCarts)
-    const mapCarts = resFindCarts.map((cart, index)=>{
-      return cart.dataValues
-    })
-    console.log(mapCarts)
 
-    if (resFindCarts.length) {
+    // console.log(resFindCarts)
+
       const resCreateTransaction = await transactions.create({
-        // user_id,
+        user_id,
         // mapCarts
         // totalPrice: countTotalPrice()
         // address_id,
         // paymentProof,
       });
-      // console.log(resCreateTransaction)
+      console.log(resCreateTransaction)
       
-      // const dueDate = moment(resCreateTransaction.dataValues.createdAt).add(30, 'seconds')
+      const dueDate = moment(resCreateTransaction.dataValues.createdAt).add(20, 'seconds')
 
-      // const existingProduct = await products.findOne({
-      //   where: {product_id: product_id}
-      // })
+      const productExist = await Promise.all(
+        resFindCarts.map(async (data) =>{
+          try {
+            const existingProduct = await products.findOne({
+              where: { product_id: data.dataValues.product_id}
+            })
+            return existingProduct.dataValues
+          } catch (error) {
+            console.log(error)
+          }
+        })
+      )
 
-      // schedule.scheduleJob(new Date(dueDate), async () =>{
-      //   const checkingStatus = await transactions.findOne({
-      //     where: {transaction_id: resCreateTransaction.dataValues.transaction_id, status: 'awaiting_payment'}
-      //   })
-      //   if(checkingStatus.dataValues.transaction_id){
-      //     await transactions.update(
-      //       {status: 'order_cancelled'},
-      //       {where: {transaction_id: resCreateTransaction.dataValues.transaction_id}}
-      //     )
-      //   const updateProduct = await products.findOne({
-      //     where: {product_id: product_id}
-      //   })
-      //   await products.update(
-      //     {productStock: parseInt(updateProduct.dataValues.productStock) + parseInt(quantity)},
-      //     {where: {product_id: product_id}}
-      //   )
-      //   console.log("sukses ngab")
-      // }
-      // })
-      // await products.update(
-      //   {productStock: existingProduct.dataValues.productStock - quantity},
-      //     {where: {product_id: product_id}
-      // })
-      res.send({
-        status: 'success',
-        message: 'create transcation success!',
-        data: {
-          resCreateTransaction,
-        },
+      schedule.scheduleJob(new Date(dueDate), async () =>{
+        console.log("disini")
+        const checkingStatus = await transactions.findOne({
+          where: {
+            transaction_id: resCreateTransaction.dataValues.transaction_id,
+            status: 'awaiting_payment',
+          },
+          attributes: ['transaction_id', 'prescription_id', 'user_id', 'address_id'],
+        });
+
+        resFindCarts.forEach(async (data) => {
+          console.log(data)
+        if(checkingStatus.dataValues.transaction_id){
+          await transactions.update(
+            {status: 'order_cancelled'},
+            {where: {transaction_id: resCreateTransaction.dataValues.transaction_id}}
+          )
+        const updateProduct = await products.findOne({
+          where: {product_id: data.dataValues.product_id}
+        })
+        console.log(updateProduct)
+        await products.update(
+          {productStock: updateProduct.dataValues.productStock + data.dataValues.quantity},
+          {where: {product_id: data.dataValues.product_id}}
+        )
+        console.log("sukses ngab")
+      }
+      })
+    })
+
+
+    resFindCarts.forEach(async (data) => {
+      const updateProduct = await products.findOne({
+          where: {product_id: data.dataValues.product_id}})
+          await products.update(
+      {productStock: updateProduct.dataValues.productStock - data.dataValues.quantity},
+        {where: {product_id: data.dataValues.product_id}
+    })
+    console.log("jalan")
+  })
+
+    res.send({
+      status: 'success',
+      message: 'create transcation success!',
+      data: {
+        productExist,
+      },
+    });
+    resFindCarts.forEach(async (data) => {
+      await transaction_details.create({
+        quantity: data.dataValues.quantity,
+        product_id: data.dataValues.product_id,
+        transaction_id: resCreateTransaction.dataValues.transaction_id,
       });
-    }
-
+    });
   } catch (error) {
     next(error)
   }
 }
 
 
-router.post('/createTransaction/:user_id', auth, postTransaction);
+router.post('/createTransaction', auth, postTransaction);
 
 module.exports = router

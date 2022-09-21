@@ -54,9 +54,6 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
-      quantity: {
-        type: DataTypes.INTEGER,
-      },
       status: {
         type: DataTypes.ENUM(
           'awaiting_payment',
