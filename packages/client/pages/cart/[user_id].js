@@ -97,47 +97,41 @@ function Cart(props) {
     const result = carts.reduce(
       (acc, curr) => acc + curr.quantity * curr.product.productPrice,
       0,
-      );
-      return result;
-    };
-    // console.log(")
+    );
+    return result;
+  };
+  // console.log(")
 
   const onCheckoutClick = async () => {
     try {
       setCartsPrice(countTotalPrice());
       const session = await getSession();
-      const {user_id} = props;
-      const {user_token} = session.user;
+      const { user_id } = props;
+      const { user_token } = session.user;
       const config = {
-        headers: {Authorization: `Bearer ${user_token}`}
-      }
+        headers: { Authorization: `Bearer ${user_token}` },
+      };
       const deliveryCost = selectedDeliveryCost.split(',');
-  const getDeliveryCost = parseInt(deliveryCost[1])
-  console.log(getDeliveryCost);
+      const getDeliveryCost = parseInt(deliveryCost[1]);
+      console.log(getDeliveryCost);
       const body = {
         totalPrice: countTotalPrice(),
         address_id: selectAddress.address_id,
         courier: selectedCourier,
-        deliveryCost: getDeliveryCost
+        deliveryCost: getDeliveryCost,
       };
-    
-      console.log(body)
+
+      console.log(body);
       const res = await axiosInstance.post(
         `/transactions/createTransaction/`,
         body,
         config,
-        );
-      alert("sukses")
+      );
+      alert('sukses');
     } catch (error) {
-      alert(alert.message)
+      alert(alert.message);
     }
-  }
-
-  // const total = countTotalPrice();
-  // const PPN = subTotal * 0.11;
-  // const total = subTotal + PPN;
-
-  // console.log(`TOTALNYAAAAAAAAAA BOSQQQQQ ${subTotal}`);
+  };
 
   function mappedProducts() {
     return carts.map((cart, index) => {
