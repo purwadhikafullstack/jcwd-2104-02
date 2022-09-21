@@ -90,14 +90,7 @@ function UploadPrescriptionImage(props) {
             Unggah Resep Dokter
           </Text>
           <VStack>
-            <Image
-              src={imgSource}
-              width={235}
-              height={235}
-              loader={() => {
-                return imgSource;
-              }}
-            />
+            <Image src={imgSource} width={235} height={235} />
             <VStack paddingLeft="89" paddingTop={1} fontSize={12.5}>
               <input type={'file'} onChange={onFileChange} />
             </VStack>

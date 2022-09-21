@@ -146,9 +146,6 @@ function Edit(props) {
               src={imgSource}
               width={86}
               height={86}
-              loader={() => {
-                return imgSource;
-              }}
             />
           </VStack>
           <VStack marginTop={4}>
