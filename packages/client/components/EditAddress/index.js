@@ -93,7 +93,7 @@ function EditAddress(props) {
   const renderProvince = () => {
     return getProvince.map((province) => (
       <option
-        key={province}
+        key={province.province_id}
         value={`${province.province_id},${province.province}`}
       >
         {province.province}
@@ -103,7 +103,7 @@ function EditAddress(props) {
 
   const renderCity = () => {
     return getCity.map((city) => (
-      <option key={city} value={`${city.city_id},${city.city_name}`}>
+      <option key={city.city_id} value={`${city.city_id},${city.city_name}`}>
         {city.city_name}
       </option>
     ));
