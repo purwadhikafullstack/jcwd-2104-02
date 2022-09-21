@@ -17,7 +17,7 @@ import { getSession } from 'next-auth/react';
 import axiosInstance from '../../src/config/api';
 
 function EditAddress(props) {
-  const { isOpen, onClose, address_id } = props;
+  const { isOpen, onClose, address_id, RenderUserAddresses } = props;
   const [userAddress, setUserAddress] = useState({});
   const [getProvince, setGetProvince] = useState([]);
   const [getCity, setGetCity] = useState([]);
@@ -71,7 +71,7 @@ function EditAddress(props) {
       );
 
       alert(res.data.message);
-      window.location.reload();
+      RenderUserAddresses();
     } catch (error) {
       console.log({ error });
       alert(error.response.data.message);
@@ -242,7 +242,9 @@ function EditAddress(props) {
             fontSize={15}
             fontWeight={500}
             colorScheme="messenger"
-            onClick={() => onEditAddress(userAddress)}
+            onClick={() => {
+              onEditAddress(userAddress), onClose();
+            }}
           >
             Simpan
           </Button>

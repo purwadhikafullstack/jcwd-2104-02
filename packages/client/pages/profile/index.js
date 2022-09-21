@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { getSession, signOut } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import { getSession } from 'next-auth/react';
 import axiosInstance from '../../src/config/api';
 import '@fontsource/poppins';
 import Navbar from '../../components/Navbar';
@@ -29,10 +29,40 @@ function Profile(props) {
   const [imgSource, setimgSource] = useState(api_origin + props.user.avatar);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalEdit, setModalEdit] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState('');
 
   const { name, email, gender, birthDate, phoneNumber } = user;
 
-  const [] = addresses;
+  useEffect(() => {
+    RenderUserAddresses();
+  }, []);
+
+  useEffect(() => {
+    console.log(selectedAddressId);
+  }, [selectedAddressId]);
+
+  const RenderUserAddresses = async () => {
+    try {
+      const session = await getSession();
+
+      if (!session) return { redirect: { destination: '/login' } };
+
+      const { user_token } = session.user;
+
+      const config = {
+        headers: { Authorization: `Bearer ${user_token}` },
+      };
+
+      const addressRes = await axiosInstance.get(
+        `/addresses/useraddresslists`,
+        config,
+      );
+      console.log(addressRes);
+      setAddresses(addressRes.data.data);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
 
   async function onDeleteClick(address_id) {
     try {
@@ -40,7 +70,7 @@ function Profile(props) {
         `/addresses/${address_id}`,
       );
       alert(resDeleteAddress.data.message);
-      window.location.reload();
+      RenderUserAddresses();
     } catch (error) {
       console.log({ error });
     }
@@ -52,7 +82,7 @@ function Profile(props) {
         `/addresses/setdefault/${address_id}`,
       );
       alert(resSetDefaultAddress.data.message);
-      window.location.reload();
+      RenderUserAddresses();
     } catch (error) {
       console.log({ error });
     }
@@ -67,7 +97,7 @@ function Profile(props) {
         borderColor="gray.300"
         borderRadius="md"
         width={320}
-        key={address}
+        key={address.address_id}
       >
         {address.isDefault ? (
           <HStack justifyContent="space-between">
@@ -123,13 +153,17 @@ function Profile(props) {
                   colorScheme="white"
                   variant="solid"
                   size="xxs"
-                  onClick={() => setModalEdit(true)}
+                  onClick={() => {
+                    setSelectedAddressId(address.address_id);
+                    setModalEdit(true);
+                  }}
                 >
                   <EditIcon w={3.5} h={3.5} color="#004776" />
                   <EditAddress
                     isOpen={modalEdit}
                     onClose={() => setModalEdit(false)}
-                    address_id={address.address_id}
+                    address_id={selectedAddressId}
+                    RenderUserAddresses={RenderUserAddresses}
                   />
                 </Button>
                 <Button
@@ -290,7 +324,11 @@ function Profile(props) {
                             onClick={onOpen}
                           >
                             <AddIcon w={3} h={3} color="#004776" />
-                            <AddAddress isOpen={isOpen} onClose={onClose} />
+                            <AddAddress
+                              isOpen={isOpen}
+                              onClose={onClose}
+                              RenderUserAddresses={RenderUserAddresses}
+                            />
                           </Button>
                         </HStack>
                       </HStack>
