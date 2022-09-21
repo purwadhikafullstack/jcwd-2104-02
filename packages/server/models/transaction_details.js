@@ -36,6 +36,15 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
+      product_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'products',
+          key: 'product_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
       user_id: {
         type: DataTypes.INTEGER,
         references: {
@@ -53,6 +62,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
+      },
+      quantity: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      paymentProof: {
+        type: DataTypes.STRING(255),
       },
     },
     {

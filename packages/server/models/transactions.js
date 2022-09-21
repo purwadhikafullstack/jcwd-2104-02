@@ -8,11 +8,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      transactions.hasOne(models.users, {
+      transactions.belongsTo(models.users, {
         foreignKey: 'user_id',
       });
-      transactions.hasOne(models.prescriptions, {
+      transactions.belongsTo(models.prescriptions, {
         foreignKey: 'prescription_id',
+      });
+      transactions.belongsTo(models.addresses, {
+        foreignKey: 'address_id',
       });
     }
   }
@@ -41,6 +44,18 @@ module.exports = (sequelize, DataTypes) => {
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
+      },
+      address_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'addresses',
+          key: 'address_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
+      quantity: {
+        type: DataTypes.INTEGER,
       },
       status: {
         type: DataTypes.ENUM(

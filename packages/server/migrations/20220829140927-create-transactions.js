@@ -26,6 +26,18 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
+      address_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'addresses',
+          key: 'address_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
+      totalPrice: {
+        type: Sequelize.INTEGER,
+      },
       status: {
         type: Sequelize.ENUM(
           'awaiting_payment',

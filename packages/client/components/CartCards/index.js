@@ -95,7 +95,29 @@ export default function CartCards(props) {
         Harga: Rp. {product.productPrice.toLocaleString('id')}
       </div>
       <div className="flex justify-between font-semibold ">
-        <Button
+        {quantity < 2 ? (
+          <Button
+          isDisabled
+            width="50px"
+            onClick={() => {
+              onClickMinus();
+            }}
+            colorScheme="linkedin"
+          >
+            -
+          </Button>
+        ) : (
+          <Button
+            width="50px"
+            onClick={() => {
+              onClickMinus();
+            }}
+            colorScheme="linkedin"
+          >
+            -
+          </Button>
+        )}
+        {/* <Button
           width="50px"
           marginRight={2}
           onClick={() => {
@@ -104,7 +126,7 @@ export default function CartCards(props) {
           colorScheme="messenger"
         >
           -
-        </Button>
+        </Button> */}
         <Input
           htmlSize={4}
           width="70px"
