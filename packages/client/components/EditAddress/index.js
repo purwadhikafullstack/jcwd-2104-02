@@ -139,28 +139,6 @@ function EditAddress(props) {
     }
   };
 
-  const fetchCity = async () => {
-    try {
-      const resGetCity = await axiosInstance.get(
-        `/rajaongkir/kota/${selectedProvince}`,
-      );
-      setGetCity(resGetCity.data.rajaongkir.results);
-    } catch (error) {
-      console.log({ error });
-    }
-  };
-
-  const fetchCity = async () => {
-    try {
-      const resGetCity = await axiosInstance.get(
-        `/rajaongkir/kota/${selectedProvince}`,
-      );
-      setGetCity(resGetCity.data.rajaongkir.results);
-    } catch (error) {
-      console.log({ error });
-    }
-  };
-
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
