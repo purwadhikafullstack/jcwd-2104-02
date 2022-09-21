@@ -222,9 +222,6 @@ function Profile(props) {
               src={imgSource}
               width={70}
               height={70}
-              loader={() => {
-                return imgSource;
-              }}
             />
             <VStack align="left">
               <Text
