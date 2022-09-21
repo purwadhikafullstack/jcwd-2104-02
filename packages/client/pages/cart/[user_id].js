@@ -3,42 +3,37 @@ import React from 'react';
 import Navbar from '../../components/Navbar';
 import axiosInstance from '../../src/config/api';
 import {
-  Select,
-  Center,
-  Heading,
   Text,
-  Stack,
-  Image,
-  useColorModeValue,
-  HStack,
   VStack,
   Button,
-  ButtonGroup,
-  Input,
   Box,
+  ChakraProvider,
+  Container,
+  useDisclosure,
 } from '@chakra-ui/react';
+import '@fontsource/poppins';
 import { useState, useEffect } from 'react';
 import CartCards from '../../components/CartCards';
+import theme from '../../components/theme';
+import SelectAddress from '../../components/SelectAddress';
+import AddAddress from '../../components/AddAddress';
 
 function Cart(props) {
   const [carts, setCarts] = useState([]);
   const [empty, setEmpty] = useState(false);
-  const { user_id, user_token } = props;
-  const [cartsPrice, setCartsPrice] = useState([]);
+  const [userAllAddress, setUserAllAddress] = useState(props.userAllAddress);
+  const [defaultAddress, setDefaultAddress] = useState(props.defaultAddress);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectAddress, setSelectAddress] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(defaultAddress);
 
   useEffect(() => {
     fetchCarts();
   }, []);
 
-  // useEffect(() => {
-  //   if (!carts.length) {
-  //     setEmpty(true);
-  //   }
-  // }, []);
-
-  console.log(carts);
-
-  console.log(empty);
+  const chooseAddress = (newAddress) => {
+    setSelectedAddress(newAddress);
+  };
 
   const fetchCarts = async () => {
     try {
@@ -47,14 +42,10 @@ function Cart(props) {
 
       const { user_token } = session.user;
 
-      console.log({ user_token });
-
       const config = {
         headers: { Authorization: `Bearer ${user_token}` },
       };
       const res = await axiosInstance.get(`/carts/getCarts/${user_id}`, config);
-      console.log(res.data.data);
-      console.log({ cart: res.data.data });
       setCarts(res.data.data);
       if (!res.data.data.length) {
         setEmpty(true);
@@ -63,10 +54,7 @@ function Cart(props) {
       alert(error.message);
     }
   };
-  console.log({ fetchCarts });
 
-  // [] = carts;
-  // console.log(carts);
   const countTotalPrice = (body) => {
     const result = carts.reduce(
       (acc, curr) => acc + curr.quantity * curr.product.productPrice,
@@ -75,23 +63,13 @@ function Cart(props) {
     return result;
   };
 
-  // const total = countTotalPrice();
-  // const PPN = subTotal * 0.11;
-  // const total = subTotal + PPN;
-
-  // console.log(`TOTALNYAAAAAAAAAA BOSQQQQQ ${subTotal}`);
-
   function mappedProducts() {
     return carts.map((cart, index) => {
       return (
         <CartCards
           key={cart.cart_id}
-          // product_id={cart.product_id}
-          // productName={cart.productName}
-          // productPrice={cart.productPrice}
           product={cart.product}
           quantity={cart.quantity}
-          // index={index}
           fetchCarts={fetchCarts}
           totalPrice={countTotalPrice}
           props={props}
@@ -108,22 +86,76 @@ function Cart(props) {
           Wah keranjang kamu kosong!
         </div>
       ) : (
-        <div>
-          <div className="text-[20px] font-[400] ml-[10vh] mt-[2vh]">
-            Daftar Pesanan
-          </div>
-          <div className="column-2  gap-4 flex flex-row">
-            <div className="w-[89vw] bg-gray-100 rounded-2xl shadow-md ">
-              {mappedProducts()}
+        <ChakraProvider theme={theme}>
+          <div>
+            <div className="text-[20px] font-[400] ml-[10vh] mt-[2vh]">
+              Daftar Pesanan
             </div>
-            <div className="h-[35vh] bg-sky-100 rounded-2xl shadow-md text-center w-[50vw]">
-              <div className="text-[20px] font-[500] mt-5 mb-5">
-                Total Price
+            <div className="column-2  gap-4 flex flex-row">
+              <div className="w-[89vw] bg-gray-100 rounded-2xl shadow-md ">
+                {mappedProducts()}
               </div>
-              <div>harga: {countTotalPrice()}</div>
+              <div className="h-[35vh] bg-sky-100 rounded-2xl shadow-md text-center w-[50vw]">
+                <div className="text-[20px] font-[500] mt-5 mb-5">
+                  Total Price
+                </div>
+                <div>harga: {countTotalPrice()}</div>
+              </div>
             </div>
+            <Container>
+              {selectedAddress ? (
+                <Box
+                  paddingY={2}
+                  paddingLeft={2}
+                  border="2px"
+                  borderColor="gray.300"
+                  borderRadius="md"
+                  width={320}
+                >
+                  <VStack align="start">
+                    <Text fontWeight={500} fontSize={12} color="gray.600">
+                      Penerima: {selectedAddress.recipient}
+                    </Text>
+                    <Text fontWeight={500} fontSize={12} color="gray.600">
+                      {selectedAddress.addressDetail}
+                    </Text>
+                    <Text fontWeight={500} fontSize={12} color="gray.600">
+                      {selectedAddress.city_name},{selectedAddress.province},{' '}
+                      {''}
+                      {selectedAddress.postalCode}
+                    </Text>
+                  </VStack>
+                </Box>
+              ) : (
+                <Button
+                  variant="solid"
+                  size="xxl"
+                  onClick={onOpen}
+                  bg="blue.200"
+                >
+                  Tambah Alamat <AddAddress isOpen={isOpen} onClose={onClose} />
+                </Button>
+              )}
+              {userAllAddress ? (
+                <Button
+                  variant="solid"
+                  size="xxl"
+                  onClick={() => setSelectAddress(true)}
+                >
+                  Pilih Alamat
+                  <SelectAddress
+                    isOpen={selectAddress}
+                    onClose={() => setSelectAddress(false)}
+                    userAllAddress={userAllAddress}
+                    chooseAddress={chooseAddress}
+                  />
+                </Button>
+              ) : (
+                <Text>Alamat belum ada</Text>
+              )}
+            </Container>
           </div>
-        </div>
+        </ChakraProvider>
       )}
     </div>
   );
@@ -142,13 +174,23 @@ export async function getServerSideProps(context) {
     };
 
     const { user_id } = context.params;
-    // const res = await axiosInstance.get(`/carts/getCarts/${user_id}`, config);
+
+    const userAllAddress = await axiosInstance.get(
+      `/addresses/useraddresslists`,
+      config,
+    );
+    const defaultAddress = await axiosInstance.get(
+      `/addresses/userdefaultaddress`,
+      config,
+    );
 
     return {
       props: {
-        // carts: res.data.data,
         user_id,
         user_token,
+        userAllAddress: userAllAddress.data.data,
+        defaultAddress: defaultAddress.data.data,
+        session,
       },
     };
   } catch (error) {

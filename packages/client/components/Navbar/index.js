@@ -26,7 +26,7 @@ function Navbar() {
     // const { user_id } = session.user;
     // setUserId(user_id);
   }
-  console.log({ session });
+  // console.log({ session });
 
   async function onLogoutClick() {
     try {

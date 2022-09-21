@@ -37,9 +37,7 @@ function Profile(props) {
     RenderUserAddresses();
   }, []);
 
-  useEffect(() => {
-    console.log(selectedAddressId);
-  }, [selectedAddressId]);
+  useEffect(() => {}, [selectedAddressId]);
 
   const RenderUserAddresses = async () => {
     try {
@@ -57,7 +55,6 @@ function Profile(props) {
         `/addresses/useraddresslists`,
         config,
       );
-      console.log(addressRes);
       setAddresses(addressRes.data.data);
     } catch (error) {
       console.log({ error });
