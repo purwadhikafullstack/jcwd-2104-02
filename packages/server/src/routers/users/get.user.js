@@ -8,7 +8,7 @@ const verifyUserController = async (req, res, next) => {
   try {
     const { token } = req.params;
 
-    console.log({token});
+    console.log({ token });
 
     // const getUserToken = await users.findOne({
     //   where: { token },
@@ -117,7 +117,7 @@ const getUserProfileController = async (req, res, next) => {
 
     const result = {
       status: 'Success',
-      message: 'User Profile',
+      message: 'Get User Profile Success',
       data: {
         result: resGetUser[0],
       },

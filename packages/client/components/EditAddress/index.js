@@ -11,6 +11,7 @@ import {
   Select,
   Text,
   VStack,
+  useToast,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { getSession } from 'next-auth/react';
@@ -31,6 +32,8 @@ function EditAddress(props) {
   const splitCity = selectedCity.split(',');
   const city_id = splitCity[0];
   const city_name = splitCity[1];
+
+  const toast = useToast();
 
   const { recipient, addressDetail, postalCode } = userAddress;
 
@@ -70,7 +73,14 @@ function EditAddress(props) {
         config,
       );
 
-      alert(res.data.message);
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
       RenderUserAddresses();
     } catch (error) {
       console.log({ error });

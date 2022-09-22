@@ -61,7 +61,7 @@ function SelectAddress(props) {
             border="2px"
             borderColor="gray.300"
             borderRadius="md"
-            width={340}
+            width={390}
             key={address.address_id}
             onClick={() => {
               chooseAddress(address);
@@ -96,7 +96,7 @@ function SelectAddress(props) {
             setModalEdit(true);
           }}
         >
-          <EditIcon w={3.5} h={3.5} color="#004776" />
+          <EditIcon w={4} h={4} color="#004776" marginRight={6} />
           <EditAddress
             isOpen={modalEdit}
             onClose={() => setModalEdit(false)}
@@ -116,6 +116,7 @@ function SelectAddress(props) {
         paddingTop={{ md: '4' }}
         paddingBottom={{ md: '9' }}
         paddingX={{ md: '5' }}
+        maxWidth={500}
       >
         <ModalHeader fontWeight={600} fontSize={{ base: '16', md: '19' }}>
           Pilih Alamat

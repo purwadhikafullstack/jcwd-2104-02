@@ -90,7 +90,7 @@ const updateUserProfile = async (req, res, next) => {
 
     res.send({
       status: 'Success',
-      message: 'Success update user',
+      message: 'Update Profile Success',
     });
   } catch (error) {
     next(error);
@@ -119,7 +119,7 @@ const updateUserAvatar = async (req, res, next) => {
 
     res.send({
       status: 'Success',
-      message: 'Success update avatar',
+      message: 'Update Avatar Success',
     });
   } catch (error) {
     next(error);

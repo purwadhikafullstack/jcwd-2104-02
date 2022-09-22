@@ -67,7 +67,7 @@ const addAddress = async (req, res, next) => {
 
     res.send({
       status: 'Success',
-      message: 'Success create address',
+      message: 'Create Address Success',
     });
   } catch (error) {
     next(error);
