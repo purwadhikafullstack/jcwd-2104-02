@@ -149,7 +149,7 @@ function Login() {
           Login
         </Button>
         <Text mt={5}>
-          Haven&apos;t registered?
+          Haven&apos;t registered? {''}
           <Link color="linkedin.500" href="/register">
             Register here!
           </Link>
