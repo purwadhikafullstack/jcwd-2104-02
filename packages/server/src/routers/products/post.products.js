@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { QueryTypes } = require('sequelize');
-const { Sequelize } = require('sequelize');
-const { products, sequelize } = require('../../../models');
-const { categories } = require('../../../models');
-const { categories_list } = require('../../../models');
+const { uploadProductImage } = require('../../lib/multer');
 const { auth } = require('../../helpers/auth');
+const { QueryTypes } = require('sequelize');
+const {
+  products,
+  sequelize,
+  categories,
+  categories_list,
+} = require('../../../models');
 
 async function getAllProductsController(req, res, next) {
   try {
@@ -169,6 +172,69 @@ async function getAllProductsSortedController(req, res, next) {
   }
 }
 
+async function postNewProductController(req, res, next) {
+  try {
+    console.log({ body: req.body });
+    const {
+      categoryInfo,
+      description,
+      packageType,
+      productImage,
+      productName,
+      productPrice,
+      productStock,
+      defaultQuantity,
+      servingType,
+    } = req.body;
+
+    const imageExtNameSplit = productImage.split('.');
+    const categorySplit = categoryInfo.split('=-=');
+
+    const resCreateProduct = await products.create({
+      productName,
+      productPrice: parseInt(productPrice),
+      description,
+      productStock: parseInt(productStock),
+      servingType,
+      isPublic: false,
+      packageType,
+    });
+
+    await resCreateProduct.update({
+      productImage: `http://localhost:8000/public/productImages/${
+        resCreateProduct.dataValues.product_id
+      }.${imageExtNameSplit[imageExtNameSplit.length - 1]}`,
+    });
+
+    const resCreateCategory = await categories.create({
+      category_lists_id: categorySplit[0],
+      product_id: resCreateProduct.dataValues.product_id,
+      categoryName: categorySplit[1],
+    });
+
+    setTimeout(() => {
+      res.send({
+        status: 'success',
+        resCreateProduct,
+        resCreateCategory,
+      });
+    }, 2000);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function postNewProductImageController(req, res, next) {
+  try {
+    res.send({
+      status: 'success',
+      imageName: req.params.product_filename,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 const getProductDetail = async (req, res, next) => {
   try {
     const { product_id } = req.params;
@@ -189,8 +255,14 @@ const getProductDetail = async (req, res, next) => {
   }
 };
 
+router.post('/specifics/:specifics', getSpecificProductsController);
 router.post('/sort/:sortOrder', getAllProductsSortedController);
-router.post('/:specifics', getSpecificProductsController);
+router.post(
+  '/newProductImage/:product_filename',
+  uploadProductImage.single('productImageFile'),
+  postNewProductImageController,
+);
+router.post('/newProduct', postNewProductController);
 router.post('/', getAllProductsController);
 router.get('/:product_id', auth, getProductDetail);
 

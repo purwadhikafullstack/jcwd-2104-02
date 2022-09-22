@@ -1,12 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import AdminNavbar from '../../../components/AdminNavbar';
 import { useRouter } from 'next/router';
-import { Button, Input } from '@chakra-ui/react';
+import {
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
 import axiosInstance from '../../../src/config/api';
 import Link from 'next/link';
+import AddProductModal from '../../../components/AddProductModal';
 
 function Inventory(props) {
   const router = useRouter();
@@ -15,8 +27,8 @@ function Inventory(props) {
   const [productList, setProductList] = useState(props.products);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
-
-  console.log({ props });
+  const [currentProduct, setCurrentProduct] = useState('');
+  const [addProductButton, setAddProductButton] = useState(false);
 
   useEffect(() => {
     const { params } = router.query;
@@ -32,7 +44,7 @@ function Inventory(props) {
     return props.categoriesLists.categories.map((category) => {
       return (
         <div
-          key={category.category_id}
+          key={category.category_lists_id}
           onClick={() => {
             router.replace(`/admin/inventory/${category.category}=1`);
             setCurrentPage(1);
@@ -59,12 +71,17 @@ function Inventory(props) {
           key={product.product_id}
           className="w-[90%] mb-[1%] h-[30%] flex-none flex flex-col items-end bg-white"
         >
-          <div className="pl-[1.5vw] flex w-[100%] bg-[#008DEB]">
+          <div className="pl-[1.5vw] flex w-[100%] bg-[#008DEB] text-white">
             Product ID:{product.product_id}
           </div>
 
           <div className="w-[100%] h-[85%] flex-none flex justify-center items-center">
-            <div className="w-[7vw] ml-[1.5vw] hover:cursor-pointer">
+            <div
+              onClick={() => {
+                setCurrentProduct(product);
+              }}
+              className="w-[7vw] ml-[1.5vw] hover:cursor-pointer"
+            >
               <Image
                 unoptimized
                 alt="resep-logo"
@@ -123,6 +140,12 @@ function Inventory(props) {
         <div className="h-[10%] w-[90%] flex items-center font-[500] text-[3vh]">
           Inventory
         </div>
+
+        <AddProductModal
+          addProductButton={addProductButton}
+          setAddProductButton={setAddProductButton}
+          categoriesLists={props.categoriesLists.categories}
+        />
 
         <div className="h-[90%] w-[90%]">
           <div className="flex flex-col w-[100%] bg-[#F5F6F6] h-[100%]">
@@ -252,8 +275,8 @@ function Inventory(props) {
                   <div
                     className={
                       showCategories
-                        ? 'w-[5%] flex items-center justify-center rotate-90 transition duration-100'
-                        : 'w-[5%] flex items-center justify-center transition duration-100'
+                        ? 'w-[4%] flex items-center justify-center rotate-90 transition duration-100'
+                        : 'w-[4%] flex items-center justify-center transition duration-100'
                     }
                   >
                     <FontAwesomeIcon icon={faCaretRight} />
@@ -322,8 +345,22 @@ function Inventory(props) {
                 </Button>
               </div>
 
-              <div className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer">
-                + Tambah Baru
+              <div className="flex">
+                <div
+                  onClick={() => {}}
+                  className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
+                >
+                  + Tambah Kategori
+                </div>
+
+                <div
+                  onClick={() => {
+                    setAddProductButton(true);
+                  }}
+                  className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
+                >
+                  + Tambah Produk
+                </div>
               </div>
             </div>
           </div>
@@ -362,14 +399,17 @@ export async function getServerSideProps(context) {
 
       const page = splitParams[splitParams.length - 1];
 
-      resGetProducts = await axiosInstance.post(`products/${splitParams[0]}`, {
-        page,
-        limit: 3,
-      });
+      resGetProducts = await axiosInstance.post(
+        `products/specifics/${splitParams[0]}`,
+        {
+          page,
+          limit: 3,
+        },
+      );
     }
 
     // console.log(context.params);
-    console.log({ resGetProducts });
+    // console.log({ resGetProducts });
 
     return {
       props: {

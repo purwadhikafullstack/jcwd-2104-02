@@ -39,6 +39,18 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        user_id: 4,
+        name: 'Jamal Bismarckz',
+        email: 'Bismarckz33@yahoo.com',
+        gender: 'Male',
+        birthDate: new Date('10-27-2021 07:00:00'),
+        phoneNumber: '9213212878',
+        isAdmin: false,
+        password: 'sdswdawsdjbniu',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
   },
 
