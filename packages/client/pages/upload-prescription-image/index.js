@@ -11,6 +11,7 @@ import {
   HStack,
   ChakraProvider,
   Box,
+  useToast,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import Image from 'next/image';
@@ -24,6 +25,8 @@ function UploadPrescriptionImage(props) {
   const [imgSource, setimgSource] = useState(
     api_origin + `/public/prescriptionImage/default-prescription-image.png`,
   );
+
+  const toast = useToast();
 
   const onSaveUserPrescriptionImage = async () => {
     try {
@@ -45,8 +48,16 @@ function UploadPrescriptionImage(props) {
         config,
       );
 
-      alert(res.data.message);
-      router.replace('/');
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      setTimeout(() => {
+        router.replace('/');
+      }, 1000);
     } catch (error) {
       console.log({ Error });
       alert(error.response.data.message);

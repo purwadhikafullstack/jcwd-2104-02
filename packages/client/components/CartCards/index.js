@@ -82,41 +82,43 @@ export default function CartCards(props) {
   };
 
   return (
-    <div className="w-[100%] ml-[12vh] my-[3vh] columns-5  ">
+    <div className="w-[78vH] ml-[8vh] my-[4vh] columns-3  ">
       <Image
         unoptimized
         alt="resep-logo"
-        width={70}
-        height={70}
+        width={80}
+        height={80}
         src={product.productImage}
       />
-      <p className="text-[13.5px] font-[500]">{product.productName}</p>
-      <div className=" text-[#6E6E6E]">
-        Price: Rp. {product.productPrice.toLocaleString('id')}
+      <p className="text-[17px] font-[500]">{product.productName}</p>
+      <div className=" text-[#6E6E6E] text-[14px] font-[500]">
+        Harga: Rp. {product.productPrice.toLocaleString('id')}
       </div>
       <div className="flex justify-between font-semibold ">
         <Button
           width="50px"
+          marginRight={2}
           onClick={() => {
             onClickMinus();
           }}
-          colorScheme="linkedin"
+          colorScheme="messenger"
         >
           -
         </Button>
         <Input
           htmlSize={4}
-          width="60px"
+          width="70px"
           variant="outline"
           value={quantityCart}
         />
 
         <Button
           width="50px"
+          marginLeft={2}
           onClick={() => {
             onClickPlus();
           }}
-          colorScheme="linkedin"
+          colorScheme="messenger"
         >
           +
         </Button>

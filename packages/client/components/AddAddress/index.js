@@ -11,6 +11,7 @@ import {
   Select,
   Text,
   VStack,
+  useToast,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { getSession } from 'next-auth/react';
@@ -33,6 +34,8 @@ function AddAddress(props) {
   const city_name = splitCity[1];
 
   const { recipient, addressDetail, postalCode } = userAddress;
+
+  const toast = useToast();
 
   useEffect(() => {
     fetchProvince();
@@ -66,7 +69,13 @@ function AddAddress(props) {
 
       const res = await axiosInstance.post('/addresses/add', body, config);
 
-      alert(res.data.message);
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
       RenderUserAddresses();
     } catch (error) {
       console.log({ error });

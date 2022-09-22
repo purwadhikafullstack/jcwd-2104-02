@@ -14,6 +14,7 @@ import {
   ChakraProvider,
   Container,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
@@ -30,6 +31,8 @@ function Profile(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalEdit, setModalEdit] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState('');
+
+  const toast = useToast();
 
   const { name, email, gender, birthDate, phoneNumber } = user;
 
@@ -66,7 +69,13 @@ function Profile(props) {
       const resDeleteAddress = await axiosInstance.delete(
         `/addresses/${address_id}`,
       );
-      alert(resDeleteAddress.data.message);
+      toast({
+        description: resDeleteAddress.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
       RenderUserAddresses();
     } catch (error) {
       console.log({ error });
@@ -78,7 +87,13 @@ function Profile(props) {
       const resSetDefaultAddress = await axiosInstance.patch(
         `/addresses/setdefault/${address_id}`,
       );
-      alert(resSetDefaultAddress.data.message);
+      toast({
+        description: resSetDefaultAddress.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
       RenderUserAddresses();
     } catch (error) {
       console.log({ error });
@@ -99,16 +114,32 @@ function Profile(props) {
         {address.isDefault ? (
           <HStack justifyContent="space-between">
             <VStack align="start">
-              <Text fontWeight={500} fontSize={12} color="red">
+              <Text
+                fontWeight={500}
+                fontSize={{ base: '11', md: '12' }}
+                color="red"
+              >
                 Alamat Utama
               </Text>
-              <Text fontWeight={500} fontSize={13} color="gray.600">
+              <Text
+                fontWeight={500}
+                fontSize={{ base: '12', md: '13' }}
+                color="gray.600"
+              >
                 Penerima: {address.recipient}
               </Text>
-              <Text fontWeight={500} fontSize={13} color="gray.600">
+              <Text
+                fontWeight={500}
+                fontSize={{ base: '12', md: '13' }}
+                color="gray.600"
+              >
                 {address.addressDetail}
               </Text>
-              <Text fontWeight={500} fontSize={13} color="gray.600">
+              <Text
+                fontWeight={500}
+                fontSize={{ base: '12', md: '13' }}
+                color="gray.600"
+              >
                 {address.city_name}, {address.province}, {address.postalCode}
               </Text>
             </VStack>

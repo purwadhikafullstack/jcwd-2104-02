@@ -15,7 +15,7 @@ const getUserPrescription = async (req, res, next) => {
 
     res.send({
       status: 'Success',
-      message: 'Success get User prescription',
+      message: 'Get User Prescription Success',
       data: resGetUserPrescription,
     });
   } catch (error) {

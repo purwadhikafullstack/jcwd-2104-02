@@ -27,7 +27,7 @@ const createUserPrescriptionImage = async (req, res, next) => {
 
     res.send({
       status: 'Success',
-      message: 'Success upload prescription image',
+      message: 'Upload Prescription Image Success',
     });
   } catch (error) {
     next(error);

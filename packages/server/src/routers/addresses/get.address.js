@@ -15,7 +15,7 @@ const getUserAddresses = async (req, res, next) => {
 
     res.send({
       status: 'Success',
-      message: 'Success get address lists',
+      message: 'Get All User Addresses Success',
       data: resGetUserAddresses,
     });
   } catch (error) {
@@ -35,7 +35,7 @@ const getUserDefaultAddress = async (req, res, next) => {
 
     res.send({
       status: 'Success',
-      message: 'Success get user default address',
+      message: 'Get User Default Address Success',
       data: resGetUserAddresses,
     });
   } catch (error) {
