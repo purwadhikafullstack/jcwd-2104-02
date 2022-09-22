@@ -99,16 +99,16 @@ function Profile(props) {
         {address.isDefault ? (
           <HStack justifyContent="space-between">
             <VStack align="start">
-              <Text fontWeight={500} fontSize={11} color="red">
+              <Text fontWeight={500} fontSize={12} color="red">
                 Alamat Utama
               </Text>
-              <Text fontWeight={500} fontSize={12} color="gray.600">
+              <Text fontWeight={500} fontSize={13} color="gray.600">
                 Penerima: {address.recipient}
               </Text>
-              <Text fontWeight={500} fontSize={12} color="gray.600">
+              <Text fontWeight={500} fontSize={13} color="gray.600">
                 {address.addressDetail}
               </Text>
-              <Text fontWeight={500} fontSize={12} color="gray.600">
+              <Text fontWeight={500} fontSize={13} color="gray.600">
                 {address.city_name}, {address.province}, {address.postalCode}
               </Text>
             </VStack>
@@ -116,13 +116,13 @@ function Profile(props) {
         ) : (
           <HStack justifyContent="space-between">
             <VStack align="start">
-              <Text fontWeight={500} fontSize={12} color="gray.600">
+              <Text fontWeight={500} fontSize={13} color="gray.600">
                 Penerima: {address.recipient}
               </Text>
-              <Text fontWeight={500} fontSize={12} color="gray.600">
+              <Text fontWeight={500} fontSize={13} color="gray.600">
                 {address.addressDetail}
               </Text>
-              <Text fontWeight={500} fontSize={12} color="gray.600">
+              <Text fontWeight={500} fontSize={13} color="gray.600">
                 {address.city_name}, {address.province}, {address.postalCode}
               </Text>
             </VStack>
@@ -137,7 +137,7 @@ function Profile(props) {
                   onClick={() => onSetDefaultAddress(address.address_id)}
                 >
                   <VStack>
-                    <Text fontSize={10} fontWeight="500" color="red">
+                    <Text fontSize={11} fontWeight="500" color="red">
                       Set Default
                     </Text>
                   </VStack>
@@ -326,7 +326,19 @@ function Profile(props) {
                           </Button>
                         </HStack>
                       </HStack>
-                      <VStack>{renderAddresses()}</VStack>
+                      {addresses.length ? (
+                        <VStack>{renderAddresses()}</VStack>
+                      ) : (
+                        <VStack>
+                          <Text
+                            fontWeight={500}
+                            fontSize={14.5}
+                            color="gray.600"
+                          >
+                            Belum ada alamat
+                          </Text>
+                        </VStack>
+                      )}
                     </VStack>
                   </Box>
                 </VStack>
@@ -391,7 +403,15 @@ function Profile(props) {
                   </HStack>
                 </HStack>
                 <VStack paddingTop={1} alignSelf="start" paddingBottom={5}>
-                  <VStack>{renderAddresses()}</VStack>
+                  {addresses.length ? (
+                    <VStack>{renderAddresses()}</VStack>
+                  ) : (
+                    <VStack>
+                      <Text fontWeight={500} fontSize={13} color="#B7B7B7">
+                        Belum ada alamat
+                      </Text>
+                    </VStack>
+                  )}
                 </VStack>
                 <Image src="/profile/line.png" width={327} height={1.5} />
                 <VStack alignSelf="start" paddingTop={1}>
