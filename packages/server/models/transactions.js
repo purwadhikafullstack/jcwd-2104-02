@@ -14,8 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       transactions.belongsTo(models.prescriptions, {
         foreignKey: 'prescription_id',
       });
-      transactions.belongsTo(models.addresses, {
+      transactions.hasOne(models.addresses, {
         foreignKey: 'address_id',
+      });
+      transactions.hasMany(models.transaction_details, {
+        foreignKey: 'transaction_id',
       });
     }
   }
@@ -53,6 +56,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
+      },
+      totalPrice: {
+        type: DataTypes.INTEGER,
       },
       status: {
         type: DataTypes.ENUM(

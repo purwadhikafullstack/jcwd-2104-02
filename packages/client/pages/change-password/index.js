@@ -52,7 +52,7 @@ function ChangePassword(props) {
         body,
         config,
       );
-      console.log({ resUpdatePassword });
+      // console.log({ resUpdatePassword });
       alert('Password Updated');
       router.replace('/');
     } catch (error) {

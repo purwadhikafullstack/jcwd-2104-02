@@ -10,7 +10,8 @@ const schedule = require('node-schedule');
 const postTransaction = async (req, res, next) =>{
   try {
     const {user_id} = req.user
-
+    const {totalPrice} = req.body
+    // console.log(totalPrice)
     const resFindCarts = await carts.findAll({
       where: {
         user_id,
@@ -24,13 +25,15 @@ const postTransaction = async (req, res, next) =>{
       const resCreateTransaction = await transactions.create({
         user_id,
         // mapCarts
-        // totalPrice: countTotalPrice()
+        totalPrice: totalPrice,
         // address_id,
         // paymentProof,
       });
-      console.log(resCreateTransaction)
+      // console.log(resCreateTransaction)
+
+      // await resFindCarts.destroy({ where: { user_id } });
       
-      const dueDate = moment(resCreateTransaction.dataValues.createdAt).add(20, 'seconds')
+      const dueDate = moment(resCreateTransaction.dataValues.createdAt).add(10, 'seconds')
 
       const productExist = await Promise.all(
         resFindCarts.map(async (data) =>{
@@ -46,7 +49,7 @@ const postTransaction = async (req, res, next) =>{
       )
 
       schedule.scheduleJob(new Date(dueDate), async () =>{
-        console.log("disini")
+        // console.log("disini")
         const checkingStatus = await transactions.findOne({
           where: {
             transaction_id: resCreateTransaction.dataValues.transaction_id,
@@ -74,8 +77,6 @@ const postTransaction = async (req, res, next) =>{
       }
       })
     })
-
-
     resFindCarts.forEach(async (data) => {
       const updateProduct = await products.findOne({
           where: {product_id: data.dataValues.product_id}})
@@ -83,7 +84,7 @@ const postTransaction = async (req, res, next) =>{
       {productStock: updateProduct.dataValues.productStock - data.dataValues.quantity},
         {where: {product_id: data.dataValues.product_id}
     })
-    console.log("jalan")
+    // console.log("jalan")
   })
 
     res.send({
@@ -93,13 +94,21 @@ const postTransaction = async (req, res, next) =>{
         productExist,
       },
     });
+
     resFindCarts.forEach(async (data) => {
       await transaction_details.create({
+        user_id: data.dataValues.user_id,
         quantity: data.dataValues.quantity,
         product_id: data.dataValues.product_id,
         transaction_id: resCreateTransaction.dataValues.transaction_id,
       });
     });
+    console.log("disini")
+
+
+    // if(a){ 
+    // }
+    //  await resFindCarts.destroy({ where: { user_id } });
   } catch (error) {
     next(error)
   }

@@ -23,7 +23,7 @@ function ProductCatalog(props) {
 
   const router = useRouter();
   const { session } = props;
-  console.log(session);
+  // console.log(session);
   // console.log({ props });
   // console.log(props.products);
 

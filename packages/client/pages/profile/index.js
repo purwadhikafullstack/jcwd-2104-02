@@ -541,7 +541,7 @@ export async function getServerSideProps(context) {
     };
 
     const user_id = session.user.user.user_id;
-    console.log(user_id)
+    // console.log(user_id)
     const userRes = await axiosInstance.get(
       `/users/profile/${user_id}`,
       config,

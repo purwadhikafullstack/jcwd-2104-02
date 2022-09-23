@@ -95,41 +95,36 @@ async function sendResetPasswordMailController(req, res, next) {
   }
 }
 
+// const resendEmailVerification = async (req, res, next) => {
+//   try {
+//     const { email, userId } = req.body;
+    
+//     const token = createToken({ userId, email });
+    
+//     await users.update({ user_token: token }, { where: { user_id: userId } });
+    
+//   await sendMail({ email, token });
+
+//   res.send({
+//     status: 'success',
+//     message: 'success resend verification',
+//     data: {
+//       result: updateToken,
+//     },
+//   });
+
+
+// } catch (error) {
+//   next(error)
+// }
+// }
+
 async function resetPassword(req, res, next) {
   try {
     const { token } = req.params;
-const resendEmailVerification = async (req, res, next) => {
-try {
-  const { email, userId } = req.body;
+const verifiedToken = verifyToken(token);
 
-  const token = createToken({ userId, email });
-
-  await users.update({ user_token: token }, { where: { user_id: userId } });
-
-  await sendMail({ email, token });
-
-  res.send({
-    status: 'success',
-    message: 'success resend verification',
-    data: {
-      result: updateToken,
-    },
-  });
-
-
-} catch (error) {
-  next(error)
-}
-}
-
-
-
-router.post("/register", registerUserController)
-router.post("/resendVerif", resendEmailVerification)
-
-    const verifiedToken = verifyToken(token);
-
-    const { email } = verifiedToken;
+const { email } = verifiedToken;
 
     const hashedPassword = hash(req.body.newPassword);
 
@@ -195,6 +190,7 @@ const loginUser = async (req, res, next) => {
 
 router.post('/sendResetPasswordMail', sendResetPasswordMailController);
 router.post('/resetPassword/:token', resetPassword);
+// router.post('/resendVerif', resendEmailVerification);
 router.post('/register', registerUserController);
 router.post('/login', loginUser);
 

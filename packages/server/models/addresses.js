@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
       addresses.hasOne(models.users, {
         foreignKey: 'user_id',
       });
+      addresses.belongsTo(models.transactions, {
+        foreignKey: 'transactions_id',
+      });
     }
   }
   addresses.init(

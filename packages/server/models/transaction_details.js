@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      transaction_details.hasOne(models.transactions, {
+      transaction_details.belongsTo(models.transactions, {
         foreignKey: 'transaction_id',
       });
       transaction_details.hasOne(models.users, {
@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       });
       transaction_details.hasOne(models.carts, {
         foreignKey: 'cart_id',
+      });
+      transaction_details.belongsTo(models.products, {
+        foreignKey: 'product_id',
       });
     }
   }

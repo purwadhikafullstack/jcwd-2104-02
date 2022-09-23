@@ -23,11 +23,11 @@ function Login() {
   async function getSessionAsync() {
     const session = await getSession();
 
-    console.log({ session });
+    // console.log({ session });
     if (session) {
       // router.replace('/');
     }
-    console.log({ session });
+    // console.log({ session });
   }
 
   useEffect(() => {
@@ -69,12 +69,12 @@ function Login() {
       password,
     });
 
-    console.log(`ini dia ${res}`);
-    console.log({ res });
+    // console.log(`ini dia ${res}`);
+    // console.log({ res });
     if (!res.error) {
       router.replace('/');
     } else {
-      console.log(res.error);
+      // console.log(res.error);
       alert(res.error);
     }
   };

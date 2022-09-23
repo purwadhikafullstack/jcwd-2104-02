@@ -72,6 +72,7 @@ function Cart(props) {
     try {
       const session = await getSession();
       const { user_id } = props;
+      // console.log(user_id)
 
       const { user_token } = session.user;
 
@@ -95,6 +96,32 @@ function Cart(props) {
     );
     return result;
   };
+
+  const onCheckoutClick = async () => {
+    try {
+      setCartsPrice(countTotalPrice());
+      const session = await getSession();
+      const {user_id} = props;
+      const {user_token} = session.user;
+      const config = {
+        headers: {Authorization: `Bearer ${user_token}`}
+      }
+      const body = {totalPrice: cartsPrice};
+      const res = await axiosInstance.post(
+        `/transactions/createTransaction/`,
+        body,
+        config,
+      );
+    } catch (error) {
+      alert(alert.message)
+    }
+  }
+
+  // const total = countTotalPrice();
+  // const PPN = subTotal * 0.11;
+  // const total = subTotal + PPN;
+
+  // console.log(`TOTALNYAAAAAAAAAA BOSQQQQQ ${subTotal}`);
 
   function mappedProducts() {
     return carts.map((cart, index) => {
@@ -317,6 +344,7 @@ function Cart(props) {
                   colorScheme="messenger"
                   fontWeight={500}
                   width={250}
+                  onClick={onCheckoutClick}
                 >
                   Lanjutkan Pembayaran
                 </Button>
