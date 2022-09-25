@@ -4,6 +4,7 @@ import {
   Input,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -14,60 +15,65 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import axiosInstance from '../../src/config/api';
-import { useRouter } from 'next/router';
 
-function AddProductModal({
-  addProductButton,
-  setAddProductButton,
+function EditProductModal({
+  currentProduct,
+  editProductButton,
+  setEditProductButton,
   categoriesLists,
 }) {
-  const [productStock, setProductStock] = useState(1);
+  const [productStock, setProductStock] = useState(currentProduct.productStock);
   const [loading, setLoading] = useState(false);
   const [productImageFile, setProductImageFile] = useState();
-  const [newProductImage, setNewProductImage] = useState(
-    '/admin/TambahProduk.svg',
-  );
   const [productInputs, setProductInputs] = useState({
-    categoryInfo: '',
-    description: '',
-    packageType: '',
-    productImage: '',
-    productName: '',
-    productPrice: '',
-    productStock: '',
-    defaultQuantity: '',
-    servingType: '',
+    categoryInfo: `${currentProduct.category_lists_id}=-=${currentProduct.category}`,
+    description: currentProduct.description,
+    packageType: currentProduct.packageType,
+    productImage: currentProduct.productImage,
+    productName: currentProduct.productName,
+    productPrice: currentProduct.productPrice,
+    productStock: currentProduct.productStock,
+    defaultQuantity: currentProduct.defaultQuantity,
+    servingType: currentProduct.servingType,
   });
+  const [newProductImage, setNewProductImage] = useState(
+    currentProduct.productImage,
+  );
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    if (addProductButton) {
+    if (editProductButton) {
       onOpen();
-    } else if (!addProductButton) {
+    } else if (!editProductButton) {
       onClose();
     }
 
-    setProductInputs({ ...productInputs, productStock });
-  }, [addProductButton, loading, productStock]);
-
-  const handleChange = (prop) => (event) => {
-    setProductInputs({ ...productInputs, [prop]: event.target.value });
-  };
-
-  function handleImageChange(event) {
-    setNewProductImage(URL.createObjectURL(event.target.files[0]));
     setProductInputs({
-      ...productInputs,
-      productImage: event.target.files[0].name,
+      categoryInfo: `${currentProduct.category_lists_id}=-=${currentProduct.category}`,
+      description: currentProduct.description,
+      packageType: currentProduct.packageType,
+      productImage: currentProduct.productImage,
+      productName: currentProduct.productName,
+      productPrice: currentProduct.productPrice,
+      productStock,
+      defaultQuantity: currentProduct.defaultQuantity,
+      servingType: currentProduct.servingType,
     });
-    setProductImageFile(event.target.files[0]);
-  }
+    setNewProductImage(currentProduct.productImage);
+  }, [editProductButton, productStock]);
 
-  async function saveProductButtonClick() {
+  useEffect(() => {
+    setProductStock(currentProduct.productStock);
+  }, [currentProduct]);
+
+  // console.log({ productInputs, currentProduct });
+
+  async function updateProductClick() {
     try {
       setLoading(true);
 
-      if (Object.values(productInputs).includes('')) {
+      if (Object.values(productInputs).includes('' || undefined)) {
         alert('tolong isi semua');
         setLoading(false);
         return;
@@ -81,28 +87,31 @@ function AddProductModal({
         headers: { 'Content-Type': 'multipart/form-data' },
       };
 
-      const resAddProduct = await axiosInstance.post(
-        '/products/newProduct',
-        productInputs,
+      const resAddProduct = await axiosInstance.patch(
+        `/products/productsUpdate/${currentProduct.product_id}`,
+        {
+          productInputs,
+          currentProduct,
+        },
       );
 
       const extName = productInputs.productImage.split('.');
 
-      const resAddProductImage = await axiosInstance.post(
-        `/products/newProductImage/${resAddProduct.data.resCreateProduct.product_id}.${extName[1]}`,
-        productImageFileBody,
-        config,
-      );
+      //   const resAddProductImage = await axiosInstance.post(
+      //     `/products/newProductImage/${resAddProduct.data.resCreateProduct.product_id}.${extName[1]}`,
+      //     productImageFileBody,
+      //     config,
+      //   );
 
       if (resAddProduct) {
-        console.log({ resAddProduct, resAddProductImage });
+        console.log({ resAddProduct, extName });
         setLoading(false);
-        setAddProductButton(false);
+        setEditProductButton(false);
       }
     } catch (error) {
       console.log({ error });
       setLoading(false);
-      setAddProductButton(false);
+      setEditProductButton(false);
     }
   }
 
@@ -119,16 +128,29 @@ function AddProductModal({
     });
   }
 
+  function handleImageChange(event) {
+    setNewProductImage(URL.createObjectURL(event.target.files[0]));
+    setProductInputs({
+      ...productInputs,
+      productImage: event.target.files[0].name,
+    });
+    setProductImageFile(event.target.files[0]);
+  }
+
+  const handleChange = (prop) => (event) => {
+    setProductInputs({ ...productInputs, [prop]: event.target.value });
+  };
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={() => {
-        setAddProductButton(false);
+        setEditProductButton(false);
       }}
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Tambah Produk</ModalHeader>
+        <ModalHeader>Edit {currentProduct.productName}</ModalHeader>
         <ModalBody>
           <p>Foto</p>
           <div className="w-[35%] my-[.5vh] hover:cursor-pointer">
@@ -256,15 +278,15 @@ function AddProductModal({
               isLoading={loading}
               colorScheme="linkedin"
               onClick={() => {
-                saveProductButtonClick();
+                updateProductClick();
               }}
             >
-              Simpan
+              Update
             </Button>
             <Button
               style={{ width: '40%' }}
               onClick={() => {
-                setAddProductButton(false);
+                setEditProductButton(false);
                 setProductInputs({
                   categoryInfo: '',
                   description: '',
@@ -288,4 +310,4 @@ function AddProductModal({
   );
 }
 
-export default AddProductModal;
+export default EditProductModal;
