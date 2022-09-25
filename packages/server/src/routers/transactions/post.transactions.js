@@ -1,10 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const {transactions, carts, products, transaction_details} = require("../../../models")
+const {
+  transactions,
+  carts,
+  products,
+  transaction_details,
+  addresses,
+} = require('../../../models');
 const moment = require('moment')
 const { auth } = require('../../helpers/auth');
 const { Op } = require('sequelize');
 const schedule = require('node-schedule');
+
 
 
 const postTransaction = async (req, res, next) =>{
@@ -108,7 +115,142 @@ const postTransaction = async (req, res, next) =>{
 
     // if(a){ 
     // }
-    //  await resFindCarts.destroy({ where: { user_id } });
+     await resFindCarts.destroy({ where: { user_id } });
+  } catch (error) {
+    next(error)
+  }
+}
+
+const getTransactionsByIndex = async (req,res,next)=>{
+  try {
+    const {selected}= req.body
+
+    let statusFind 
+
+    switch (selected) {
+      case 1:
+        statusFind= 'processing_order';
+        break;
+      case 2:
+        statusFind= 'delivering_order';
+        break;
+      case 3:
+        statusFind= 'order_confirmed';
+        break;
+      case 4:
+        statusFind= 'order_cancelled';
+        break;
+      case 5:
+        statusFind= 'awaiting_payment';
+        break;
+      case 6:
+        statusFind= 'awaiting_payment_confirmation';
+        break;
+
+      default:
+    const { user_id } = req.params;
+    console.log(user_id);
+    const resFetchTransactions = await transactions.findAll({
+      where: { user_id },
+      attributes: [
+        'transaction_id',
+        'prescription_id',
+        'user_id',
+        'address_id',
+        'totalPrice',
+        'status',
+      ],
+
+      include: [
+        {
+          model: transaction_details,
+          include: [
+            {
+              model: products,
+            },
+          ],
+        },
+      ],
+    });
+    // console.log("bangggg")
+    const resFetchAddress = await addresses.findAll({
+      where: { address_id: resFetchTransactions[0].address_id },
+      attributes: [
+        `address_id`,
+        `user_id`,
+        `addressDetail`,
+        `recipient`,
+        `postalCode`,
+        `province_id`,
+        `province`,
+        `city_id`,
+        `city_name`,
+        `isDefault`,
+      ],
+    });
+
+    res.send({
+      status: 'success',
+      message: 'Fetch Transaction Success',
+      data: {
+        resFetchTransactions,
+        resFetchAddress,
+      },
+    });
+    }
+
+    console.log({statusFind,selected});
+
+    const { user_id } = req.params;
+    console.log(user_id);
+    const resFetchTransactions = await transactions.findAll({
+      where: { user_id, status:statusFind },
+      attributes: [
+        'transaction_id',
+        'prescription_id',
+        'user_id',
+        'address_id',
+        'totalPrice',
+        'status',
+      ],
+
+      include: [
+        {
+          model: transaction_details,
+          include: [
+            {
+              model: products,
+            },
+          ],
+        },
+      ],
+    });
+    // console.log("bangggg")
+    // const resFetchAddress = await addresses.findAll({
+    //   where: { address_id: resFetchTransactions[0].address_id },
+    //   attributes: [
+    //     `address_id`,
+    //     `user_id`,
+    //     `addressDetail`,
+    //     `recipient`,
+    //     `postalCode`,
+    //     `province_id`,
+    //     `province`,
+    //     `city_id`,
+    //     `city_name`,
+    //     `isDefault`,
+    //   ],
+    // });
+
+    res.send({
+      status: 'success',
+      message: 'Fetch Transaction Success',
+      data: {
+        resFetchTransactions,
+        // resFetchAddress,
+      },
+    });
+
   } catch (error) {
     next(error)
   }
@@ -116,5 +258,6 @@ const postTransaction = async (req, res, next) =>{
 
 
 router.post('/createTransaction', auth, postTransaction);
+router.post("/getTransactionsByIndex/:user_id",getTransactionsByIndex)
 
 module.exports = router

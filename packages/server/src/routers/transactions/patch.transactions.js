@@ -10,12 +10,15 @@ const moment = require('moment');
 const { auth } = require('../../helpers/auth');
 const { Op } = require('sequelize');
 const schedule = require('node-schedule');
+const { uploadPayment } = require('../../lib/multer');
 
 
 
 const patchTransaction = async (req, res, next)=>{
     try {
-            const { transaction_id, status } = req.body;
+            const { transStatus, trans } = req.body;
+            // console.log({transStatus,trans})
+            const {transaction_id}= trans
 
             const resFindTransaction = await transactions.findOne({
               where: { transaction_id, status: "awaiting_payment" },
@@ -27,7 +30,7 @@ const patchTransaction = async (req, res, next)=>{
             if (resFindTransaction.dataValues) {
             const resPaymentSuccess = await transactions.update(
             {
-              status,
+              status:transStatus,
             },
             {where: {transaction_id}},
             );
@@ -45,8 +48,45 @@ const patchTransaction = async (req, res, next)=>{
     }
 }
 
+const updatePaymentProof = async (req, res, next) => {
+  try {
+    const { transaction_id } = req.params;
+    const { filename } = req.file;
+    const finalFileName = `/public/paymentProof/${filename}`;
+
+    console.log({transaction_id});
+
+    const resUpdateAvatar = await transaction_details.update(
+      {
+        paymentProof: finalFileName,
+      },
+      {
+        where: {
+          transaction_id,
+          // user_id
+        },
+      },
+    );
+
+    if (resUpdateAvatar.affectedRows)
+      throw { message: 'Failed to upload Payment Proof' };
+
+    res.send({
+      status: 'Success',
+      message: 'Success upload payment proof',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 
 router.patch('/patchTransaction', auth, patchTransaction)
+router.patch(
+  '/paymentProof/:transaction_id',
+  auth,
+  uploadPayment.single('paymentProof'),
+  updatePaymentProof,
+);
 
 module.exports = router

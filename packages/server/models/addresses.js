@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'user_id',
       });
       addresses.belongsTo(models.transactions, {
-        foreignKey: 'transactions_id',
+        foreignKey: 'address_id',
       });
     }
   }

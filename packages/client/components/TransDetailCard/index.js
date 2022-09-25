@@ -1,4 +1,6 @@
-import { Button, Icon, Input } from '@chakra-ui/react';
+import { Button, Icon, Input, 
+  Box, Flex, Center, 
+  Square, Text, VStack } from '@chakra-ui/react';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { getSession } from 'next-auth/react';
@@ -6,84 +8,45 @@ import axiosInstance from '../../src/config/api';
 import { DeleteIcon, AddIcon, WarningIcon } from '@chakra-ui/icons';
 import axios from 'axios';
 
-export default function CartCards(props) {
-  //, totalPrice, fetchCarts
-  const { product, quantity, totalPrice, fetchCarts } = props;
-  const [quantityCart, setQuantityCart] = useState(quantity);
+export default function TransDetailCard(props) {
+  // console.log(props)
+  const {
+    product,
+    quantity,
+    productPrice,
+    fetchCarts,
+    productName,
+    productImage,
+    status,
+    city_name
+  } = props;
+  // console.log(name)
+//   const [quantityCart, setQuantityCart] = useState(quantity);
+  // const rawStatus = status.split("_")
 
   return (
-    <div className="w-[100%] ml-[12vh] my-[3vh] columns-5  ">
-      <Image
-        unoptimized
-        alt="resep-logo"
-        width={70}
-        height={70}
-        src={product.productImage}
-      />
-      <p className="text-[13.5px] font-[500]">{product.productName}</p>
-      <div className=" text-[#6E6E6E]">
-        Price: Rp. {product.productPrice.toLocaleString('id')}
-      </div>
-      <div className="flex justify-between font-semibold ">
-        {quantity < 2 ? (
-          <Button
-            isDisabled
-            width="50px"
-            onClick={() => {
-              onClickMinus();
+      <div className="flex items-center h-[20vh] w-[100%] my-[3vh] rounded-[1vw] shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]">
+        
+        <div className="h-[11vh] w-[11vh] bg-black ml-[2vw]">
+          <Image
+            unoptimized
+            alt="resep-logo"
+            width={1}
+            height={1}
+            layout="responsive"
+            src={productImage}
+            loader={() => {
+              return productImage;
             }}
-            colorScheme="linkedin"
-          >
-            -
-          </Button>
-        ) : (
-          <Button
-            width="50px"
-            onClick={() => {
-              onClickMinus();
-            }}
-            colorScheme="linkedin"
-          >
-            -
-          </Button>
-        )}
-        {/* <Button
-          width="50px"
-          onClick={() => {
-            onClickMinus();
-          }}
-          colorScheme="linkedin"
-        >
-          -
-        </Button> */}
-        <Input
-          htmlSize={4}
-          width="60px"
-          variant="outline"
-          value={quantityCart}
-        />
-
-        <Button
-          width="50px"
-          onClick={() => {
-            onClickPlus();
-          }}
-          colorScheme="linkedin"
-        >
-          +
-        </Button>
-
-        <Button
-          onClick={() => {
-            deleteProduct();
-          }}
-          size={'xl'}
-          variant={'ghost'}
-          ml={3}
-        >
-          <DeleteIcon></DeleteIcon>
-        </Button>
+          />
+        </div>
+        <div className="flex flex-col w-[40%] ml-[2vw]">
+          <p>{productName}</p>
+          <p>{quantity} Buah</p>
+        </div>
+        <div>
+          <p>Rp. {productPrice.toLocaleString('id')}</p>
+        </div>
       </div>
-    </div>
   );
 }

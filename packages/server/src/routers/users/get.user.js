@@ -117,6 +117,19 @@ const getUserProfileController = async (req, res, next) => {
     const resGetUser = await users.findAll({
       where: user_id,
       raw: true,
+      // attributes: [
+        
+      //   // 'address_id',
+      //   'user_id',
+      //   // 'addressDetail',
+      //   // 'recipient',
+      //   // 'postalCode',
+      //   'provinve_id',
+      //   'province',
+      //   'city_id',
+      //   'city_name',
+      //   'isDefault',
+      // ],
     });
 
     if (!resGetUser.length) throw { message: 'User not found' };
