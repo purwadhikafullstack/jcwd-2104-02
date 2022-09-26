@@ -31,8 +31,6 @@ const getUserDefaultAddress = async (req, res, next) => {
       where: { user_id, isDefault: true },
     });
 
-    if (!resGetUserAddresses) throw { message: 'Address not found' };
-
     res.send({
       status: 'Success',
       message: 'Get User Default Address Success',
