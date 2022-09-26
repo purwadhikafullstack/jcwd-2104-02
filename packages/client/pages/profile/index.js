@@ -388,7 +388,7 @@ function Profile(props) {
                   </NextLink>
                 </VStack>
                 <VStack alignSelf="start">
-                  <NextLink href="/">
+                  <NextLink href="/productCatalog/semuaObat=1">
                     <Link>
                       <HStack>
                         <Image
