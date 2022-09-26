@@ -122,11 +122,14 @@ function Cart(props) {
     const getDeliveryCost = parseInt(deliveryCost[1]).toLocaleString('id');
     return (
       <HStack fontWeight={500} fontSize={15}>
-        <HStack color="gray.600" marginRight={117}>
-          <Text>Biaya Pengiriman : </Text>;
+        <HStack color="gray.600" marginRight={97}>
+          <Text>Biaya Pengiriman :</Text>;
           <Text>{selectedDeliveryCost && renderCourier()}</Text>;
         </HStack>
-        <Text fontWeight={600}>Rp {getDeliveryCost}</Text>;
+        <Text fontWeight={600}>Rp</Text>
+        <HStack fontWeight={600}>
+          <Text>{getDeliveryCost}</Text>
+        </HStack>
       </HStack>
     );
   };

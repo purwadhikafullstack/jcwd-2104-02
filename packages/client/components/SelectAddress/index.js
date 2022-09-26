@@ -53,7 +53,7 @@ function SelectAddress(props) {
 
   const renderAddresses = (onClose) => {
     return addresses.map((address) => (
-      <HStack>
+      <HStack key={address.address_id}>
         <Button height="auto" width="45" bgColor="white" _hover="white">
           <Box
             paddingY={2}
