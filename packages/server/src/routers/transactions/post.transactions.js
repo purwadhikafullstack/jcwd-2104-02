@@ -255,7 +255,7 @@ const getTransactionsByIndex = async (req, res, next) => {
       message: 'Fetch Transaction Success',
       data: {
         resFetchTransactions,
-        // resFetchAddress,
+        resFetchAddress,
       },
     });
   } catch (error) {

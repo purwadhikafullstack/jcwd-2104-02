@@ -141,12 +141,14 @@ function Cart(props) {
       const config = {
         headers: {Authorization: `Bearer ${user_token}`}
       }
-      const body = {totalPrice: cartsPrice};
+      const body = {totalPrice: countTotalPrice()};
+      console.log(body)
       const res = await axiosInstance.post(
         `/transactions/createTransaction/`,
         body,
         config,
-      );
+        );
+      alert("sukses")
     } catch (error) {
       alert(alert.message)
     }

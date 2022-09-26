@@ -220,6 +220,7 @@ const getTransactions = async (req, res, next) => {
         `isDefault`,
       ],
     });
+    console.log(resFetchAddress)
 
     res.send({
       status: 'success',
