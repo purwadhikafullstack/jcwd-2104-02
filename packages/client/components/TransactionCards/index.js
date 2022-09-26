@@ -35,8 +35,8 @@ const rawStatus = status.split("_")
             height={70}
             src={productImage}
           />
-          <Box w="180px">
-            Name: {productName}
+          <Box w="180px" fontSize={"md"} fontWeight={"bold"}>
+            {productName}
           </Box>
           <Box w="180px">
             Status: {rawStatus.join(" ")}

@@ -33,6 +33,9 @@ function Cart(props) {
   const [modalSelectAddress, setModalSelectAddress] = useState(false);
   const [modalSelectCourier, setModalSelectCourier] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user_id, user_token } = props;
+  const [cartsPrice, setCartsPrice] = useState([]);
+  // console.log(cartsPrice)
 
   useEffect(() => {
     fetchCarts();
@@ -88,14 +91,16 @@ function Cart(props) {
       alert(error.message);
     }
   };
+  // console.log({ fetchCarts });
 
   const countTotalPrice = (body) => {
     const result = carts.reduce(
       (acc, curr) => acc + curr.quantity * curr.product.productPrice,
       0,
-    );
-    return result;
-  };
+      );
+      return result;
+    };
+    // console.log(")
 
   const onCheckoutClick = async () => {
     try {
@@ -106,12 +111,14 @@ function Cart(props) {
       const config = {
         headers: {Authorization: `Bearer ${user_token}`}
       }
-      const body = {totalPrice: cartsPrice};
+      const body = {totalPrice: countTotalPrice()};
+      console.log(body)
       const res = await axiosInstance.post(
         `/transactions/createTransaction/`,
         body,
         config,
-      );
+        );
+      alert("sukses")
     } catch (error) {
       alert(alert.message)
     }

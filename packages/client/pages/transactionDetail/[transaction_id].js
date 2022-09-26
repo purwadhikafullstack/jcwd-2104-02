@@ -19,55 +19,81 @@ import TransDetailCard from '../../components/TransDetailCard';
 
 
 function TransactionDetails(props) {
-  const {transaction_details, transactions} = props
+  const { transaction_details, transactions } = props;
   const [transac, setTransac] = useState(
     transaction_details.resFetchTransactionDetails,
   );
-  const [trans, setTrans] = useState(transactions.resFetchTransactions)
+  const [trans, setTrans] = useState(transactions.resFetchTransactions);
   // console.log(trans.totalPrice)
-  const [transByAddress, setTransByAddress] = useState(transactions.resFetchAddress);
-const [payment, setPayment] = useState({})
+  const [transByAddress, setTransByAddress] = useState(
+    transactions.resFetchAddress,
+  );
+  // console.log(transByAddress)
+  const [payment, setPayment] = useState({});
 
-const onFileChange = (event) => {
-  setPayment(event.target.files[0]);
-};
+  const onFileChange = (event) => {
+    setPayment(event.target.files[0]);
+  };
 
-const onSavePayment = async () => {
-  try {
-    const session = await getSession();
+  let penerima
+  let jalan
+  let kodePos
+  let provinsi
+  let kota
 
-    const { user_token } = session.user;
+  transByAddress.forEach(async (data) =>{
+    // console.log(data)
+    penerima = data.recipient
+    jalan = data.addressDetail
+    kodePos = data.postalCode
+    provinsi = data.province
+    kota = data.city_name
+  })
+  // console.log(jalan)
+  
+  const onSavePayment = async () => {
+    try {
+      const session = await getSession();
 
-    const body = new FormData();
+      const { user_token } = session.user;
 
-    body.append('paymentProof', payment);
+      const body = new FormData();
 
-    const transaction_id = trans.transaction_id
+      body.append('paymentProof', payment);
 
-    const bods = {
-      transStatus:"awaiting_payment_confirmation",
-      trans,
-    };
-    console.log(bods)
+      const transaction_id = trans.transaction_id;
 
-    const config = {
-      headers: { Authorization: `Bearer ${user_token}` },
-    };
+      const bods = {
+        transStatus: 'awaiting_payment_confirmation',
+        trans,
+      };
+      console.log(bods);
 
-    const res = await axiosInstance.patch(`/transactions/paymentProof/${transaction_id}`, body, config);
+      const config = {
+        headers: { Authorization: `Bearer ${user_token}` },
+      };
 
-    const res2 = await axiosInstance.patch('/transactions/patchTransaction', bods, config)
+      const res = await axiosInstance.patch(
+        `/transactions/paymentProof/${transaction_id}`,
+        body,
+        config,
+      );
 
-    setTrans({ ...trans, status: 'awaiting_payment_confirmation' });
+      const res2 = await axiosInstance.patch(
+        '/transactions/patchTransaction',
+        bods,
+        config,
+      );
 
-    alert(res.data.message);
-    // alert(res2.data.message);
-  } catch (error) {
-    console.log({ Error });
-    alert(error.response?.data.message);
-  }
-};
+      setTrans({ ...trans, status: 'awaiting_payment_confirmation' });
 
+      alert(res.data.message);
+      // alert(res2.data.message);
+    } catch (error) {
+      console.log({ Error });
+      alert(error.response?.data.message);
+    }
+  };
 
   function mappedTransactionDetails() {
     return transac.map((transaction, index) => {
@@ -90,46 +116,56 @@ const onSavePayment = async () => {
   }
 
   const rawStatus = trans.status.split('_');
-    
-    return (
-      <div className="w-[100vw] h-[100vh]">
-        <Navbar />
-        <div className="w-[100%] h-[100%] flex">
-          <div className="w-[50%]">
-            {/* <div className="h-[30%] w-[100%] bg-gray-500">kotak atas</div> */}
-            <div>
-              <p>Daftar Pesanan</p>
-              <div>{mappedTransactionDetails()}</div>
-            </div>
-          </div>
-          <div className="border-l-[1px] mt-[2vh] border-solid border-gray h-[100%]" />
-          <div className="w-[50%] ">
-            <p className="w-[30%] ml-3 mt-3">Ringkasan Pembayaran</p>
-            <p className="mt-[5vh] ml-[10%]">
-              Total Harga: Rp. {trans.totalPrice.toLocaleString('id')}
-            </p>
-            <p className="mt-[5vh] ml-[10%]">Metode Pengiriman: JNE</p>
-            <p className="mt-[5vh] ml-[10%]">
-              Metode Pembayaran: Transfer Bank BCA
-            </p>
-            <p className="mt-[5vh] ml-[10%]">
-              Status Pembayaran: {rawStatus.join(' ')}
-            </p>
-            <div className="mt-[5vh] ml-[10%]">
-              {' '}
-              <input type={'file'} onChange={onFileChange} />
-            </div>
-            <Button
-              onClick={onSavePayment}
-              colorScheme={'linkedin'}
-              className="mt-[5vh] ml-[10%]"
-            >
-              Unggah Bukti Pembayaran
-            </Button>
+
+  return (
+    <div className="w-[100vw] h-[100vh]">
+      <Navbar />
+      <div className="w-[100%] h-[100%] flex">
+        <div className="w-[50%]">
+          {/* <div className="h-[30%] w-[100%] bg-gray-500">kotak atas</div> */}
+          <div>
+            <p className="text-[1rem] font-[500]">Alamat Lengkap</p>
+            <br />
+            <p>Nama Pembeli : {penerima}</p>
+            <p>Alamat Pembeli : {jalan}</p>
+            <p>Provinsi : {provinsi}</p>
+            <p>Kota: {kota}</p>
+            <p>Kode Pos : {kodePos}</p>
+            <br />
+            <p className="text-[1rem] font-[500]">Daftar Pesanan</p>
+            <div>{mappedTransactionDetails()}</div>
           </div>
         </div>
+        <div className="border-l-[1px] mt-[2vh] border-solid border-gray h-[100%]" />
+        <div className="w-[50%] ">
+          <p className="w-[30%] ml-3 mt-3 text-[1rem] font-[500]">
+            Ringkasan Pembayaran
+          </p>
+          <p className="mt-[5vh] ml-[10%]">
+            Total Harga: Rp. {trans.totalPrice.toLocaleString('id')}
+          </p>
+          <p className="mt-[5vh] ml-[10%]">Metode Pengiriman: JNE</p>
+          <p className="mt-[5vh] ml-[10%]">
+            Metode Pembayaran: Transfer Bank BCA
+          </p>
+          <p className="mt-[5vh] ml-[10%]">
+            Status Pembayaran: {rawStatus.join(' ')}
+          </p>
+          <div className="mt-[5vh] ml-[10%]">
+            {' '}
+            <input type={'file'} onChange={onFileChange} />
+          </div>
+          <Button
+            onClick={onSavePayment}
+            colorScheme={'linkedin'}
+            className="mt-[5vh] ml-[10%]"
+          >
+            Unggah Bukti Pembayaran
+          </Button>
+        </div>
       </div>
-    );
+    </div>
+  );
 }
 
 export async function getServerSideProps(context) {
@@ -154,7 +190,7 @@ export async function getServerSideProps(context) {
     );
     const resgetTransactionById = await axiosInstance.get(`/transactions/transById/${transaction_id}`,config)
 
-    // console.log(resgetTransactionById.data.resFetchAddress);
+    // console.log(resgetTransactionById.data);
 
     // if (!resGetProduct) return { redirect: { destination: '/' } };
 

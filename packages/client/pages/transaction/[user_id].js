@@ -73,7 +73,7 @@ function Transaction(props) {
       );
     });
   }
-  console.log(mappedTransactions())
+  // console.log(mappedTransactions())
 
   return (
     <div>

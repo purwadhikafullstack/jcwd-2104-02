@@ -23,11 +23,7 @@ const postTransaction = async (req, res, next) =>{
       where: {
         user_id,
       },
-      
-      // include: [products],
     });
-
-    // console.log(resFindCarts)
 
       const resCreateTransaction = await transactions.create({
         user_id,
@@ -75,24 +71,29 @@ const postTransaction = async (req, res, next) =>{
         const updateProduct = await products.findOne({
           where: {product_id: data.dataValues.product_id}
         })
-        console.log(updateProduct)
+        // console.log(updateProduct)
         await products.update(
           {productStock: updateProduct.dataValues.productStock + data.dataValues.quantity},
           {where: {product_id: data.dataValues.product_id}}
         )
-        console.log("sukses ngab")
+        // console.log("sukses ngab")
       }
       })
     })
     resFindCarts.forEach(async (data) => {
       const updateProduct = await products.findOne({
-          where: {product_id: data.dataValues.product_id}})
-          await products.update(
-      {productStock: updateProduct.dataValues.productStock - data.dataValues.quantity},
-        {where: {product_id: data.dataValues.product_id}
+        where: { product_id: data.dataValues.product_id },
+      });
+      await products.update(
+        {
+          productStock:
+            updateProduct.dataValues.productStock - data.dataValues.quantity,
+        },
+        { where: { product_id: data.dataValues.product_id } },
+      );
+      // console.log("jalan")
+      //  await carts.destroy({ where: { user_id } });
     })
-    // console.log("jalan")
-  })
 
     res.send({
       status: 'success',
@@ -110,12 +111,12 @@ const postTransaction = async (req, res, next) =>{
         transaction_id: resCreateTransaction.dataValues.transaction_id,
       });
     });
-    console.log("disini")
+    // console.log("disini")
 
 
     // if(a){ 
     // }
-     await resFindCarts.destroy({ where: { user_id } });
+    
   } catch (error) {
     next(error)
   }
@@ -226,28 +227,28 @@ const getTransactionsByIndex = async (req,res,next)=>{
       ],
     });
     // console.log("bangggg")
-    // const resFetchAddress = await addresses.findAll({
-    //   where: { address_id: resFetchTransactions[0].address_id },
-    //   attributes: [
-    //     `address_id`,
-    //     `user_id`,
-    //     `addressDetail`,
-    //     `recipient`,
-    //     `postalCode`,
-    //     `province_id`,
-    //     `province`,
-    //     `city_id`,
-    //     `city_name`,
-    //     `isDefault`,
-    //   ],
-    // });
+    const resFetchAddress = await addresses.findAll({
+      where: { address_id: resFetchTransactions[0].address_id },
+      attributes: [
+        `address_id`,
+        `user_id`,
+        `addressDetail`,
+        `recipient`,
+        `postalCode`,
+        `province_id`,
+        `province`,
+        `city_id`,
+        `city_name`,
+        `isDefault`,
+      ],
+    });
 
     res.send({
       status: 'success',
       message: 'Fetch Transaction Success',
       data: {
         resFetchTransactions,
-        // resFetchAddress,
+        resFetchAddress,
       },
     });
 
