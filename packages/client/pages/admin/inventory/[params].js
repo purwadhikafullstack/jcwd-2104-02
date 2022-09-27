@@ -7,6 +7,9 @@ import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
 import axiosInstance from '../../../src/config/api';
 import Link from 'next/link';
+import AddProductModal from '../../../components/AddProductModal';
+import AdminProductDetails from '../../../components/adminProductDetails';
+import EditProductModal from '../../../components/editProductModal';
 
 function Inventory(props) {
   const router = useRouter();
@@ -15,8 +18,10 @@ function Inventory(props) {
   const [productList, setProductList] = useState(props.products);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
-
-  console.log({ props });
+  const [currentProduct, setCurrentProduct] = useState(props.products[0]);
+  const [addProductButton, setAddProductButton] = useState(false);
+  const [openProductDetails, setOpenProductDetails] = useState(false);
+  const [editProductButton, setEditProductButton] = useState(false);
 
   useEffect(() => {
     const { params } = router.query;
@@ -32,7 +37,7 @@ function Inventory(props) {
     return props.categoriesLists.categories.map((category) => {
       return (
         <div
-          key={category.category_id}
+          key={category.category_lists_id}
           onClick={() => {
             router.replace(`/admin/inventory/${category.category}=1`);
             setCurrentPage(1);
@@ -53,18 +58,24 @@ function Inventory(props) {
   }
 
   function productMap() {
-    return productList?.map((product) => {
+    return productList?.map((product, index) => {
       return (
         <div
           key={product.product_id}
           className="w-[90%] mb-[1%] h-[30%] flex-none flex flex-col items-end bg-white"
         >
-          <div className="pl-[1.5vw] flex w-[100%] bg-[#008DEB]">
-            Product ID:{product.product_id}
+          <div className="pl-[1.5vw] flex w-[100%] bg-[#008DEB] text-white">
+            Product ID: {product.product_id}
           </div>
 
           <div className="w-[100%] h-[85%] flex-none flex justify-center items-center">
-            <div className="w-[7vw] ml-[1.5vw] hover:cursor-pointer">
+            <div
+              onClick={() => {
+                setCurrentProduct(product);
+                setOpenProductDetails(true);
+              }}
+              className="w-[7vw] ml-[1.5vw] hover:cursor-pointer"
+            >
               <Image
                 unoptimized
                 alt="resep-logo"
@@ -80,9 +91,9 @@ function Inventory(props) {
 
             <div className="flex flex-col w-[40%] text-black h-[7vw] justify-center pl-[2vw] text-[#6E6E6E]">
               <p className="font-[500] text-[1.5rem]">
-                {product.productName.length <= 25
+                {product.productName.length <= 40
                   ? product.productName
-                  : `${product.productName.slice(0, 20)}...`}
+                  : `${product.productName.slice(0, 40)}...`}
               </p>
               <p className="text-[1.1rem] font-[400]">
                 Rp.{product.productPrice.toLocaleString('id')}
@@ -98,6 +109,10 @@ function Inventory(props) {
               <Button
                 variant="outline"
                 colorScheme="linkedin"
+                onClick={() => {
+                  setCurrentProduct(product);
+                  setEditProductButton(true);
+                }}
                 sx={{ width: '100%', height: '5vh' }}
               >
                 <p className="text-[12px]">Edit</p>
@@ -105,6 +120,10 @@ function Inventory(props) {
               <Button
                 variant="outline"
                 colorScheme="red"
+                onClick={() => {
+                  deleteProduct(product.product_id);
+                  setProductList(props.products.splice(index, 1));
+                }}
                 sx={{ width: '100%', height: '5vh' }}
               >
                 <p className="text-[12px]">Hapus</p>
@@ -116,6 +135,18 @@ function Inventory(props) {
     });
   }
 
+  async function deleteProduct(product_id) {
+    try {
+      const resDeleteProduct = await axiosInstance.delete(
+        `/products/${product_id}`,
+      );
+
+      console.log({ resDeleteProduct });
+    } catch (error) {
+      console.log({ error });
+    }
+  }
+
   return (
     <div className="flex w-[100vw] h-[100vh]">
       <AdminNavbar path={router.pathname} />
@@ -123,7 +154,22 @@ function Inventory(props) {
         <div className="h-[10%] w-[90%] flex items-center font-[500] text-[3vh]">
           Inventory
         </div>
-
+        <AddProductModal
+          addProductButton={addProductButton}
+          setAddProductButton={setAddProductButton}
+          categoriesLists={props.categoriesLists.categories}
+        />
+        <EditProductModal
+          currentProduct={currentProduct}
+          editProductButton={editProductButton}
+          setEditProductButton={setEditProductButton}
+          categoriesLists={props.categoriesLists.categories}
+        />
+        <AdminProductDetails
+          currentProduct={currentProduct}
+          openProductDetails={openProductDetails}
+          setOpenProductDetails={setOpenProductDetails}
+        />
         <div className="h-[90%] w-[90%]">
           <div className="flex flex-col w-[100%] bg-[#F5F6F6] h-[100%]">
             <div className="flex h-[10%] w-[100%]">
@@ -252,8 +298,8 @@ function Inventory(props) {
                   <div
                     className={
                       showCategories
-                        ? 'w-[5%] flex items-center justify-center rotate-90 transition duration-100'
-                        : 'w-[5%] flex items-center justify-center transition duration-100'
+                        ? 'w-[4%] flex items-center justify-center rotate-90 transition duration-100'
+                        : 'w-[4%] flex items-center justify-center transition duration-100'
                     }
                   >
                     <FontAwesomeIcon icon={faCaretRight} />
@@ -322,8 +368,22 @@ function Inventory(props) {
                 </Button>
               </div>
 
-              <div className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer">
-                + Tambah Baru
+              <div className="flex">
+                <div
+                  onClick={() => {}}
+                  className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
+                >
+                  + Tambah Kategori
+                </div>
+
+                <div
+                  onClick={() => {
+                    setAddProductButton(true);
+                  }}
+                  className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
+                >
+                  + Tambah Produk
+                </div>
               </div>
             </div>
           </div>
@@ -341,35 +401,29 @@ export async function getServerSideProps(context) {
 
     if (context.params.params.includes('byId')) {
       const splitParams = context.params.params.split('=');
-
       const page = splitParams[1];
-
       resGetProducts = await axiosInstance.post('products/', {
         page,
         limit: 3,
       });
     } else if (context.params.params.includes('sort')) {
       const splitParams = context.params.params.split('=');
-
       const page = splitParams[splitParams.length - 1];
-
       resGetProducts = await axiosInstance.post(
         `products/sort/${context.params.params}`,
         { page, limit: 3 },
       );
     } else {
       const splitParams = context.params.params.split('=');
-
       const page = splitParams[splitParams.length - 1];
-
-      resGetProducts = await axiosInstance.post(`products/${splitParams[0]}`, {
-        page,
-        limit: 3,
-      });
+      resGetProducts = await axiosInstance.post(
+        `products/specifics/${splitParams[0]}`,
+        { page, limit: 3 },
+      );
     }
 
     // console.log(context.params);
-    console.log({ resGetProducts });
+    // console.log({ resGetProducts });
 
     return {
       props: {

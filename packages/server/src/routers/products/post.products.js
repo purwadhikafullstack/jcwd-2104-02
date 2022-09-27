@@ -1,18 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const { QueryTypes } = require('sequelize');
-const { Sequelize } = require('sequelize');
-const { products, sequelize } = require('../../../models');
-const { categories } = require('../../../models');
-const { categories_list } = require('../../../models');
+const { uploadProductImage } = require('../../lib/multer');
 const { auth } = require('../../helpers/auth');
+const { QueryTypes } = require('sequelize');
+const {
+  products,
+  sequelize,
+  categories,
+  categories_list,
+  product_details,
+} = require('../../../models');
 
 async function getAllProductsController(req, res, next) {
   try {
     const { page } = req.body;
     const { limit } = req.body;
 
-    console.log(page);
     const resGetAllProducts = await products.findAll({
       offset: (page - 1) * limit,
       limit,
@@ -23,12 +26,40 @@ async function getAllProductsController(req, res, next) {
       limit,
     });
 
-    console.log({ resGetNextPage });
-
     let hasMore = true;
 
     if (!resGetNextPage.length) {
       hasMore = false;
+    }
+
+    for (let product of resGetAllProducts) {
+      const resGetEachCategory = await categories.findOne({
+        where: { product_id: product.product_id },
+      });
+
+      const resGetProductDefaultQuantity = await product_details.findOne({
+        where: { product_id: product.product_id },
+      });
+
+      const resGetCategoriesLists = resGetEachCategory
+        ? await categories_list.findOne({
+            where: {
+              category_lists_id:
+                resGetEachCategory?.dataValues.category_lists_id,
+            },
+          })
+        : '';
+
+      product.dataValues.category_lists_id =
+        resGetCategoriesLists?.dataValues?.category_lists_id;
+
+      product.dataValues.category = resGetEachCategory?.dataValues.categoryName;
+
+      product.dataValues.category_id =
+        resGetEachCategory?.dataValues.category_id;
+
+      product.dataValues.defaultQuantity =
+        resGetProductDefaultQuantity?.dataValues.quantity;
     }
 
     res.send({
@@ -82,6 +113,35 @@ async function getSpecificProductsController(req, res, next) {
         hasMore = false;
       }
 
+      for (let product of resGetByKeyword) {
+        const resGetEachCategory = await categories.findOne({
+          where: { product_id: product.product_id },
+        });
+
+        const resGetProductDefaultQuantity = await product_details.findOne({
+          where: { product_id: product.product_id },
+        });
+
+        const resGetCategoriesLists = resGetEachCategory
+          ? await categories_list.findOne({
+              where: {
+                category_lists_id:
+                  resGetEachCategory?.dataValues.category_lists_id,
+              },
+            })
+          : '';
+
+        product.dataValues.category_lists_id =
+          resGetCategoriesLists?.dataValues?.category_lists_id;
+
+        product.category = resGetEachCategory?.dataValues.categoryName;
+
+        product.category_id = resGetEachCategory?.dataValues.category_id;
+
+        product.defaultQuantity =
+          resGetProductDefaultQuantity?.dataValues.quantity;
+      }
+
       res.send({
         status: 'success',
         products: resGetByKeyword,
@@ -114,10 +174,39 @@ async function getSpecificProductsController(req, res, next) {
       finalProducts.push(resGetProducts.dataValues);
     }
 
-    console.log({ specifics });
-    console.log({ resGetCategories });
-    console.log({ productsIdMap });
-    console.log({ finalProducts });
+    for (let product of finalProducts) {
+      const resGetEachCategory = await categories.findOne({
+        where: { product_id: product.product_id },
+      });
+
+      const resGetProductDefaultQuantity = await product_details.findOne({
+        where: { product_id: product.product_id },
+      });
+
+      const resGetCategoriesLists = resGetEachCategory
+        ? await categories_list.findOne({
+            where: {
+              category_lists_id:
+                resGetEachCategory?.dataValues.category_lists_id,
+            },
+          })
+        : '';
+
+      product.category = resGetEachCategory?.dataValues.categoryName;
+
+      product.dataValues.category_lists_id =
+        resGetCategoriesLists?.dataValues?.category_lists_id;
+
+      product.category_id = resGetEachCategory?.dataValues.category_id;
+
+      product.defaultQuantity =
+        resGetProductDefaultQuantity?.dataValues.quantity;
+    }
+
+    // console.log({ specifics });
+    // console.log({ resGetCategories });
+    // console.log({ productsIdMap });
+    // console.log({ finalProducts });
 
     res.send({
       status: 'success',
@@ -159,10 +248,117 @@ async function getAllProductsSortedController(req, res, next) {
       hasMore = false;
     }
 
+    for (let product of resGetAllProducts) {
+      const resGetEachCategory = await categories.findOne({
+        where: { product_id: product.product_id },
+      });
+
+      console.log(resGetEachCategory?.dataValues.category_lists_id);
+
+      const resGetCategoriesLists = resGetEachCategory
+        ? await categories_list.findOne({
+            where: {
+              category_lists_id:
+                resGetEachCategory?.dataValues.category_lists_id,
+            },
+          })
+        : '';
+
+      const resGetProductDefaultQuantity = await product_details.findOne({
+        where: { product_id: product.product_id },
+      });
+
+      console.log({ resGetCategoriesLists });
+
+      product.dataValues.category = resGetEachCategory?.dataValues.categoryName;
+
+      product.dataValues.category_lists_id =
+        resGetCategoriesLists?.dataValues?.category_lists_id;
+
+      product.dataValues.category_id =
+        resGetEachCategory?.dataValues.category_id;
+
+      product.dataValues.defaultQuantity =
+        resGetProductDefaultQuantity?.dataValues.quantity;
+    }
+
     res.send({
       hasMore,
       status: 'success',
       products: resGetAllProducts,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function postNewProductController(req, res, next) {
+  try {
+    console.log({ body: req.body });
+    const {
+      categoryInfo,
+      description,
+      packageType,
+      productImage,
+      productName,
+      productPrice,
+      productStock,
+      defaultQuantity,
+      servingType,
+    } = req.body;
+
+    const imageExtNameSplit = productImage.split('.');
+    const categorySplit = categoryInfo.split('=-=');
+
+    const resCreateProduct = await products.create({
+      productName,
+      productPrice: parseInt(productPrice),
+      description,
+      productStock: parseInt(productStock),
+      servingType,
+      isPublic: false,
+      packageType,
+    });
+
+    await resCreateProduct.update({
+      productImage: `http://localhost:8000/public/productImages/${
+        resCreateProduct.dataValues.product_id
+      }.${imageExtNameSplit[imageExtNameSplit.length - 1]}`,
+    });
+
+    const resCreateCategory = await categories.create({
+      category_lists_id: categorySplit[0],
+      product_id: resCreateProduct.dataValues.product_id,
+      categoryName: categorySplit[1],
+    });
+
+    for (let i = 0; i < productStock; i++) {
+      await product_details.create({
+        product_id: resCreateProduct.dataValues.product_id,
+        quantity: defaultQuantity,
+        current_quantity: defaultQuantity,
+        isOpen: false,
+        isAvailable: true,
+      });
+    }
+
+    setTimeout(() => {
+      res.send({
+        status: 'success',
+        resCreateProduct,
+        resCreateCategory,
+      });
+    }, 2000);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function postNewProductImageController(req, res, next) {
+  try {
+    res.send({
+      status: 'success',
+      imageName: req.params.product_filename,
     });
   } catch (error) {
     next(error);
@@ -189,9 +385,15 @@ const getProductDetail = async (req, res, next) => {
   }
 };
 
+router.post('/specifics/:specifics', getSpecificProductsController);
 router.post('/sort/:sortOrder', getAllProductsSortedController);
-router.post('/:specifics', getSpecificProductsController);
+router.post('/newProduct', postNewProductController);
 router.post('/', getAllProductsController);
 router.get('/:product_id', auth, getProductDetail);
+router.post(
+  '/newProductImage/:product_filename',
+  uploadProductImage.single('productImageFile'),
+  postNewProductImageController,
+);
 
 module.exports = router;
