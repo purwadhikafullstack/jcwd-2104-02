@@ -95,6 +95,46 @@ function TransactionDetails(props) {
       alert(error.response?.data.message);
     }
   };
+  const onCancelClick = async () => {
+    try {
+      // const session = await getSession();
+      // const { user_token } = session.user;
+      // const config = {
+      //   headers: { Authorization: `Bearer ${user_token}` },
+      // };
+      const transaction_id = trans.transaction_id;
+      const res = await axiosInstance.patch(
+        `/transactions/cancelTransaction/${transaction_id}`
+      );
+      setTrans({ ...trans, status: 'order_cancelled' });
+
+      alert(res.data.message);
+
+    } catch (error) {
+      console.log({ Error });
+      alert(error.response?.data.message);
+    }
+  }
+
+  const onConfirmClick = async () => {
+    try {
+      // const session = await getSession();
+      // const { user_token } = session.user;
+      // const config = {
+      //   headers: { Authorization: `Bearer ${user_token}` },
+      // };
+      const transaction_id = trans.transaction_id;
+      const res = await axiosInstance.patch(
+        `/transactions/confirmTransaction/${transaction_id}`,
+      );
+      setTrans({ ...trans, status: 'order_confirmed' });
+
+      alert(res.data.message);
+    } catch (error) {
+      console.log({ Error });
+      alert(error.response?.data.message);
+    }
+  };
 
   function mappedTransactionDetails() {
     return transac.map((transaction, index) => {
@@ -175,10 +215,18 @@ function TransactionDetails(props) {
             Unggah Bukti Pembayaran
           </Button>
           <VStack className="mt-[5vh] mr-[50%]">
-            <Button variant={'outline'} colorScheme={'green'}>
+            <Button
+              variant={'outline'}
+              colorScheme={'green'}
+              onClick={onConfirmClick}
+            >
               Konfirmasi Penerimaan
             </Button>
-            <Button variant={'outline'} colorScheme={'red'}>
+            <Button
+              variant={'outline'}
+              colorScheme={'red'}
+              onClick={onCancelClick}
+            >
               Batalkan Pesanan
             </Button>
           </VStack>

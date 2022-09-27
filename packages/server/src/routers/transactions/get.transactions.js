@@ -142,27 +142,30 @@ const getTransactionDetails = async (req, res, next) => {
 
 const getTransactionsByIndex = async (req, res, next) => {
   try {
-    const { selected } = req.body;
+    const { selected } = req.params;    
+    const { user_id } = req.params;
+    
 
-    let statusFind;
+
+    var statusFind
 
     switch (selected) {
-      case 1:
+      case '1' || 1:
         statusFind = 'processing_order';
         break;
-      case 2:
+      case '2' || 2:
         statusFind = 'delivering_order';
         break;
-      case 3:
+      case '3' || 3:
         statusFind = 'order_confirmed';
         break;
-      case 4:
+      case '4' || 4:
         statusFind = 'order_cancelled';
         break;
-      case 5:
+      case '5' || 5:
         statusFind = 'awaiting_payment';
         break;
-      case 6:
+      case '6' || 6:
         statusFind = 'awaiting_payment_confirmation';
         break;
 
@@ -191,37 +194,17 @@ const getTransactionsByIndex = async (req, res, next) => {
             },
           ],
         });
-        // console.log("bangggg")
-        // const resFetchAddress = await addresses.findAll({
-        //   where: { address_id: resFetchTransactions[0].address_id },
-        //   attributes: [
-        //     `address_id`,
-        //     `user_id`,
-        //     `addressDetail`,
-        //     `recipient`,
-        //     `postalCode`,
-        //     `province_id`,
-        //     `province`,
-        //     `city_id`,
-        //     `city_name`,
-        //     `isDefault`,
-        //   ],
-        // });
 
         res.send({
           status: 'success',
           message: 'Fetch Transaction Success',
           data: {
             resFetchTransactions,
-            // resFetchAddress,
           },
         });
     }
 
     console.log({ statusFind, selected });
-
-    const { user_id } = req.params;
-    console.log(user_id);
     const resFetchTransactions = await transactions.findAll({
       where: { user_id, status: statusFind },
       attributes: [
@@ -244,29 +227,12 @@ const getTransactionsByIndex = async (req, res, next) => {
         },
       ],
     });
-    // console.log("bangggg")
-    // const resFetchAddress = await addresses.findAll({
-    //   where: { address_id: resFetchTransactions[0]?.address_id },
-    //   attributes: [
-    //     `address_id`,
-    //     `user_id`,
-    //     `addressDetail`,
-    //     `recipient`,
-    //     `postalCode`,
-    //     `province_id`,
-    //     `province`,
-    //     `city_id`,
-    //     `city_name`,
-    //     `isDefault`,
-    //   ],
-    // });
 
     res.send({
       status: 'success',
       message: 'Fetch Transaction Success',
       data: {
         resFetchTransactions,
-        // resFetchAddress,
       },
     });
   } catch (error) {
@@ -277,5 +243,6 @@ const getTransactionsByIndex = async (req, res, next) => {
 router.get('/:user_id', auth, getTransactions);
 router.get('/transById/:transaction_id', auth, getTransactionsById);
 router.get('/getDetails/:transaction_id', auth, getTransactionDetails);
+router.get('/getTransactionsByIndex/:user_id/:selected', auth, getTransactionsByIndex);
 
 module.exports = router;

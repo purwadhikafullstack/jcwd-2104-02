@@ -80,6 +80,74 @@ const updatePaymentProof = async (req, res, next) => {
   }
 };
 
+const cancelTransaction = async (req, res, next)=>{
+  try {
+    const {transaction_id} = req.params
+    
+    const resFindTransaction = await transactions.findOne({
+      where: { transaction_id},
+      attributes: [
+        'transaction_id',
+        'prescription_id',
+        'user_id',
+        'address_id',
+      ],
+    });
+
+    if(resFindTransaction.dataValues) {
+      const resCancelOrder = await transactions.update(
+        {
+          status: "order_cancelled",
+        },
+        { where: { transaction_id } },
+      );
+      res.send({
+        status: 'Success',
+        message: 'order is cancelled',
+        data: {
+          resCancelOrder,
+        },
+      });
+    }
+  } catch (error) {
+    next (error)
+  }
+}
+
+const confirmTransaction = async (req, res, next) => {
+  try {
+    const { transaction_id } = req.params;
+
+    const resFindTransaction = await transactions.findOne({
+      where: { transaction_id },
+      attributes: [
+        'transaction_id',
+        'prescription_id',
+        'user_id',
+        'address_id',
+      ],
+    });
+
+    if (resFindTransaction.dataValues) {
+      const resConfirmOrder = await transactions.update(
+        {
+          status: 'order_confirmed',
+        },
+        { where: { transaction_id } },
+      );
+      res.send({
+        status: 'Success',
+        message: 'order is confirmed',
+        data: {
+          resConfirmOrder,
+        },
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 router.patch('/patchTransaction', auth, patchTransaction)
 router.patch(
@@ -88,5 +156,7 @@ router.patch(
   uploadPayment.single('paymentProof'),
   updatePaymentProof,
 );
+router.patch('/cancelTransaction/:transaction_id', cancelTransaction)
+router.patch('/confirmTransaction/:transaction_id', confirmTransaction)
 
 module.exports = router

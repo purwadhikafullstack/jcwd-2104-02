@@ -42,9 +42,8 @@ function Transaction(props) {
         headers: { Authorization: `Bearer ${user_token}` },
       };
       console.log({selected});
-      const res = await axiosInstance.post(
-        `/transactions/getTransactionsByIndex/${user_id}`,
-        {selected},
+      const res = await axiosInstance.get(
+        `/transactions/getTransactionsByIndex/${user_id}/${selected}`,
         config,
       );
       // console.log(res.data.data.resFetchTransactions);
