@@ -49,6 +49,14 @@ module.exports = {
         ),
         defaultValue: 'awaiting_payment',
       },
+
+      courier: {
+        type: Sequelize.STRING,
+      },
+      deliveryCost: {
+        type: Sequelize.INTEGER,
+      },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

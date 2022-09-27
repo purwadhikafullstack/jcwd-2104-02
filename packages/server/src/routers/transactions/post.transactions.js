@@ -17,8 +17,10 @@ const schedule = require('node-schedule');
 const postTransaction = async (req, res, next) =>{
   try {
     const {user_id} = req.user
-    const {totalPrice} = req.body
-    // console.log(totalPrice)
+    const {totalPrice, address_id,
+        courier,
+        deliveryCost} = req.body
+    // console.log(req.body)
     const resFindCarts = await carts.findAll({
       where: {
         user_id,
@@ -29,14 +31,15 @@ const postTransaction = async (req, res, next) =>{
         user_id,
         // mapCarts
         totalPrice: totalPrice,
-        // address_id,
-        // paymentProof,
-      });
+        address_id,
+        courier,
+        deliveryCost: deliveryCost
       // console.log(resCreateTransaction)
+      })
 
       // await resFindCarts.destroy({ where: { user_id } });
       
-      const dueDate = moment(resCreateTransaction.dataValues.createdAt).add(10, 'seconds')
+      const dueDate = moment(resCreateTransaction.dataValues.createdAt).add(10, 'minutes')
 
       const productExist = await Promise.all(
         resFindCarts.map(async (data) =>{

@@ -7,6 +7,7 @@ import {
   ButtonGroup,
   IconButton,
   Input,
+  VStack
 } from '@chakra-ui/react';
 import Navbar from '../../components/Navbar';
 import axiosInstance from '../../src/config/api';
@@ -25,10 +26,10 @@ function TransactionDetails(props) {
   );
   const [trans, setTrans] = useState(transactions.resFetchTransactions);
   // console.log(trans.totalPrice)
+  console.log(transactions)
   const [transByAddress, setTransByAddress] = useState(
     transactions.resFetchAddress,
   );
-  // console.log(transByAddress)
   const [payment, setPayment] = useState({});
 
   const onFileChange = (event) => {
@@ -114,6 +115,9 @@ function TransactionDetails(props) {
       );
     });
   }
+  
+  const grandTotal = trans.totalPrice + trans.deliveryCost
+  
 
   const rawStatus = trans.status.split('_');
 
@@ -124,7 +128,7 @@ function TransactionDetails(props) {
         <div className="w-[50%]">
           {/* <div className="h-[30%] w-[100%] bg-gray-500">kotak atas</div> */}
           <div>
-            <p className="text-[1rem] font-[500]">Alamat Lengkap</p>
+            <p className="text-[1rem] font-[500] ml-3">Alamat Lengkap</p>
             <br />
             <p>Nama Pembeli : {penerima}</p>
             <p>Alamat Pembeli : {jalan}</p>
@@ -132,7 +136,7 @@ function TransactionDetails(props) {
             <p>Kota: {kota}</p>
             <p>Kode Pos : {kodePos}</p>
             <br />
-            <p className="text-[1rem] font-[500]">Daftar Pesanan</p>
+            <p className="text-[1rem] font-[500] ml-3">Daftar Pesanan</p>
             <div>{mappedTransactionDetails()}</div>
           </div>
         </div>
@@ -141,14 +145,22 @@ function TransactionDetails(props) {
           <p className="w-[30%] ml-3 mt-3 text-[1rem] font-[500]">
             Ringkasan Pembayaran
           </p>
-          <p className="mt-[5vh] ml-[10%]">
-            Total Harga: Rp. {trans.totalPrice.toLocaleString('id')}
+          <p className="mt-[5vh] ml-[10%] text-[1rem] font-[500]">
+            Metode Pengiriman: {trans.courier}
           </p>
-          <p className="mt-[5vh] ml-[10%]">Metode Pengiriman: JNE</p>
-          <p className="mt-[5vh] ml-[10%]">
+          <p className="mt-[5vh] ml-[10%] text-[1rem] font-[500]">
+            Sub Total: Rp. {trans.totalPrice.toLocaleString('id')}
+          </p>
+          <p className="mt-[5vh] ml-[10%] text-[1rem] font-[500]">
+            Delivery Cost: Rp. {trans.deliveryCost.toLocaleString('id')}
+          </p>
+          <p className="mt-[5vh] ml-[10%] text-[1rem] font-[500]">
+            Total Harga: Rp. {grandTotal.toLocaleString('id')}
+          </p>
+          <p className="mt-[5vh] ml-[10%] text-[1rem] font-[500]">
             Metode Pembayaran: Transfer Bank BCA
           </p>
-          <p className="mt-[5vh] ml-[10%]">
+          <p className="mt-[5vh] ml-[10%] text-[1rem] font-[500]">
             Status Pembayaran: {rawStatus.join(' ')}
           </p>
           <div className="mt-[5vh] ml-[10%]">
@@ -162,6 +174,14 @@ function TransactionDetails(props) {
           >
             Unggah Bukti Pembayaran
           </Button>
+          <VStack className="mt-[5vh] mr-[50%]">
+            <Button variant={'outline'} colorScheme={'green'}>
+              Konfirmasi Penerimaan
+            </Button>
+            <Button variant={'outline'} colorScheme={'red'}>
+              Batalkan Pesanan
+            </Button>
+          </VStack>
         </div>
       </div>
     </div>

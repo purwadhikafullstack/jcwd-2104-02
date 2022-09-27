@@ -71,6 +71,12 @@ module.exports = (sequelize, DataTypes) => {
         ),
         defaultValue: 'awaiting_payment',
       },
+      courier:{
+        type: DataTypes.STRING,
+      },
+      deliveryCost:{
+        type: DataTypes.INTEGER
+      },
     },
     {
       sequelize,

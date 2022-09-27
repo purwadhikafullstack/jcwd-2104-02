@@ -111,7 +111,16 @@ function Cart(props) {
       const config = {
         headers: {Authorization: `Bearer ${user_token}`}
       }
-      const body = {totalPrice: countTotalPrice()};
+      const deliveryCost = selectedDeliveryCost.split(',');
+  const getDeliveryCost = parseInt(deliveryCost[1])
+  console.log(getDeliveryCost);
+      const body = {
+        totalPrice: countTotalPrice(),
+        address_id: selectAddress.address_id,
+        courier: selectedCourier,
+        deliveryCost: getDeliveryCost
+      };
+    
       console.log(body)
       const res = await axiosInstance.post(
         `/transactions/createTransaction/`,
@@ -157,7 +166,7 @@ function Cart(props) {
     const getDeliveryCost = parseInt(deliveryCost[1]).toLocaleString('id');
     return (
       <HStack fontWeight={500} fontSize={15}>
-        <HStack color="gray.600" marginRight={97}>
+        <HStack color="gray.600" marginRight={145}>
           <Text>Biaya Pengiriman :</Text>;
           <Text>{selectedDeliveryCost && renderCourier()}</Text>;
         </HStack>
