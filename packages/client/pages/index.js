@@ -13,7 +13,7 @@ import { getSession } from 'next-auth/react';
 import axiosInstance from '../src/config/api';
 
 export default function Home(props) {
-  const [prescriptionRes, setPrescriptionRes] = useState(props.prescriptionRes);
+  const [prescription, setPrescription] = useState(props.prescription);
   const categoriesTestArray = [
     {
       category_list_id: 1,
@@ -293,7 +293,7 @@ export default function Home(props) {
                 height={14}
               />
             </div>
-            {!prescriptionRes.length ? (
+            {!prescription.length ? (
               <div className="hidden desktop:inline">
                 <Link href="/upload-prescription-image">
                   <Button
@@ -348,14 +348,14 @@ export async function getServerSideProps(context) {
       headers: { Authorization: `Bearer ${user_token}` },
     };
 
-    const prescriptionRes = await axiosInstance.get(
+    const prescription = await axiosInstance.get(
       `/prescriptions/userPrescription`,
       config,
     );
 
     return {
       props: {
-        prescriptionRes: prescriptionRes.data.data,
+        prescription: prescription.data.data,
         session,
       },
     };

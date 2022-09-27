@@ -27,6 +27,7 @@ function Cart(props) {
   const [empty, setEmpty] = useState(false);
   const [userAllAddress, setUserAllAddress] = useState(props.userAllAddress);
   const [selectAddress, setSelectAddress] = useState(props.defaultAddress);
+  const [prescription, setPrescription] = useState(props.prescription);
   const [selectedCourier, setSelectedCourier] = useState();
   const [selectedDeliveryCost, setSelectedDeliveryCost] = useState();
   const [modalSelectAddress, setModalSelectAddress] = useState(false);
@@ -226,10 +227,16 @@ function Cart(props) {
                 </VStack>
               )}
             </Box>
-            <Box width="110vH" boxShadow="md" rounded="md" padding={6}>
-              <Text fontWeight={600}>Daftar Pesanan</Text>
-              {mappedProducts()}
-            </Box>
+            {prescription.length ? (
+              <Box width="110vH" boxShadow="md" rounded="md" padding={6}>
+                <Text fontWeight={600}>Prescription</Text>
+              </Box>
+            ) : (
+              <Box width="110vH" boxShadow="md" rounded="md" padding={6}>
+                <Text fontWeight={600}>Daftar Pesanan</Text>
+                {mappedProducts()}
+              </Box>
+            )}
           </VStack>
           <VStack alignSelf="start">
             <Box
@@ -344,6 +351,10 @@ export async function getServerSideProps(context) {
       `/addresses/userdefaultaddress`,
       config,
     );
+    const prescription = await axiosInstance.get(
+      `/prescriptions/userPrescription`,
+      config,
+    );
 
     return {
       props: {
@@ -351,6 +362,7 @@ export async function getServerSideProps(context) {
         user_token,
         userAllAddress: userAllAddress.data.data,
         defaultAddress: defaultAddress.data.data,
+        prescription: prescription.data.data,
         session,
       },
     };
