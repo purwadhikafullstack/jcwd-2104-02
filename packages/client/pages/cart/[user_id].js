@@ -105,43 +105,21 @@ function Cart(props) {
     try {
       setCartsPrice(countTotalPrice());
       const session = await getSession();
-      const { user_id } = props;
-      const { user_token } = session.user;
-      const config = {
-        headers: { Authorization: `Bearer ${user_token}` },
-      };
-      const deliveryCost = selectedDeliveryCost.split(',');
-      const getDeliveryCost = parseInt(deliveryCost[1]);
-      console.log(getDeliveryCost);
-      const body = {
-        totalPrice: countTotalPrice(),
-        address_id: selectAddress.address_id,
-        courier: selectedCourier,
-        deliveryCost: getDeliveryCost,
-      };
-
-      console.log(body);
-      const res = await axiosInstance.post(
-        `/transactions/createTransaction/`,
-        body,
-        config,
-      );
-      alert('sukses');
-    } catch (error) {
-      alert(alert.message);
-    }
-  };
-
-  const onCheckoutClick = async () => {
-    try {
-      setCartsPrice(countTotalPrice());
-      const session = await getSession();
       const {user_id} = props;
       const {user_token} = session.user;
       const config = {
         headers: {Authorization: `Bearer ${user_token}`}
       }
-      const body = {totalPrice: countTotalPrice()};
+      const deliveryCost = selectedDeliveryCost.split(',');
+  const getDeliveryCost = parseInt(deliveryCost[1])
+  console.log(getDeliveryCost);
+      const body = {
+        totalPrice: countTotalPrice(),
+        address_id: selectAddress.address_id,
+        courier: selectedCourier,
+        deliveryCost: getDeliveryCost
+      };
+    
       console.log(body)
       const res = await axiosInstance.post(
         `/transactions/createTransaction/`,
