@@ -34,7 +34,7 @@ function Profile(props) {
 
   const toast = useToast();
 
-  const { name, email, gender, birthDate, phoneNumber } = user;
+  const { user_id, name, email, gender, birthDate, phoneNumber } = user;
 
   useEffect(() => {
     RenderUserAddresses();
@@ -383,7 +383,7 @@ function Profile(props) {
                   width="full"
                 >
                   <Box width="full">
-                    <NextLink href="/history">
+                    <NextLink href={'/transaction/' + user_id}>
                       <Link>
                         <HStack width="full" justifyContent="space-between">
                           <Text>Riwayat Transaksi</Text>
@@ -487,7 +487,7 @@ function Profile(props) {
                   </NextLink>
                 </VStack>
                 <VStack alignSelf="start">
-                  <NextLink href="/">
+                  <NextLink href={'/transaction/' + user_id}>
                     <Link>
                       <HStack paddingTop={6}>
                         <Image
