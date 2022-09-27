@@ -26,7 +26,7 @@ function Navbar() {
     // const { user_id } = session.user;
     // setUserId(user_id);
   }
-  console.log({ session });
+  // console.log({ session });
 
   async function onLogoutClick() {
     try {
@@ -36,7 +36,7 @@ function Navbar() {
     }
   }
 
-  console.log(`user id = ${userId}`);
+  // console.log(`user id = ${userId}`);
 
   return (
     <div className="h-[100px] flex items-end desktop:h-[72px] shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]">

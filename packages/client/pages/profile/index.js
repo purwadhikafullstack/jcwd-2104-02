@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { getSession, signOut } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import { getSession } from 'next-auth/react';
 import axiosInstance from '../../src/config/api';
 import '@fontsource/poppins';
 import Navbar from '../../components/Navbar';
@@ -14,6 +14,7 @@ import {
   ChakraProvider,
   Container,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
@@ -29,18 +30,53 @@ function Profile(props) {
   const [imgSource, setimgSource] = useState(api_origin + props.user.avatar);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalEdit, setModalEdit] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState('');
 
-  const { name, email, gender, birthDate, phoneNumber } = user;
+  const toast = useToast();
 
-  const [] = addresses;
+  const { user_id, name, email, gender, birthDate, phoneNumber } = user;
+
+  useEffect(() => {
+    RenderUserAddresses();
+  }, []);
+
+  useEffect(() => {}, [selectedAddressId]);
+
+  const RenderUserAddresses = async () => {
+    try {
+      const session = await getSession();
+
+      if (!session) return { redirect: { destination: '/login' } };
+
+      const { user_token } = session.user;
+
+      const config = {
+        headers: { Authorization: `Bearer ${user_token}` },
+      };
+
+      const addressRes = await axiosInstance.get(
+        `/addresses/useraddresslists`,
+        config,
+      );
+      setAddresses(addressRes.data.data);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
 
   async function onDeleteClick(address_id) {
     try {
       const resDeleteAddress = await axiosInstance.delete(
         `/addresses/${address_id}`,
       );
-      alert(resDeleteAddress.data.message);
-      window.location.reload();
+      toast({
+        description: resDeleteAddress.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      RenderUserAddresses();
     } catch (error) {
       console.log({ error });
     }
@@ -51,8 +87,14 @@ function Profile(props) {
       const resSetDefaultAddress = await axiosInstance.patch(
         `/addresses/setdefault/${address_id}`,
       );
-      alert(resSetDefaultAddress.data.message);
-      window.location.reload();
+      toast({
+        description: resSetDefaultAddress.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      RenderUserAddresses();
     } catch (error) {
       console.log({ error });
     }
@@ -67,21 +109,37 @@ function Profile(props) {
         borderColor="gray.300"
         borderRadius="md"
         width={320}
-        key={address}
+        key={address.address_id}
       >
         {address.isDefault ? (
           <HStack justifyContent="space-between">
             <VStack align="start">
-              <Text fontWeight={500} fontSize={11} color="red">
+              <Text
+                fontWeight={500}
+                fontSize={{ base: '11', md: '12' }}
+                color="red"
+              >
                 Alamat Utama
               </Text>
-              <Text fontWeight={500} fontSize={12} color="gray.600">
+              <Text
+                fontWeight={500}
+                fontSize={{ base: '12', md: '13' }}
+                color="gray.600"
+              >
                 Penerima: {address.recipient}
               </Text>
-              <Text fontWeight={500} fontSize={12} color="gray.600">
+              <Text
+                fontWeight={500}
+                fontSize={{ base: '12', md: '13' }}
+                color="gray.600"
+              >
                 {address.addressDetail}
               </Text>
-              <Text fontWeight={500} fontSize={12} color="gray.600">
+              <Text
+                fontWeight={500}
+                fontSize={{ base: '12', md: '13' }}
+                color="gray.600"
+              >
                 {address.city_name}, {address.province}, {address.postalCode}
               </Text>
             </VStack>
@@ -89,13 +147,13 @@ function Profile(props) {
         ) : (
           <HStack justifyContent="space-between">
             <VStack align="start">
-              <Text fontWeight={500} fontSize={12} color="gray.600">
+              <Text fontWeight={500} fontSize={13} color="gray.600">
                 Penerima: {address.recipient}
               </Text>
-              <Text fontWeight={500} fontSize={12} color="gray.600">
+              <Text fontWeight={500} fontSize={13} color="gray.600">
                 {address.addressDetail}
               </Text>
-              <Text fontWeight={500} fontSize={12} color="gray.600">
+              <Text fontWeight={500} fontSize={13} color="gray.600">
                 {address.city_name}, {address.province}, {address.postalCode}
               </Text>
             </VStack>
@@ -110,7 +168,7 @@ function Profile(props) {
                   onClick={() => onSetDefaultAddress(address.address_id)}
                 >
                   <VStack>
-                    <Text fontSize={10} fontWeight="500" color="red">
+                    <Text fontSize={11} fontWeight="500" color="red">
                       Set Default
                     </Text>
                   </VStack>
@@ -123,13 +181,17 @@ function Profile(props) {
                   colorScheme="white"
                   variant="solid"
                   size="xxs"
-                  onClick={() => setModalEdit(true)}
+                  onClick={() => {
+                    setSelectedAddressId(address.address_id);
+                    setModalEdit(true);
+                  }}
                 >
                   <EditIcon w={3.5} h={3.5} color="#004776" />
                   <EditAddress
                     isOpen={modalEdit}
                     onClose={() => setModalEdit(false)}
-                    address_id={address.address_id}
+                    address_id={selectedAddressId}
+                    RenderUserAddresses={RenderUserAddresses}
                   />
                 </Button>
                 <Button
@@ -188,9 +250,6 @@ function Profile(props) {
               src={imgSource}
               width={70}
               height={70}
-              loader={() => {
-                return imgSource;
-              }}
             />
             <VStack align="left">
               <Text
@@ -290,11 +349,27 @@ function Profile(props) {
                             onClick={onOpen}
                           >
                             <AddIcon w={3} h={3} color="#004776" />
-                            <AddAddress isOpen={isOpen} onClose={onClose} />
+                            <AddAddress
+                              isOpen={isOpen}
+                              onClose={onClose}
+                              RenderUserAddresses={RenderUserAddresses}
+                            />
                           </Button>
                         </HStack>
                       </HStack>
-                      <VStack>{renderAddresses()}</VStack>
+                      {addresses.length ? (
+                        <VStack>{renderAddresses()}</VStack>
+                      ) : (
+                        <VStack>
+                          <Text
+                            fontWeight={500}
+                            fontSize={14.5}
+                            color="gray.600"
+                          >
+                            Belum ada alamat
+                          </Text>
+                        </VStack>
+                      )}
                     </VStack>
                   </Box>
                 </VStack>
@@ -308,7 +383,7 @@ function Profile(props) {
                   width="full"
                 >
                   <Box width="full">
-                    <NextLink href="/history">
+                    <NextLink href={'/transaction/' + user_id}>
                       <Link>
                         <HStack width="full" justifyContent="space-between">
                           <Text>Riwayat Transaksi</Text>
@@ -359,7 +434,15 @@ function Profile(props) {
                   </HStack>
                 </HStack>
                 <VStack paddingTop={1} alignSelf="start" paddingBottom={5}>
-                  <VStack>{renderAddresses()}</VStack>
+                  {addresses.length ? (
+                    <VStack>{renderAddresses()}</VStack>
+                  ) : (
+                    <VStack>
+                      <Text fontWeight={500} fontSize={13} color="#B7B7B7">
+                        Belum ada alamat
+                      </Text>
+                    </VStack>
+                  )}
                 </VStack>
                 <Image src="/profile/line.png" width={327} height={1.5} />
                 <VStack alignSelf="start" paddingTop={1}>
@@ -388,7 +471,7 @@ function Profile(props) {
                   </NextLink>
                 </VStack>
                 <VStack alignSelf="start">
-                  <NextLink href="/">
+                  <NextLink href="/productCatalog/semuaObat=1">
                     <Link>
                       <HStack>
                         <Image
@@ -404,7 +487,7 @@ function Profile(props) {
                   </NextLink>
                 </VStack>
                 <VStack alignSelf="start">
-                  <NextLink href="/">
+                  <NextLink href={'/transaction/' + user_id}>
                     <Link>
                       <HStack paddingTop={6}>
                         <Image

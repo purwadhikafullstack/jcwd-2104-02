@@ -57,7 +57,7 @@ const updateAddress = async (req, res, next) => {
 
     res.send({
       status: 'Success',
-      message: 'Success update address',
+      message: 'Update Address Success',
     });
   } catch (error) {
     next(error);
@@ -100,7 +100,7 @@ const defaultAddressController = async (req, res, next) => {
 
     res.send({
       status: 'Success',
-      message: 'Success set default address',
+      message: 'Set Default Address Success',
     });
   } catch (error) {
     next(error);

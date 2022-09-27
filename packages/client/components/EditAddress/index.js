@@ -11,13 +11,14 @@ import {
   Select,
   Text,
   VStack,
+  useToast,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { getSession } from 'next-auth/react';
 import axiosInstance from '../../src/config/api';
 
 function EditAddress(props) {
-  const { isOpen, onClose, address_id } = props;
+  const { isOpen, onClose, address_id, RenderUserAddresses } = props;
   const [userAddress, setUserAddress] = useState({});
   const [getProvince, setGetProvince] = useState([]);
   const [getCity, setGetCity] = useState([]);
@@ -31,6 +32,8 @@ function EditAddress(props) {
   const splitCity = selectedCity.split(',');
   const city_id = splitCity[0];
   const city_name = splitCity[1];
+
+  const toast = useToast();
 
   const { recipient, addressDetail, postalCode } = userAddress;
 
@@ -70,14 +73,15 @@ function EditAddress(props) {
         config,
       );
 
-      alert(res.data.message);
-      window.location.reload();
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
 
-      // const resGetUserAddress = await axiosInstance.get(
-      //   `/addresses/useraddresslists`,
-      //   config,
-      // );
-      // setAddresses(resGetUserAddress.data.data.result);
+      RenderUserAddresses();
     } catch (error) {
       console.log({ error });
       alert(error.response.data.message);
@@ -99,7 +103,7 @@ function EditAddress(props) {
   const renderProvince = () => {
     return getProvince.map((province) => (
       <option
-        key={province}
+        key={province.province_id}
         value={`${province.province_id},${province.province}`}
       >
         {province.province}
@@ -109,7 +113,7 @@ function EditAddress(props) {
 
   const renderCity = () => {
     return getCity.map((city) => (
-      <option key={city} value={`${city.city_id},${city.city_name}`}>
+      <option key={city.city_id} value={`${city.city_id},${city.city_name}`}>
         {city.city_name}
       </option>
     ));
@@ -226,7 +230,9 @@ function EditAddress(props) {
             fontSize={15}
             fontWeight={500}
             colorScheme="messenger"
-            onClick={() => onEditAddress(userAddress)}
+            onClick={() => {
+              onEditAddress(userAddress), onClose();
+            }}
           >
             Simpan
           </Button>

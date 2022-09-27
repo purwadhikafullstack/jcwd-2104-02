@@ -11,13 +11,14 @@ import {
   Select,
   Text,
   VStack,
+  useToast,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { getSession } from 'next-auth/react';
 import axiosInstance from '../../src/config/api';
 
 function AddAddress(props) {
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, RenderUserAddresses } = props;
   const [userAddress, setUserAddress] = useState({});
   const [getProvince, setGetProvince] = useState([]);
   const [getCity, setGetCity] = useState([]);
@@ -33,6 +34,8 @@ function AddAddress(props) {
   const city_name = splitCity[1];
 
   const { recipient, addressDetail, postalCode } = userAddress;
+
+  const toast = useToast();
 
   useEffect(() => {
     fetchProvince();
@@ -66,13 +69,14 @@ function AddAddress(props) {
 
       const res = await axiosInstance.post('/addresses/add', body, config);
 
-      alert(res.data.message);
-      window.location.reload();
-      // const resGetUserAddress = await axiosInstance.get(
-      //   `/addresses/useraddresslists`,
-      //   config,
-      // );
-      // setAddresses(resGetUserAddress.data.data.result);
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      RenderUserAddresses();
     } catch (error) {
       console.log({ error });
       alert(error.response.data.message);
@@ -221,7 +225,9 @@ function AddAddress(props) {
             fontSize={15}
             fontWeight={500}
             colorScheme="messenger"
-            onClick={() => onAddAddress(userAddress)}
+            onClick={() => {
+              onAddAddress(userAddress), onClose();
+            }}
           >
             Simpan
           </Button>

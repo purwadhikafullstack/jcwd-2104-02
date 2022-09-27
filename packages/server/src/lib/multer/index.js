@@ -10,6 +10,14 @@ const avatarPath = path.join(
   'avatar',
 );
 
+const prescriptionImagePath = path.join(
+  appRoot.path,
+  'packages',
+  'server',
+  'public',
+  'prescriptionImage',
+);
+
 const productImagePath = path.join(
   appRoot.path,
   'packages',
@@ -38,6 +46,17 @@ const productImageStorage = multer.diskStorage({
   },
 });
 
+const storagePrescriptionImage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, prescriptionImagePath);
+  },
+  filename: function (req, file, cb) {
+    const { user_id } = req.user;
+    const prescriptionCount = req.userPrescription.length;
+    cb(null, `${user_id}-${prescriptionCount}-prescription.jpg`);
+  },
+});
+
 const uploadAvatar = multer({
   storage: storageAvatar,
   limits: {
@@ -50,7 +69,7 @@ const uploadAvatar = multer({
 
     if (!allowedExtension.includes(extname)) {
       const error = new Error(
-        'Invalid file extension. You can only upload jpg, jpeg, png, or gif file',
+        'Invalid file extension. You can only upload jpg, jpeg, png, or gif file.',
       );
       return cb(error);
     }
@@ -80,4 +99,25 @@ const uploadProductImage = multer({
   },
 });
 
-module.exports = { uploadAvatar, uploadProductImage };
+const uploadPrescriptionImage = multer({
+  storage: storagePrescriptionImage,
+  limits: {
+    fileSize: 1048576,
+  },
+  fileFilter(req, file, cb) {
+    const allowedExtension = ['.jpg', '.png'];
+
+    const extname = path.extname(file.originalname);
+
+    if (!allowedExtension.includes(extname)) {
+      const error = new Error(
+        'Invalid file extension. You can only upload jpg or png file.',
+      );
+      return cb(error);
+    }
+
+    cb(null, true);
+  },
+});
+
+module.exports = { uploadAvatar, uploadProductImage, uploadPrescriptionImage };

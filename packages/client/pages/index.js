@@ -1,9 +1,19 @@
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Navbar from '../components/Navbar';
-import { Button, Input, InputGroup, InputRightElement } from '@chakra-ui/react';
+import Link from 'next/link';
+import {
+  Button,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Text,
+} from '@chakra-ui/react';
+import { getSession } from 'next-auth/react';
+import axiosInstance from '../src/config/api';
 
-export default function Home() {
+export default function Home(props) {
+  const [prescription, setPrescription] = useState(props.prescription);
   const categoriesTestArray = [
     {
       category_list_id: 1,
@@ -111,7 +121,7 @@ export default function Home() {
       servingType: 'Kapsul',
     },
   ];
-  
+
   function categoriesMap() {
     return categoriesTestArray.map((category) => {
       return (
@@ -193,7 +203,7 @@ export default function Home() {
   return (
     <div className="bg-white w-[100%] h-[100vh] relative z-[1] desktop:scrollbar">
       <Navbar />
-        
+
       <div id="box biru" className="bg-[#1068A3] h-[53px] desktop:hidden" />
       <div id="hero-desktop" className="relative hidden desktop:inline">
         <p className="absolute z-[2] text-white font-[400] text-[4vw] left-[15vw] bottom-[200px]">
@@ -283,15 +293,23 @@ export default function Home() {
                 height={14}
               />
             </div>
-            <div className="hidden desktop:inline">
-              <Button
-                variant="outline"
-                colorScheme="linkedin"
-                sx={{ width: '8vw', height: '6vh' }}
-              >
-                <p className="font-[500] text-[.9rem]">Unggah Resep</p>
-              </Button>
-            </div>
+            {!prescription.length ? (
+              <div className="hidden desktop:inline">
+                <Link href="/upload-prescription-image">
+                  <Button
+                    variant="outline"
+                    colorScheme="linkedin"
+                    sx={{ width: '8vw', height: '6vh' }}
+                  >
+                    <p className="font-[500] text-[.9rem]">Unggah Resep</p>
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <Text color="#1068A3" fontWeight={600} fontSize={14}>
+                Menunggu Konfirmasi
+              </Text>
+            )}
           </div>
         </div>
         <div id="kategori obat" className="mt-[4 vh] desktop:w-[70%]">
@@ -316,4 +334,33 @@ export default function Home() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps(context) {
+  try {
+    const session = await getSession({ req: context.req });
+
+    if (!session) return { redirect: { destination: '/login' } };
+
+    const { user_token } = session.user;
+
+    const config = {
+      headers: { Authorization: `Bearer ${user_token}` },
+    };
+
+    const prescription = await axiosInstance.get(
+      `/prescriptions/userPrescription`,
+      config,
+    );
+
+    return {
+      props: {
+        prescription: prescription.data.data,
+        session,
+      },
+    };
+  } catch (error) {
+    console.log({ error });
+    return { props: {} };
+  }
 }

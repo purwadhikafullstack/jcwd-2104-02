@@ -302,10 +302,6 @@ function ProductCatalog(props) {
                   />
                 </div>
               </div>
-
-              <div className="text-[#008DEB] font-[500] h-[100%] hover:cursor-pointer flex items-center justify-center">
-                + Unggah Resep
-              </div>
             </div>
 
             <div className="h-[85%] flex flex-wrap overflow-auto scrollbar">

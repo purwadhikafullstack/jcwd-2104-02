@@ -11,7 +11,7 @@ const deleteAddress = async (req, res, next) => {
 
     res.send({
       status: 'Success',
-      message: 'Success delete address',
+      message: 'Delete Address Success',
       detail: {
         address_id,
         resDeleteAddress,

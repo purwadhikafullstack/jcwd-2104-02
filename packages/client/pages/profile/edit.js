@@ -17,6 +17,7 @@ import {
   Container,
   Select,
   Box,
+  useToast,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
@@ -33,6 +34,8 @@ function Edit(props) {
   const [user, setUser] = useState(props.user);
   const [birthDateIsSet, setBirthDateIsSet] = useState(false);
   const [imgSource, setimgSource] = useState(api_origin + props.user.avatar);
+
+  const toast = useToast();
 
   const { name, email, gender, birthDate, phoneNumber } = user;
 
@@ -52,7 +55,13 @@ function Edit(props) {
 
       const res = await axiosInstance.patch('/users/avatar', body, config);
 
-      alert(res.data.message);
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       console.log({ Error });
       alert(error.response.data.message);
@@ -83,9 +92,17 @@ function Edit(props) {
         birthDate,
       };
 
-      await axiosInstance.patch('/users/profile', body, config);
-      alert('Update Profile Success');
-      router.replace('/profile');
+      const res = await axiosInstance.patch('/users/profile', body, config);
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      setTimeout(() => {
+        router.replace('/profile');
+      }, 1000);
     } catch (error) {
       console.log({ error });
       alert(error.response.data.message);
@@ -146,9 +163,6 @@ function Edit(props) {
               src={imgSource}
               width={86}
               height={86}
-              loader={() => {
-                return imgSource;
-              }}
             />
           </VStack>
           <VStack marginTop={4}>

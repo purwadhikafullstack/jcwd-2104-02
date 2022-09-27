@@ -51,7 +51,10 @@ module.exports = (sequelize, DataTypes) => {
       unitQuantity: {
         type: DataTypes.INTEGER,
       },
-      isCompletetd: {
+      prescriptionImage: {
+        type: DataTypes.STRING(255),
+      },
+      isCompleted: {
         type: DataTypes.BOOLEAN,
       },
     },
