@@ -15,6 +15,9 @@ import axiosInstance from '../../src/config/api';
 function Transaction(props) {
   const {user_id} = props
   const [transac, setTransac] = useState([])
+
+
+  console.warn(transac);
   const [Berlangsung, setBerlangsung] = useState([])
   const [selected, setSelected] = useState(0)
   // console.log(user_id)
@@ -54,7 +57,7 @@ function Transaction(props) {
   // console.log(prods)
 
   function mappedTransactions() {
-    return transac.map((transaction, index) => {
+    return transac?.map((transaction, index) => {
       return (
           <TransactionCards
             key={transaction.transaction_id}

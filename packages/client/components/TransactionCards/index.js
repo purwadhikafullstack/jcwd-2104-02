@@ -9,7 +9,7 @@ import axios from 'axios';
 export default function TransactionCards(props) {
   const { trans_id, productName, transactions, totalPrice, status, productImage} =
     props;
-//   console.log(fetchTransactions)
+  // console.log(props)
 // console.log(trans_id)
 //   console.log(productName)
 
