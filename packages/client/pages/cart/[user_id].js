@@ -159,14 +159,18 @@ function Cart(props) {
     const deliveryCost = selectedDeliveryCost.split(',');
     const getDeliveryCost = parseInt(deliveryCost[1]).toLocaleString('id');
     return (
-      <HStack fontWeight={500} fontSize={15}>
-        <HStack color="gray.600" marginRight={145}>
+      <HStack
+        fontWeight={500}
+        fontSize={15}
+        justify="space-between"
+        minWidth={373}
+      >
+        <HStack color="gray.600">
           <Text>Biaya Pengiriman :</Text>;
           <Text>{selectedDeliveryCost && renderCourier()}</Text>;
         </HStack>
-        <Text fontWeight={600}>Rp</Text>
         <HStack fontWeight={600}>
-          <Text>{getDeliveryCost}</Text>
+          <Text>Rp {getDeliveryCost}</Text>
         </HStack>
       </HStack>
     );
