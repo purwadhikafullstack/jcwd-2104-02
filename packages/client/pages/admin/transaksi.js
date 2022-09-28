@@ -8,6 +8,9 @@ import {
   TabPanel,
   Tab,
   VStack,
+  Button,
+  HStack,
+  Image,
 } from '@chakra-ui/react';
 import { getSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
@@ -15,17 +18,26 @@ import AdminTransCard from '../../components/AdminTransCard';
 import axiosInstance from '../../src/config/api';
 
 function Transaksi(props) {
+  const [transac, setTransac] = useState([]);
+  const [selected, setSelected] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(3);
+
   const router = useRouter();
 
   const path = router.pathname;
 
-  const [transac, setTransac] = useState([]);
-
-  const [selected, setSelected] = useState(0);
-
   useEffect(() => {
     fetchTransactions();
-  }, [selected]);
+  }, [selected, page]);
+
+  const onPrevClick = () => {
+    setPage(page - 1);
+  };
+
+  const onNextClick = () => {
+    setPage(page + 1);
+  };
 
   const fetchTransactions = async () => {
     try {
@@ -34,6 +46,7 @@ function Transaksi(props) {
       const { user_token } = session.user;
 
       const config = {
+        params: { page, pageSize },
         headers: { Authorization: `Bearer ${user_token}` },
       };
       console.log({ selected });
@@ -71,10 +84,10 @@ function Transaksi(props) {
       <AdminNavbar path={path} />
       <VStack align="start">
         <Text
-          fontSize={23}
+          fontSize={21}
           fontWeight={500}
-          marginTop={6}
-          marginBottom={3}
+          marginTop={4}
+          marginBottom={1}
           marginLeft={16}
         >
           Riwayat Transaksi
@@ -89,30 +102,65 @@ function Transaksi(props) {
             <Tab>Menunggu Pembayaran</Tab>
             <Tab>Menunggu Konfirmasi Pembayaran</Tab>
           </TabList>
-          <TabPanels>
-            <TabPanel>
-              <div>{mappedTransactions()}</div>
-            </TabPanel>
-            <TabPanel>
-              <div>{mappedTransactions()}</div>
-            </TabPanel>
-            <TabPanel>
-              <div>{mappedTransactions()}</div>
-            </TabPanel>
-            <TabPanel>
-              <div>{mappedTransactions()}</div>
-            </TabPanel>
-            <TabPanel>
-              <div>{mappedTransactions()}</div>
-            </TabPanel>
-            <TabPanel>
-              <div>{mappedTransactions()}</div>
-            </TabPanel>
-            <TabPanel>
-              <div>{mappedTransactions()}</div>
-            </TabPanel>
-          </TabPanels>
+          {transac.length ? (
+            <TabPanels>
+              <TabPanel>
+                <div>{mappedTransactions()}</div>
+              </TabPanel>
+              <TabPanel>
+                <div>{mappedTransactions()}</div>
+              </TabPanel>
+              <TabPanel>
+                <div>{mappedTransactions()}</div>
+              </TabPanel>
+              <TabPanel>
+                <div>{mappedTransactions()}</div>
+              </TabPanel>
+              <TabPanel>
+                <div>{mappedTransactions()}</div>
+              </TabPanel>
+              <TabPanel>
+                <div>{mappedTransactions()}</div>
+              </TabPanel>
+              <TabPanel>
+                <div>{mappedTransactions()}</div>
+              </TabPanel>
+            </TabPanels>
+          ) : (
+            <VStack marginTop={105}>
+              <Image
+                src="/admin/Empty-Transaction.png"
+                width={250}
+                height={250}
+              />
+              <Text paddingTop={6} fontSize={18}>
+                Tidak Ada Transaksi
+              </Text>
+            </VStack>
+          )}
         </Tabs>
+        {transac.length ? (
+          <HStack paddingLeft={520}>
+            <Button
+              marginRight={2}
+              onClick={onPrevClick}
+              isDisabled={page == 1}
+              colorScheme="messenger"
+            >
+              Prev
+            </Button>
+            <Text paddingRight={2}>{page}</Text>
+            <Button
+              onClick={onNextClick}
+              isDisabled={page > transac.length}
+              colorScheme="messenger"
+            >
+              Next
+            </Button>
+          </HStack>
+        ) : (
+          <VStack></VStack>
+        )}
       </VStack>
     </div>
   );
