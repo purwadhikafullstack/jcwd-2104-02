@@ -25,7 +25,7 @@ function DetailPage(props) {
   const [quantity, setQuantity] = useState(1);
 
   const toast = useToast();
-  console.log(quantity);
+  // console.log(quantity);
 
   const onAddClick = async () => {
     setLoading(true);
@@ -68,7 +68,7 @@ function DetailPage(props) {
   return (
     <div>
       <Navbar />
-      <div className="container">
+      <div className="container" >
         <div className="flex-col">
           <div className="w-[65%] ml-[1vw] my-[3vh] columns-2">
             <Image
@@ -174,7 +174,7 @@ export async function getServerSideProps(context) {
     if (!session) return { redirect: { destination: '/login' } };
     const { user_token } = session.user;
     const { user_id } = session.user.user;
-    console.log(session.user.user.user_id);
+    // console.log(session.user.user.user_id);
 
     const config = {
       headers: { Authorization: `Bearer ${user_token}` },

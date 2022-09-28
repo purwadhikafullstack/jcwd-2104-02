@@ -26,6 +26,15 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
+      product_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'products',
+          key: 'product_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
       cart_id: {
         type: Sequelize.INTEGER,
         references: {
@@ -34,6 +43,12 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
+      },
+      quantity: {
+        type: Sequelize.INTEGER,
+      },
+      paymentProof: {
+        type: Sequelize.STRING(255),
       },
       createdAt: {
         allowNull: false,

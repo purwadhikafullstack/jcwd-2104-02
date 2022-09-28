@@ -13,6 +13,8 @@ const categoriesRouter = require('./routers/categories');
 const cartsRouter = require('./routers/carts');
 const addressesRouter = require('./routers/addresses');
 const prescriptionsRouter = require('./routers/prescriptions');
+const transactionsRouter = require('./routers/transactions');
+
 const rajaOngkirRouter = require('./routers/rajaongkir');
 
 app.use(cors());
@@ -26,6 +28,7 @@ app.use('/categories', categoriesRouter);
 app.use('/carts', cartsRouter);
 app.use('/addresses', addressesRouter);
 app.use('/prescriptions', prescriptionsRouter);
+app.use('/transactions', transactionsRouter);
 app.use('/rajaongkir', rajaOngkirRouter);
 
 app.use(express.urlencoded({ extended: false }));

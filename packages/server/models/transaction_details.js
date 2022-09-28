@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      transaction_details.hasOne(models.transactions, {
+      transaction_details.belongsTo(models.transactions, {
         foreignKey: 'transaction_id',
       });
       transaction_details.hasOne(models.users, {
@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       });
       transaction_details.hasOne(models.carts, {
         foreignKey: 'cart_id',
+      });
+      transaction_details.belongsTo(models.products, {
+        foreignKey: 'product_id',
       });
     }
   }
@@ -32,6 +35,15 @@ module.exports = (sequelize, DataTypes) => {
         references: {
           model: 'transactions',
           key: 'transaction_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
+      product_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'products',
+          key: 'product_id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
@@ -53,6 +65,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
+      },
+      quantity: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      paymentProof: {
+        type: DataTypes.STRING(255),
       },
     },
     {

@@ -33,6 +33,9 @@ function Cart(props) {
   const [modalSelectAddress, setModalSelectAddress] = useState(false);
   const [modalSelectCourier, setModalSelectCourier] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user_id, user_token } = props;
+  const [cartsPrice, setCartsPrice] = useState([]);
+  // console.log(cartsPrice)
 
   useEffect(() => {
     fetchCarts();
@@ -72,6 +75,7 @@ function Cart(props) {
     try {
       const session = await getSession();
       const { user_id } = props;
+      // console.log(user_id)
 
       const { user_token } = session.user;
 
@@ -87,14 +91,53 @@ function Cart(props) {
       alert(error.message);
     }
   };
+  // console.log({ fetchCarts });
 
   const countTotalPrice = (body) => {
     const result = carts.reduce(
       (acc, curr) => acc + curr.quantity * curr.product.productPrice,
       0,
-    );
-    return result;
-  };
+      );
+      return result;
+    };
+    // console.log(")
+
+  const onCheckoutClick = async () => {
+    try {
+      setCartsPrice(countTotalPrice());
+      const session = await getSession();
+      const {user_id} = props;
+      const {user_token} = session.user;
+      const config = {
+        headers: {Authorization: `Bearer ${user_token}`}
+      }
+      const deliveryCost = selectedDeliveryCost.split(',');
+  const getDeliveryCost = parseInt(deliveryCost[1])
+  console.log(getDeliveryCost);
+      const body = {
+        totalPrice: countTotalPrice(),
+        address_id: selectAddress.address_id,
+        courier: selectedCourier,
+        deliveryCost: getDeliveryCost
+      };
+    
+      console.log(body)
+      const res = await axiosInstance.post(
+        `/transactions/createTransaction/`,
+        body,
+        config,
+        );
+      alert("sukses")
+    } catch (error) {
+      alert(alert.message)
+    }
+  }
+
+  // const total = countTotalPrice();
+  // const PPN = subTotal * 0.11;
+  // const total = subTotal + PPN;
+
+  // console.log(`TOTALNYAAAAAAAAAA BOSQQQQQ ${subTotal}`);
 
   function mappedProducts() {
     return carts.map((cart, index) => {
@@ -123,7 +166,7 @@ function Cart(props) {
     const getDeliveryCost = parseInt(deliveryCost[1]).toLocaleString('id');
     return (
       <HStack fontWeight={500} fontSize={15}>
-        <HStack color="gray.600" marginRight={97}>
+        <HStack color="gray.600" marginRight={145}>
           <Text>Biaya Pengiriman :</Text>;
           <Text>{selectedDeliveryCost && renderCourier()}</Text>;
         </HStack>
@@ -317,6 +360,7 @@ function Cart(props) {
                   colorScheme="messenger"
                   fontWeight={500}
                   width={250}
+                  onClick={onCheckoutClick}
                 >
                   Lanjutkan Pembayaran
                 </Button>

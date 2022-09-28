@@ -61,9 +61,11 @@ function Navbar() {
                 Toko Obat
               </p>
             </Link>
-            <p className="duration-300 ease-in-out bg-white text-[1vw] font-[500] hover:cursor-pointer hover:shadow-[0px_5px_0px_-2px_rgba(0,141,235,1)]">
-              Riwayat
-            </p>
+            <Link href={`/transaction/${userId}`}> 
+              <p className="duration-300 ease-in-out bg-white text-[1vw] font-[500] hover:cursor-pointer hover:shadow-[0px_5px_0px_-2px_rgba(0,141,235,1)]">
+                Riwayat
+              </p>
+            </Link>
           </div>
         </div>
         <div className="grow" />

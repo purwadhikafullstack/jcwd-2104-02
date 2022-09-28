@@ -26,6 +26,18 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
+      address_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'addresses',
+          key: 'address_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
+      totalPrice: {
+        type: Sequelize.INTEGER,
+      },
       status: {
         type: Sequelize.ENUM(
           'awaiting_payment',
@@ -37,6 +49,14 @@ module.exports = {
         ),
         defaultValue: 'awaiting_payment',
       },
+
+      courier: {
+        type: Sequelize.STRING,
+      },
+      deliveryCost: {
+        type: Sequelize.INTEGER,
+      },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

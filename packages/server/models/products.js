@@ -23,6 +23,13 @@ module.exports = (sequelize, DataTypes) => {
       products.hasMany(models.stock_opname, {
         foreignKey: 'product_id',
       });
+      products.hasMany(models.transactions, {
+        foreignKey: 'product_id',
+      });
+      products.hasOne(models.transaction_details, {
+        foreignKey: 'transaction_details_id',
+      }); 
+      // Error: products.belongsTo called with something that's not a subclass of Sequelize.Model
     }
   }
   products.init(

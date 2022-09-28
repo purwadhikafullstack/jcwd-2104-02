@@ -9,10 +9,10 @@ const credentialInstance = CredentialsProvider({
 
       const res = await axiosInstance.post('/users/login', { email, password });
 
-      console.log({ res: res.data.data });
+      // console.log({ res: res.data.data });
       const user = res.data.data.result;
 
-      console.log({ user });
+      // console.log({ user });
 
       return user;
     } catch (error) {
@@ -31,7 +31,7 @@ export default NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.user = user;
-        console.log(user);
+        // console.log(user);
       }
 
       return token;
