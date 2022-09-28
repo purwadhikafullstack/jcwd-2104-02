@@ -42,6 +42,14 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
   try {
     const { selected } = req.params;
 
+    let { page, pageSize } = req.query;
+
+    page = +page;
+    pageSize = +pageSize;
+
+    const limit = pageSize;
+    const offset = (page - 1) * pageSize;
+
     var statusFind;
 
     switch (selected) {
@@ -77,7 +85,8 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
             'deliveryCost',
             'createdAt',
           ],
-
+          limit: limit,
+          offset: offset,
           include: [
             {
               model: transaction_details,
@@ -113,7 +122,8 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
         'deliveryCost',
         'createdAt',
       ],
-
+      limit: limit,
+      offset: offset,
       include: [
         {
           model: transaction_details,

@@ -32,11 +32,11 @@ export default function AdminTransCard(props) {
         bg={'gray.50'}
         height={125}
         spacing="120"
-        marginBottom={6}
+        marginBottom={3}
         ml={'70'}
         px={8}
         rounded={6}
-        boxShadow="lg"
+        boxShadow="md"
       >
         <Image
           unoptimized

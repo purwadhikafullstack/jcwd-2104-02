@@ -163,7 +163,7 @@ function Cart(props) {
         fontWeight={500}
         fontSize={15}
         justify="space-between"
-        minWidth={373}
+        minWidth={354}
       >
         <HStack color="gray.600">
           <Text>Biaya Pengiriman :</Text>;
