@@ -16,8 +16,8 @@ const prescriptionImagePath = path.join(
   'server',
   'public',
   'prescriptionImage',
-  );
-  
+);
+
 const paymentPath = path.join(
   appRoot.path,
   'packages',
@@ -159,4 +159,9 @@ const uploadPayment = multer({
   },
 });
 
-module.exports = { uploadAvatar, uploadProductImage, uploadPrescriptionImage, uploadPayment };
+module.exports = {
+  uploadAvatar,
+  uploadProductImage,
+  uploadPrescriptionImage,
+  uploadPayment,
+};
