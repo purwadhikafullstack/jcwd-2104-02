@@ -9,7 +9,7 @@ import {
 import Image from 'next/image';
 import TransactionDetails from '../AdminDetailTrans';
 
-export default function AdminTransCard(props) {
+export default function AdminTransCardConfirmation(props) {
   const {
     trans_id,
     productName,
@@ -31,7 +31,7 @@ export default function AdminTransCard(props) {
       <HStack
         bg={'gray.50'}
         height={125}
-        spacing="120"
+        spacing="50"
         marginBottom={3}
         ml={'70'}
         px={8}
@@ -87,6 +87,19 @@ export default function AdminTransCard(props) {
           <Text w="150px" fontSize="13">
             {createdAt.slice(0, 10)}
           </Text>
+        </VStack>
+        <VStack textAlign="center" fontWeight={500}>
+          <Button
+            variant="outline"
+            colorScheme="green"
+            width={180}
+            fontSize={14}
+          >
+            Konfirmasi Pesanan
+          </Button>
+          <Button variant="outline" colorScheme="red" width={180} fontSize={14}>
+            Batalkan Pesanan
+          </Button>
         </VStack>
       </HStack>
     </Box>

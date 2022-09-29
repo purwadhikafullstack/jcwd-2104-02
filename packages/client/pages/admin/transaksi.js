@@ -15,6 +15,7 @@ import {
 import { getSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import AdminTransCard from '../../components/AdminTransCard';
+import AdminTransCardConfirmation from '../../components/AdminTransCardConfirmation';
 import axiosInstance from '../../src/config/api';
 
 function Transaksi(props) {
@@ -67,12 +68,34 @@ function Transaksi(props) {
           key={transaction.transaction_id}
           productName={transaction.transaction_details[0].product.productName}
           productImage={transaction.transaction_details[0].product.productImage}
+          transaction_details={transaction.transaction_details}
           status={transaction.status}
           totalPrice={transaction.totalPrice}
           trans_id={transaction.transaction_id}
           courier={transaction.courier}
           deliveryCost={transaction.deliveryCost}
           createdAt={transaction.createdAt}
+          transac={transac}
+          props={props}
+        />
+      );
+    });
+  }
+
+  function mappedTransactionsConfirmation() {
+    return transac?.map((transaction, index) => {
+      return (
+        <AdminTransCardConfirmation
+          key={transaction.transaction_id}
+          productName={transaction.transaction_details[0].product.productName}
+          productImage={transaction.transaction_details[0].product.productImage}
+          status={transaction.status}
+          totalPrice={transaction.totalPrice}
+          trans_id={transaction.transaction_id}
+          courier={transaction.courier}
+          deliveryCost={transaction.deliveryCost}
+          createdAt={transaction.createdAt}
+          transac={transac}
           props={props}
         />
       );
@@ -108,7 +131,7 @@ function Transaksi(props) {
                 <div>{mappedTransactions()}</div>
               </TabPanel>
               <TabPanel>
-                <div>{mappedTransactions()}</div>
+                <div>{mappedTransactionsConfirmation()}</div>
               </TabPanel>
               <TabPanel>
                 <div>{mappedTransactions()}</div>
@@ -152,7 +175,7 @@ function Transaksi(props) {
             <Text paddingRight={2}>{page}</Text>
             <Button
               onClick={onNextClick}
-              isDisabled={page > transac.length}
+              isDisabled={page >= transac.length}
               colorScheme="messenger"
             >
               Next
