@@ -78,6 +78,7 @@ function UploadPrescriptionImage(props) {
         paddingRight={320}
         marginTop={3}
         paddingTop={3}
+        marginBottom={12}
       >
         <VStack>
           <HStack marginBottom={2} fontSize="15" alignSelf="start">
@@ -105,7 +106,7 @@ function UploadPrescriptionImage(props) {
             <VStack paddingLeft="89" paddingTop={1} fontSize={12.5}>
               <input type={'file'} onChange={onFileChange} />
             </VStack>
-            <VStack>
+            <VStack paddingY={1}>
               <Button
                 onClick={onSaveUserPrescriptionImage}
                 size="sm"
@@ -120,7 +121,12 @@ function UploadPrescriptionImage(props) {
               </Button>
             </VStack>
             <VStack>
-              <Text fontSize="16" fontWeight="500" marginTop={7}>
+              <Text
+                fontSize="16"
+                fontWeight="500"
+                marginTop={7}
+                marginBottom={2}
+              >
                 Cara Unggah Resep Dokter
               </Text>
             </VStack>

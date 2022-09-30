@@ -11,12 +11,14 @@ import {
   Button,
   HStack,
   Image,
+  ChakraProvider,
 } from '@chakra-ui/react';
 import { getSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import AdminTransCard from '../../components/AdminTransCard';
 import AdminTransCardConfirmation from '../../components/AdminTransCardConfirmation';
 import axiosInstance from '../../src/config/api';
+import theme from '../../components/theme';
 
 function Transaksi(props) {
   const [transac, setTransac] = useState([]);
@@ -103,89 +105,91 @@ function Transaksi(props) {
   }
 
   return (
-    <div className="flex w-[100vw] h-[100vh]">
-      <AdminNavbar path={path} />
-      <VStack align="start">
-        <Text
-          fontSize={21}
-          fontWeight={500}
-          marginTop={4}
-          marginBottom={1}
-          marginLeft={16}
-        >
-          Riwayat Transaksi
-        </Text>
-        <Tabs onChange={(index) => setSelected(index)}>
-          <TabList marginLeft={16} marginBottom={2}>
-            <Tab>Semua</Tab>
-            <Tab>Diproses</Tab>
-            <Tab>Sedang Dikirim</Tab>
-            <Tab>Berhasil</Tab>
-            <Tab>Tidak Berhasil</Tab>
-            <Tab>Menunggu Pembayaran</Tab>
-            <Tab>Menunggu Konfirmasi Pembayaran</Tab>
-          </TabList>
+    <ChakraProvider theme={theme}>
+      <div className="flex w-[100vw] h-[100vh]">
+        <AdminNavbar path={path} />
+        <VStack align="start">
+          <Text
+            fontSize={21}
+            fontWeight={500}
+            marginTop={4}
+            marginBottom={1}
+            marginLeft={16}
+          >
+            Riwayat Transaksi
+          </Text>
+          <Tabs onChange={(index) => setSelected(index)}>
+            <TabList marginLeft={16} marginBottom={2}>
+              <Tab>Semua</Tab>
+              <Tab>Diproses</Tab>
+              <Tab>Sedang Dikirim</Tab>
+              <Tab>Berhasil</Tab>
+              <Tab>Tidak Berhasil</Tab>
+              <Tab>Menunggu Pembayaran</Tab>
+              <Tab>Menunggu Konfirmasi Pembayaran</Tab>
+            </TabList>
+            {transac.length ? (
+              <TabPanels>
+                <TabPanel>
+                  <div>{mappedTransactions()}</div>
+                </TabPanel>
+                <TabPanel>
+                  <div>{mappedTransactionsConfirmation()}</div>
+                </TabPanel>
+                <TabPanel>
+                  <div>{mappedTransactions()}</div>
+                </TabPanel>
+                <TabPanel>
+                  <div>{mappedTransactions()}</div>
+                </TabPanel>
+                <TabPanel>
+                  <div>{mappedTransactions()}</div>
+                </TabPanel>
+                <TabPanel>
+                  <div>{mappedTransactions()}</div>
+                </TabPanel>
+                <TabPanel>
+                  <div>{mappedTransactions()}</div>
+                </TabPanel>
+              </TabPanels>
+            ) : (
+              <VStack marginTop={105}>
+                <Image
+                  src="/admin/Empty-Transaction.png"
+                  width={250}
+                  height={250}
+                />
+                <Text paddingTop={6} fontSize={18}>
+                  Tidak Ada Transaksi
+                </Text>
+              </VStack>
+            )}
+          </Tabs>
           {transac.length ? (
-            <TabPanels>
-              <TabPanel>
-                <div>{mappedTransactions()}</div>
-              </TabPanel>
-              <TabPanel>
-                <div>{mappedTransactionsConfirmation()}</div>
-              </TabPanel>
-              <TabPanel>
-                <div>{mappedTransactions()}</div>
-              </TabPanel>
-              <TabPanel>
-                <div>{mappedTransactions()}</div>
-              </TabPanel>
-              <TabPanel>
-                <div>{mappedTransactions()}</div>
-              </TabPanel>
-              <TabPanel>
-                <div>{mappedTransactions()}</div>
-              </TabPanel>
-              <TabPanel>
-                <div>{mappedTransactions()}</div>
-              </TabPanel>
-            </TabPanels>
+            <HStack paddingLeft={520}>
+              <Button
+                marginRight={2}
+                onClick={onPrevClick}
+                isDisabled={page == 1}
+                colorScheme="messenger"
+              >
+                Prev
+              </Button>
+              <Text paddingRight={2}>{page}</Text>
+              <Button
+                onClick={onNextClick}
+                isDisabled={page >= transac.length}
+                colorScheme="messenger"
+              >
+                Next
+              </Button>
+            </HStack>
           ) : (
-            <VStack marginTop={105}>
-              <Image
-                src="/admin/Empty-Transaction.png"
-                width={250}
-                height={250}
-              />
-              <Text paddingTop={6} fontSize={18}>
-                Tidak Ada Transaksi
-              </Text>
-            </VStack>
+            <VStack></VStack>
           )}
-        </Tabs>
-        {transac.length ? (
-          <HStack paddingLeft={520}>
-            <Button
-              marginRight={2}
-              onClick={onPrevClick}
-              isDisabled={page == 1}
-              colorScheme="messenger"
-            >
-              Prev
-            </Button>
-            <Text paddingRight={2}>{page}</Text>
-            <Button
-              onClick={onNextClick}
-              isDisabled={page >= transac.length}
-              colorScheme="messenger"
-            >
-              Next
-            </Button>
-          </HStack>
-        ) : (
-          <VStack></VStack>
-        )}
-      </VStack>
-    </div>
+        </VStack>
+      </div>
+    </ChakraProvider>
   );
 }
 
@@ -200,13 +204,9 @@ export async function getServerSideProps(context) {
     const config = {
       headers: { Authorization: `Bearer ${user_token}` },
     };
-    const { user_id } = context.params;
 
     return {
-      props: {
-        user_id,
-        user_token,
-      },
+      props: { user_token },
     };
   } catch (error) {
     console.log({ error });
