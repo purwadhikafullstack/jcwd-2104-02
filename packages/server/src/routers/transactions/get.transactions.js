@@ -8,36 +8,6 @@ const {
 } = require('../../../models');
 const { auth } = require('../../helpers/auth');
 
-const adminGetTransactionsById = async (req, res, next) => {
-  try {
-    const { transaction_id } = req.params;
-    const resFetchTransactions = await transactions.findOne({
-      where: { transaction_id },
-      attributes: [
-        'transaction_id',
-        'prescription_id',
-        'user_id',
-        'address_id',
-        'totalPrice',
-        'status',
-        'courier',
-        'deliveryCost',
-        'createdAt',
-      ],
-    });
-
-    res.send({
-      status: 'success',
-      message: 'Admin Get 1 User Transactions Success',
-      data: {
-        resFetchTransactions,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 const adminGetTransactionsByIndex = async (req, res, next) => {
   try {
     const { selected } = req.params;
@@ -374,7 +344,6 @@ const getTransactionsByIndex = async (req, res, next) => {
   }
 };
 
-router.get('/admin/:transaction_id', auth, adminGetTransactionsById);
 router.get(
   '/admin/transactionsByIndex/:selected',
   auth,

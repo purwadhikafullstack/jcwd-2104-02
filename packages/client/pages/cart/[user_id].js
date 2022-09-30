@@ -150,7 +150,7 @@ function Cart(props) {
 
   const renderCourier = () => {
     const getCourier = selectedDeliveryCost.split(',');
-    const getSelectedCourier = `${selectedCourier}`;
+    const getSelectedCourier = `${selectedCourier.toUpperCase()}`;
 
     return <Text>{getSelectedCourier}</Text>;
   };

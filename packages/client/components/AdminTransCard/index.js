@@ -12,6 +12,7 @@ import TransactionDetails from '../AdminDetailTrans';
 export default function AdminTransCard(props) {
   const {
     trans_id,
+    transaction_details,
     productName,
     totalPrice,
     status,
@@ -23,6 +24,9 @@ export default function AdminTransCard(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const rawStatus = status.split('_');
+
+  const grandTotal = deliveryCost + totalPrice;
+
   return (
     <Box>
       <Text fontWeight={600} marginBottom={1} marginLeft={'81'}>
@@ -50,7 +54,7 @@ export default function AdminTransCard(props) {
             {productName}
           </Text>
           <Text w="200px" fontSize={14} fontWeight={450}>
-            Total Harga: Rp. {totalPrice.toLocaleString('id')}
+            Total Harga: Rp. {grandTotal.toLocaleString('id')}
           </Text>
           <Button
             color="linkedin.500"
@@ -65,6 +69,7 @@ export default function AdminTransCard(props) {
               isOpen={isOpen}
               onClose={onClose}
               key={trans_id}
+              transaction_details={transaction_details}
               productName={productName}
               productImage={productImage}
               status={status}
