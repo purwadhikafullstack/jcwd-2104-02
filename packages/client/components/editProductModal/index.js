@@ -95,16 +95,18 @@ function EditProductModal({
         },
       );
 
+      console.log({ resAddProduct });
+
       const extName = productInputs.productImage.split('.');
 
-      //   const resAddProductImage = await axiosInstance.post(
-      //     `/products/newProductImage/${resAddProduct.data.resCreateProduct.product_id}.${extName[1]}`,
-      //     productImageFileBody,
-      //     config,
-      //   );
+      const resAddProductImage = await axiosInstance.post(
+        `/products/newProductImage/${resAddProduct.data.resUpdateProduct.product_id}.${extName[1]}`,
+        productImageFileBody,
+        config,
+      );
 
       if (resAddProduct) {
-        console.log({ resAddProduct, extName });
+        console.log({ resAddProduct, extName, resAddProductImage });
         setLoading(false);
         setEditProductButton(false);
       }

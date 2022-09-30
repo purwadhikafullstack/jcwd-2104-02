@@ -194,7 +194,7 @@ async function getSpecificProductsController(req, res, next) {
 
       product.category = resGetEachCategory?.dataValues.categoryName;
 
-      product.dataValues.category_lists_id =
+      product.category_lists_id =
         resGetCategoriesLists?.dataValues?.category_lists_id;
 
       product.category_id = resGetEachCategory?.dataValues.category_id;

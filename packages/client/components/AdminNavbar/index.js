@@ -8,7 +8,7 @@ function AdminNavbar({ path }) {
   function sideMenuMap() {
     return sideMenu.map((Menu) => {
       return (
-        <Link key={Menu}  href={`/admin/${Menu.toLowerCase()}`}>
+        <Link key={Menu} href={`/admin/${Menu.toLowerCase()}`}>
           <div
             className={
               path.includes(Menu.toLowerCase())
@@ -43,7 +43,7 @@ function AdminNavbar({ path }) {
           height={32}
         />
       </div>
-      <div className="w-[100%] h-[25%]">{sideMenuMap()}</div>
+      <div className="w-[100%] h-[25%] text-white">{sideMenuMap()}</div>
 
       <div className="grow" />
 
