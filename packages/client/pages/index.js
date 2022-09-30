@@ -7,13 +7,12 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Text,
+  VStack,
 } from '@chakra-ui/react';
 import { getSession } from 'next-auth/react';
-import axiosInstance from '../src/config/api';
 
 export default function Home(props) {
-  const [prescription, setPrescription] = useState(props.prescription);
+  const [session, setSession] = useState(props.session);
   const categoriesTestArray = [
     {
       category_list_id: 1,
@@ -203,7 +202,6 @@ export default function Home(props) {
   return (
     <div className="bg-white w-[100%] h-[100vh] relative z-[1] desktop:scrollbar">
       <Navbar />
-
       <div id="box biru" className="bg-[#1068A3] h-[53px] desktop:hidden" />
       <div id="hero-desktop" className="relative hidden desktop:inline">
         <p className="absolute z-[2] text-white font-[400] text-[4vw] left-[15vw] bottom-[200px]">
@@ -259,41 +257,41 @@ export default function Home(props) {
         </InputGroup>
       </div>
       <div className="w-[100%] desktop:flex desktop:flex-col desktop:items-center">
-        <div id="resep doktor" className="desktop:w-[70%]">
-          <p className="font-[500] text-[22px] hidden desktop:flex desktop:mt-[5vh]">
-            Punya Resep dari Dokter?
-          </p>
-          <div className="flex bg-[#F2F8FC] items-center w-[94vw] h-[10vh] mt-[7vh] ml-[3vw] desktop:w-[100%] desktop:mt-0 desktop:ml-0">
-            <div className="mx-[25px] mt-[10px]">
-              <Image
-                src="/landingpage/Punya-resep.png"
-                alt="resep-logo"
-                layout="fixed"
-                width={35}
-                height={35}
-              />
-            </div>
-            <div className="mr-[80px]">
-              <p className="font-[500] text-[14px] desktop:hidden">
-                Punya Resep Dokter?
-              </p>
-              <p className="font-[500] text-[14px] desktop:inline hidden">
-                Unggah Resep
-              </p>
-              <p className="font-[400] w-[150px] desktop:w-[50vw] text-[12px] text-[#6E6E6E]">
-                klik disini untuk kirim foto resep dokter
-              </p>
-            </div>
-            <div className="w-[18px] h-[14px] desktop:hidden">
-              <Image
-                src="/landingpage/Arrow.png"
-                alt="arrow-logo"
-                layout="responsive"
-                width={18}
-                height={14}
-              />
-            </div>
-            {!prescription.length ? (
+        {session ? (
+          <div id="resep doktor" className="desktop:w-[70%]">
+            <p className="font-[500] text-[22px] hidden desktop:flex desktop:mt-[5vh]">
+              Punya Resep dari Dokter?
+            </p>
+            <div className="flex bg-[#F2F8FC] items-center w-[94vw] h-[10vh] mt-[7vh] ml-[3vw] desktop:w-[100%] desktop:mt-0 desktop:ml-0">
+              <div className="mx-[25px] mt-[10px]">
+                <Image
+                  src="/landingpage/Punya-resep.png"
+                  alt="resep-logo"
+                  layout="fixed"
+                  width={35}
+                  height={35}
+                />
+              </div>
+              <div className="mr-[80px]">
+                <p className="font-[500] text-[14px] desktop:hidden">
+                  Punya Resep Dokter?
+                </p>
+                <p className="font-[500] text-[14px] desktop:inline hidden">
+                  Unggah Resep
+                </p>
+                <p className="font-[400] w-[150px] desktop:w-[50vw] text-[12px] text-[#6E6E6E]">
+                  klik disini untuk kirim foto resep dokter
+                </p>
+              </div>
+              <div className="w-[18px] h-[14px] desktop:hidden">
+                <Image
+                  src="/landingpage/Arrow.png"
+                  alt="arrow-logo"
+                  layout="responsive"
+                  width={18}
+                  height={14}
+                />
+              </div>
               <div className="hidden desktop:inline">
                 <Link href="/upload-prescription-image">
                   <Button
@@ -305,13 +303,11 @@ export default function Home(props) {
                   </Button>
                 </Link>
               </div>
-            ) : (
-              <Text color="#1068A3" fontWeight={600} fontSize={14}>
-                Menunggu Konfirmasi
-              </Text>
-            )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <VStack></VStack>
+        )}
         <div id="kategori obat" className="mt-[4 vh] desktop:w-[70%]">
           <p className="flex pl-[4vw] mt-[3vh] mb-[2vh] font-[500] text-[16px] desktop:text-[22px] w-[100%] desktop:pl-0">
             Jelajahi Kategori Obat
@@ -340,22 +336,8 @@ export async function getServerSideProps(context) {
   try {
     const session = await getSession({ req: context.req });
 
-    if (!session) return { redirect: { destination: '/login' } };
-
-    const { user_token } = session.user;
-
-    const config = {
-      headers: { Authorization: `Bearer ${user_token}` },
-    };
-
-    const prescription = await axiosInstance.get(
-      `/prescriptions/userPrescription`,
-      config,
-    );
-
     return {
       props: {
-        prescription: prescription.data.data,
         session,
       },
     };
