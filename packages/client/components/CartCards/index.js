@@ -97,8 +97,9 @@ export default function CartCards(props) {
       <div className="flex justify-between font-semibold ">
         {quantity < 2 ? (
           <Button
-          isDisabled
+            isDisabled
             width="50px"
+            marginRight={2}
             onClick={() => {
               onClickMinus();
             }}
@@ -109,6 +110,7 @@ export default function CartCards(props) {
         ) : (
           <Button
             width="50px"
+            marginRight={2}
             onClick={() => {
               onClickMinus();
             }}
