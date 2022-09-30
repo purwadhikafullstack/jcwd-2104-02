@@ -67,6 +67,7 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
               ],
             },
           ],
+          order: [['transaction_id', 'DESC']],
         });
 
         res.send({

@@ -15,6 +15,7 @@ function SelectAddress(props) {
   const {
     isOpen,
     onClose,
+    key,
     trans_id,
     transaction_details,
     totalPrice,
@@ -33,7 +34,7 @@ function SelectAddress(props) {
         transaction.quantity * transaction.product.productPrice;
 
       return (
-        <VStack align="start">
+        <VStack align="start" key={key}>
           <HStack>
             <VStack marginLeft={7} marginRight={8} marginBottom={4}>
               <Image

@@ -11,6 +11,7 @@ import TransactionDetails from '../AdminDetailTrans';
 
 export default function AdminTransCard(props) {
   const {
+    key,
     trans_id,
     transaction_details,
     productName,
@@ -68,7 +69,7 @@ export default function AdminTransCard(props) {
             <TransactionDetails
               isOpen={isOpen}
               onClose={onClose}
-              key={trans_id}
+              key={key}
               transaction_details={transaction_details}
               productName={productName}
               productImage={productImage}
