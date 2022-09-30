@@ -16,7 +16,7 @@ import {
   Box,
   Select,
 } from '@chakra-ui/react';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import AdminTransCard from '../../components/AdminTransCard';
 import AdminTransCardConfirmation from '../../components/AdminTransCardConfirmation';
@@ -32,6 +32,15 @@ function Transaksi(props) {
   const [formState, setFormState] = useState({ InvoiceID: '' });
 
   const router = useRouter();
+  const session = useSession();
+
+  if (session.data) {
+    if (!session.data.user.user.isAdmin) {
+      router.replace('/');
+    } else {
+      router.replace('/admin/inventory');
+    }
+  }
 
   const path = router.pathname;
 
@@ -285,6 +294,10 @@ export async function getServerSideProps(context) {
     const session = await getSession({ req: context.req });
 
     if (!session) return { redirect: { destination: '/login' } };
+
+    if (!session.user.user.isAdmin) {
+      return { redirect: { destination: '/' } };
+    }
 
     const { user_token } = session.user;
 

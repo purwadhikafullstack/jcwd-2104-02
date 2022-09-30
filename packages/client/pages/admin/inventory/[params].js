@@ -10,6 +10,7 @@ import Link from 'next/link';
 import AddProductModal from '../../../components/AddProductModal';
 import AdminProductDetails from '../../../components/adminProductDetails';
 import EditProductModal from '../../../components/editProductModal';
+import { useSession } from 'next-auth/react';
 
 function Inventory(props) {
   const router = useRouter();
@@ -28,6 +29,16 @@ function Inventory(props) {
     setProductList(props.products);
     setSelected(params);
   });
+
+  const session = useSession();
+
+  if (session.data) {
+    if (!session.data.user.user.isAdmin) {
+      router.replace('/');
+    } else {
+      router.replace('/admin/inventory');
+    }
+  }
 
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);

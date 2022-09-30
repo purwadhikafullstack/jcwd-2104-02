@@ -82,21 +82,20 @@ function ProductCatalog(props) {
           </p>
           <div className="grow" />
           <div className="w-[100%]">
-            
-              <Button
-                variant="outline"
-                onClick={() => {
-                  if (props.session?.user.user.isVerified) {
-                    router.replace(`/detailPage/${product.product_id}`);
-                  }
-                }}
-                colorScheme="linkedin"
-                sx={{ width: '100%', height: '5vh' }}
-                disabled={!props.session?.user.user.isVerified}
-              >
-                <p className="text-[12px]">Tambah</p>
-              </Button>
-              {/* <Button
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (props.session?.user.user.isVerified) {
+                  router.replace(`/detailPage/${product.product_id}`);
+                }
+              }}
+              colorScheme="linkedin"
+              sx={{ width: '100%', height: '5vh' }}
+              disabled={!props.session?.user.user.isVerified}
+            >
+              <p className="text-[12px]">Tambah</p>
+            </Button>
+            {/* <Button
                 variant="outline"
                 colorScheme="linkedin"
                 sx={{ width: '100%', height: '5vh' }}
@@ -104,7 +103,6 @@ function ProductCatalog(props) {
               >
                 <p className="text-[12px]">Tambah</p>
               </Button> */}
-            
           </div>
         </div>
       );
@@ -382,10 +380,13 @@ export async function getServerSideProps(context) {
 
       const page = splitParams[splitParams.length - 1];
 
-      resGetProducts = await axiosInstance.post(`products/${splitParams[0]}`, {
-        page,
-        limit: 10,
-      });
+      resGetProducts = await axiosInstance.post(
+        `products/specifics/${splitParams[0]}`,
+        {
+          page,
+          limit: 10,
+        },
+      );
     }
     const { user_id } = context.params;
 

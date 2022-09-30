@@ -1,14 +1,8 @@
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 function Index() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace('/admin/inventory/byId=1');
-  }, []);
-
   return <div></div>;
 }
 

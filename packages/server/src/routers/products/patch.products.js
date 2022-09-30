@@ -20,10 +20,12 @@ async function updateProductController(req, res, next) {
     const categorySplit = productInputs.categoryInfo.split('=-=');
     const resFindProduct = await products.findOne({ where: { product_id } });
 
+    const extName = productInputs.productImage.split('.');
+
     const resUpdateProduct = await resFindProduct.update({
       productName: productInputs.productName,
       productPrice: productInputs.productPrice,
-      productImage: productInputs.productImage,
+      productImage: `http://localhost:8000/public/productImages/${product_id}.${extName[1]}`,
       description: productInputs.description,
       productStock: productInputs.productStock,
       packageType: productInputs.packageType,
@@ -109,6 +111,7 @@ async function updateProductController(req, res, next) {
 
     res.send({
       status: 'success',
+      resUpdateProduct,
     });
   } catch (error) {
     next(error);
