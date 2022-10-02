@@ -39,6 +39,8 @@ function Edit(props) {
 
   const { name, email, gender, birthDate, phoneNumber } = user;
 
+  console.log({ imgSource });
+
   const onSaveAvatarUpdate = async () => {
     try {
       const session = await getSession();
@@ -161,6 +163,10 @@ function Edit(props) {
             <Image
               className="rounded-full"
               src={imgSource}
+              loader={() => {
+                return imgSource;
+              }}
+              layout={'fixed'}
               width={86}
               height={86}
             />

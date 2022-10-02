@@ -38,6 +38,7 @@ function Profile(props) {
 
   useEffect(() => {
     RenderUserAddresses();
+    console.log(imgSource);
   }, []);
 
   useEffect(() => {}, [selectedAddressId]);
@@ -246,8 +247,13 @@ function Profile(props) {
           </Show>
           <HStack marginTop={4} marginLeft={{ base: '2', md: '77' }}>
             <Image
+              unoptimized={true}
               className="rounded-full"
               src={imgSource}
+              loader={() => {
+                return imgSource;
+              }}
+              layout={'fixed'}
               width={70}
               height={70}
             />
