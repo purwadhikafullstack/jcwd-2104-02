@@ -150,7 +150,7 @@ const confirmTransaction = async (req, res, next) => {
   }
 };
 
-const confirmDeliver = async (req, res, next) => {
+const adminConfirmDeliver = async (req, res, next) => {
   try {
     const { transaction_id } = req.params;
 
@@ -162,9 +162,31 @@ const confirmDeliver = async (req, res, next) => {
     );
     res.send({
       status: 'Success',
-      message: 'Confirmation Success. Order is being delivered',
+      message: 'Confirmation Success. Order is being delivered.',
       data: {
         resconfirmDeliver,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const adminCancelOrder = async (req, res, next) => {
+  try {
+    const { transaction_id } = req.params;
+
+    const resCancelOrder = await transactions.update(
+      {
+        status: 'order_cancelled',
+      },
+      { where: { transaction_id } },
+    );
+    res.send({
+      status: 'Success',
+      message: 'Cancel Order Success.',
+      data: {
+        resCancelOrder,
       },
     });
   } catch (error) {
@@ -181,6 +203,7 @@ router.patch(
 );
 router.patch('/cancelTransaction/:transaction_id', cancelTransaction);
 router.patch('/confirmTransaction/:transaction_id', confirmTransaction);
-router.patch('/confirmDeliver/:transaction_id', confirmDeliver);
+router.patch('/adminConfirmDeliver/:transaction_id', adminConfirmDeliver);
+router.patch('/adminCancelOrder/:transaction_id', adminCancelOrder);
 
 module.exports = router;
