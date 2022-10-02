@@ -145,6 +145,7 @@ function Transaksi(props) {
           deliveryCost={transaction.deliveryCost}
           createdAt={transaction.createdAt}
           transac={transac}
+          fetchTransactions={fetchTransactions}
           props={props}
         />
       );
