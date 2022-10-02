@@ -30,7 +30,26 @@ export default function AdminTransCardConfirmation(props) {
   const deliverOrder = async () => {
     try {
       const res = await axiosInstance.patch(
-        `/transactions/confirmDeliver/${trans_id}`,
+        `/transactions/adminConfirmDeliver/${trans_id}`,
+      );
+      fetchTransactions();
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.log({ Error });
+      alert(error.response?.data.message);
+    }
+  };
+
+  const cancelOrder = async () => {
+    try {
+      const res = await axiosInstance.patch(
+        `/transactions/adminCancelOrder/${trans_id}`,
       );
       fetchTransactions();
       toast({
@@ -122,7 +141,13 @@ export default function AdminTransCardConfirmation(props) {
           >
             Konfirmasi Pesanan
           </Button>
-          <Button variant="outline" colorScheme="red" width={180} fontSize={14}>
+          <Button
+            variant="outline"
+            colorScheme="red"
+            width={180}
+            fontSize={14}
+            onClick={cancelOrder}
+          >
             Batalkan Pesanan
           </Button>
         </VStack>
