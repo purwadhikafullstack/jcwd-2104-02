@@ -294,7 +294,7 @@ async function getAllProductsSortedController(req, res, next) {
 
 async function postNewProductController(req, res, next) {
   try {
-    console.log({ body: req.body });
+    // console.log({ body: req.body });
     const {
       categoryInfo,
       description,

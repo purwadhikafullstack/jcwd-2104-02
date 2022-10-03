@@ -17,7 +17,7 @@ function Transaction(props) {
   const [transac, setTransac] = useState([])
 
 
-  console.warn(transac);
+  // console.warn(transac);
   const [Berlangsung, setBerlangsung] = useState([])
   const [selected, setSelected] = useState(0)
   // console.log(user_id)

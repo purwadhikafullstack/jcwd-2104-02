@@ -38,6 +38,7 @@ function AddProductModal({
     defaultQuantity: '',
     servingType: '',
   });
+  
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {

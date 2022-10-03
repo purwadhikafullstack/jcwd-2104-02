@@ -103,8 +103,8 @@ const postTransaction = async (req, res, next) => {
         { where: { product_id: data.dataValues.product_id } },
       );
       // console.log("jalan")
-      //  await carts.destroy({ where: { user_id } });
-    });
+       await carts.destroy({ where: { user_id } });
+    })
 
     res.send({
       status: 'success',

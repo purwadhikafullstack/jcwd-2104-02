@@ -14,25 +14,29 @@ import { useState, useEffect } from 'react';
 import { Icon, ViewOffIcon, ViewIcon } from '@chakra-ui/icons';
 import { signIn, getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { redirect } from 'next/dist/server/api-utils';
+import axiosInstance from '../../client/src/config/api';
 
 function Login() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [isLogin, setIsLogin] = useState(false)
   const router = useRouter();
 
   async function getSessionAsync() {
     const session = await getSession();
 
     // console.log({ session });
-    if (session) {
-      // router.replace('/');
+    if (!session?.user.user.isAdmin) {
+      router.replace('/');
+    } else if (session?.user.user.isAdmin) {
+      router.replace('/admin/inventory');
     }
-    // console.log({ session });
   }
 
   useEffect(() => {
     getSessionAsync();
-  }, []);
+  },[isLogin]);
 
   function PasswordInput() {
     const [show, setShow] = useState(false);
@@ -69,10 +73,11 @@ function Login() {
       password,
     });
 
-    // console.log(`ini dia ${res}`);
-    // console.log({ res });
+    // console.warn(`ini dia ${res}`);
+    // console.warn({ res });
     if (!res.error) {
-      router.replace('/');
+      console.log({res});
+      setIsLogin(true)
     } else {
       // console.log(res.error);
       alert(res.error);
@@ -164,5 +169,7 @@ function Login() {
     </Flex>
   );
 }
+
+
 
 export default Login;

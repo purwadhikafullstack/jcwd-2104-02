@@ -10,7 +10,7 @@ import Link from 'next/link';
 import AddProductModal from '../../../components/AddProductModal';
 import AdminProductDetails from '../../../components/adminProductDetails';
 import EditProductModal from '../../../components/editProductModal';
-import { useSession } from 'next-auth/react';
+import AddCategoryModal from '../../../components/AddCategoryModal';
 
 function Inventory(props) {
   const router = useRouter();
@@ -21,6 +21,7 @@ function Inventory(props) {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [currentProduct, setCurrentProduct] = useState(props.products[0]);
   const [addProductButton, setAddProductButton] = useState(false);
+  const [addCategoryButton, setAddCategoryButton] = useState(false);
   const [openProductDetails, setOpenProductDetails] = useState(false);
   const [editProductButton, setEditProductButton] = useState(false);
 
@@ -178,6 +179,10 @@ function Inventory(props) {
           currentProduct={currentProduct}
           openProductDetails={openProductDetails}
           setOpenProductDetails={setOpenProductDetails}
+        />
+        <AddCategoryModal
+          addCategoryButton={addCategoryButton}
+          setAddCategoryButton={setAddCategoryButton}
         />
         <div className="h-[90%] w-[90%]">
           <div className="flex flex-col w-[100%] bg-[#F5F6F6] h-[100%]">
@@ -379,7 +384,9 @@ function Inventory(props) {
 
               <div className="flex">
                 <div
-                  onClick={() => {}}
+                  onClick={() => {
+                    setAddCategoryButton(true);
+                  }}
                   className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
                 >
                   + Tambah Kategori
@@ -430,6 +437,7 @@ export async function getServerSideProps(context) {
         { page, limit: 3 },
       );
     }
+
 
     // console.log(context.params);
     // console.log({ resGetProducts });

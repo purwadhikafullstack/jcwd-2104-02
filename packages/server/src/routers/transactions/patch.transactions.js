@@ -51,7 +51,7 @@ const updatePaymentProof = async (req, res, next) => {
     const { filename } = req.file;
     const finalFileName = `/public/paymentProof/${filename}`;
 
-    console.log({ transaction_id });
+    // console.log({ transaction_id });
 
     const resUpdateAvatar = await transaction_details.update(
       {
