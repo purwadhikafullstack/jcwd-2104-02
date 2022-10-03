@@ -103,7 +103,7 @@ const postTransaction = async (req, res, next) => {
         { where: { product_id: data.dataValues.product_id } },
       );
       // console.log("jalan")
-      //  await carts.destroy({ where: { user_id } });
+      await carts.destroy({ where: { user_id } });
     });
 
     res.send({
@@ -181,22 +181,6 @@ const getTransactionsByIndex = async (req, res, next) => {
             },
           ],
         });
-        // console.log("bangggg")
-        // const resFetchAddress = await addresses.findAll({
-        //   where: { address_id: resFetchTransactions[0].address_id },
-        //   attributes: [
-        //     `address_id`,
-        //     `user_id`,
-        //     `addressDetail`,
-        //     `recipient`,
-        //     `postalCode`,
-        //     `province_id`,
-        //     `province`,
-        //     `city_id`,
-        //     `city_name`,
-        //     `isDefault`,
-        //   ],
-        // });
 
         res.send({
           status: 'success',
@@ -233,23 +217,6 @@ const getTransactionsByIndex = async (req, res, next) => {
         },
       ],
     });
-    // console.log("bangggg")
-    // const resFetchAddress = await addresses.findAll({
-    //   where: { address_id: resFetchTransactions[0]?.address_id },
-    //   attributes: [
-    //     `address_id`,
-    //     `user_id`,
-    //     `addressDetail`,
-    //     `recipient`,
-    //     `postalCode`,
-    //     `province_id`,
-    //     `province`,
-    //     `city_id`,
-    //     `city_name`,
-    //     `isDefault`,
-    //   ],
-    // });
-
     res.send({
       status: 'success',
       message: 'Fetch Transaction Success',

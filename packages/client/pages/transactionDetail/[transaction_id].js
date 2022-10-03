@@ -7,7 +7,7 @@ import {
   ButtonGroup,
   IconButton,
   Input,
-  VStack
+  VStack,
 } from '@chakra-ui/react';
 import Navbar from '../../components/Navbar';
 import axiosInstance from '../../src/config/api';
@@ -18,7 +18,6 @@ import next from 'next';
 import { useToast } from '@chakra-ui/react';
 import TransDetailCard from '../../components/TransDetailCard';
 
-
 function TransactionDetails(props) {
   const { transaction_details, transactions } = props;
   const [transac, setTransac] = useState(
@@ -26,7 +25,7 @@ function TransactionDetails(props) {
   );
   const [trans, setTrans] = useState(transactions.resFetchTransactions);
   // console.log(trans.totalPrice)
-  console.log(transactions)
+  console.log(transactions);
   const [transByAddress, setTransByAddress] = useState(
     transactions.resFetchAddress,
   );
@@ -36,22 +35,22 @@ function TransactionDetails(props) {
     setPayment(event.target.files[0]);
   };
 
-  let penerima
-  let jalan
-  let kodePos
-  let provinsi
-  let kota
+  let penerima;
+  let jalan;
+  let kodePos;
+  let provinsi;
+  let kota;
 
-  transByAddress.forEach(async (data) =>{
+  transByAddress.forEach(async (data) => {
     // console.log(data)
-    penerima = data.recipient
-    jalan = data.addressDetail
-    kodePos = data.postalCode
-    provinsi = data.province
-    kota = data.city_name
-  })
+    penerima = data.recipient;
+    jalan = data.addressDetail;
+    kodePos = data.postalCode;
+    provinsi = data.province;
+    kota = data.city_name;
+  });
   // console.log(jalan)
-  
+
   const onSavePayment = async () => {
     try {
       const session = await getSession();
@@ -104,17 +103,16 @@ function TransactionDetails(props) {
       // };
       const transaction_id = trans.transaction_id;
       const res = await axiosInstance.patch(
-        `/transactions/cancelTransaction/${transaction_id}`
+        `/transactions/cancelTransaction/${transaction_id}`,
       );
       setTrans({ ...trans, status: 'order_cancelled' });
 
       alert(res.data.message);
-
     } catch (error) {
       console.log({ Error });
       alert(error.response?.data.message);
     }
-  }
+  };
 
   const onConfirmClick = async () => {
     try {
@@ -155,11 +153,11 @@ function TransactionDetails(props) {
       );
     });
   }
-  
-  const grandTotal = trans.totalPrice + trans.deliveryCost
-  
+
+  const grandTotal = trans.totalPrice + trans.deliveryCost;
 
   const rawStatus = trans.status.split('_');
+  const rawStatusJoin = rawStatus.join(' ');
 
   return (
     <div className="w-[100vw] h-[100vh]">
@@ -201,34 +199,70 @@ function TransactionDetails(props) {
             Metode Pembayaran: Transfer Bank BCA
           </p>
           <p className="mt-[5vh] ml-[10%] text-[1rem] font-[500]">
-            Status Pembayaran: {rawStatus.join(' ')}
+            Status Pembayaran: {rawStatusJoin}
           </p>
-          <div className="mt-[5vh] ml-[10%]">
-            {' '}
-            <input type={'file'} onChange={onFileChange} />
-          </div>
-          <Button
-            onClick={onSavePayment}
-            colorScheme={'linkedin'}
-            className="mt-[5vh] ml-[10%]"
-          >
-            Unggah Bukti Pembayaran
-          </Button>
+          {rawStatusJoin === 'awaiting payment' ? (
+            <div className="mt-[5vh] ml-[10%]">
+              {' '}
+              <input type={'file'} onChange={onFileChange} />
+            </div>
+          ) : (
+            <></>
+          )}
+          {rawStatusJoin === 'awaiting payment' ? (
+            <Button
+              variant={'outline'}
+              onClick={onSavePayment}
+              colorScheme={'linkedin'}
+              className="mt-[5vh] ml-[10%]"
+            >
+              Unggah Bukti Pembayaran
+            </Button>
+          ) : (
+            <></>
+          )}
+
           <VStack className="mt-[5vh] mr-[50%]">
-            <Button
-              variant={'outline'}
-              colorScheme={'green'}
-              onClick={onConfirmClick}
-            >
-              Konfirmasi Penerimaan
-            </Button>
-            <Button
-              variant={'outline'}
-              colorScheme={'red'}
-              onClick={onCancelClick}
-            >
-              Batalkan Pesanan
-            </Button>
+            {rawStatusJoin === 'awaiting payment confirmation' ||
+            rawStatusJoin != 'delivering order' ? (
+              <Button
+                variant={'ghost'}
+                colorScheme={'green'}
+                onClick={onConfirmClick}
+                isDisabled
+              >
+                Konfirmasi Penerimaan
+              </Button>
+            ) : (
+              <Button
+                variant={'ghost'}
+                colorScheme={'green'}
+                onClick={onConfirmClick}
+              >
+                Konfirmasi Penerimaan
+              </Button>
+            )}
+            {rawStatusJoin === 'awaiting payment confirmation' ||
+            rawStatusJoin === 'delivering order' ||
+            rawStatusJoin === 'processing order' ||
+            rawStatusJoin === 'order confirmed' ? (
+              <Button
+                variant={'ghost'}
+                colorScheme={'red'}
+                onClick={onCancelClick}
+                isDisabled
+              >
+                Batalkan Pesanan
+              </Button>
+            ) : (
+              <Button
+                variant={'ghost'}
+                colorScheme={'red'}
+                onClick={onCancelClick}
+              >
+                Batalkan Pesanan
+              </Button>
+            )}
           </VStack>
         </div>
       </div>
@@ -256,7 +290,10 @@ export async function getServerSideProps(context) {
       `/transactions/getDetails/${transaction_id}`,
       config,
     );
-    const resgetTransactionById = await axiosInstance.get(`/transactions/transById/${transaction_id}`,config)
+    const resgetTransactionById = await axiosInstance.get(
+      `/transactions/transById/${transaction_id}`,
+      config,
+    );
 
     // console.log(resgetTransactionById.data);
 
