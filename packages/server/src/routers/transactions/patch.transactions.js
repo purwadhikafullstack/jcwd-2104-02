@@ -16,7 +16,6 @@ const { uploadPayment } = require('../../lib/multer');
 const patchTransaction = async (req, res, next) => {
   try {
     const { transStatus, trans } = req.body;
-    // console.log({transStatus,trans})
     const { transaction_id } = trans;
 
     const resFindTransaction = await transactions.findOne({
@@ -52,8 +51,6 @@ const updatePaymentProof = async (req, res, next) => {
     const { filename } = req.file;
     const finalFileName = `/public/paymentProof/${filename}`;
 
-    // console.log({ transaction_id });
-
     const resUpdateAvatar = await transaction_details.update(
       {
         paymentProof: finalFileName,
@@ -88,17 +85,37 @@ const cancelTransaction = async (req, res, next) => {
     });
 
     if (resFindTransaction.dataValues) {
-      const resCancelOrder = await transactions.update(
-        {
-          status: 'order_cancelled',
-        },
-        { where: { transaction_id } },
-      );
+      const resFindTransactionDetail = await transaction_details.findAll({
+        where: { transaction_id },
+        include: [products],
+      });
+
+      resFindTransactionDetail.forEach(async (data) => {
+        const resUpdateStock = await products.update(
+          {
+            productStock:
+              data.dataValues.product.dataValues.productStock +
+              data.dataValues.quantity,
+          },
+          {
+            where: {
+              product_id: data.dataValues.product.dataValues.product_id,
+            },
+          },
+        );
+        const resCancelOrder = await transactions.update(
+          {
+            status: 'order_cancelled',
+          },
+          { where: { transaction_id } },
+        );
+      });
+
       res.send({
         status: 'Success',
         message: 'order is cancelled',
         data: {
-          resCancelOrder,
+          resFindTransactionDetail,
         },
       });
     }
@@ -117,17 +134,36 @@ const confirmTransaction = async (req, res, next) => {
     });
 
     if (resFindTransaction.dataValues) {
-      const resConfirmOrder = await transactions.update(
-        {
-          status: 'order_confirmed',
-        },
-        { where: { transaction_id } },
-      );
+      const resFindTransactionDetail = await transaction_details.findAll({
+        where: { transaction_id },
+        include: [products],
+      });
+
+      resFindTransactionDetail.forEach(async (data) => {
+        // const resUpdateStock = await products.update(
+        //   {
+        //     productStock:
+        //       data.dataValues.product.dataValues.productStock -
+        //       data.dataValues.quantity,
+        //   },
+        //   {
+        //     where: {
+        //       product_id: data.dataValues.product.dataValues.product_id,
+        //     },
+        //   },
+        // );
+        const resConfirmOrder = await transactions.update(
+          {
+            status: 'order_confirmed',
+          },
+          { where: { transaction_id } },
+        );
+      });
       res.send({
         status: 'Success',
         message: 'order is confirmed',
         data: {
-          resConfirmOrder,
+          resFindTransactionDetail,
         },
       });
     }

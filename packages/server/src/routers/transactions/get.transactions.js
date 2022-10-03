@@ -194,7 +194,6 @@ const userGetTransactionByPrescription = async (req, res, next) => {
 const getTransactions = async (req, res, next) => {
   try {
     const { user_id } = req.params;
-    console.log(user_id);
     const resFetchTransactions = await transactions.findAll({
       where: { user_id },
       attributes: [
@@ -218,7 +217,6 @@ const getTransactions = async (req, res, next) => {
         },
       ],
     });
-    // console.log("bangggg")
     const resFetchAddress = await addresses.findAll({
       where: { address_id: resFetchTransactions[0].address_id },
       attributes: [
@@ -252,7 +250,6 @@ const getTransactions = async (req, res, next) => {
 const getTransactionsById = async (req, res, next) => {
   try {
     const { transaction_id } = req.params;
-    // console.log(user_id);
     const resFetchTransactions = await transactions.findOne({
       where: { transaction_id },
       attributes: [
@@ -265,7 +262,6 @@ const getTransactionsById = async (req, res, next) => {
         'deliveryCost',
       ],
     });
-    console.log('bangggg');
     const resFetchAddress = await addresses.findAll({
       where: { address_id: resFetchTransactions.address_id },
       attributes: [
@@ -281,7 +277,6 @@ const getTransactionsById = async (req, res, next) => {
         `isDefault`,
       ],
     });
-    console.log(resFetchAddress);
 
     res.send({
       status: 'success',
@@ -304,12 +299,10 @@ const getTransactionDetails = async (req, res, next) => {
       include: [products],
     });
 
-    console.log({ resFetchTransactionDetails });
     res.send({
       status: 'success',
       message: 'Fetch details Success',
       data: {
-        // resFetchTransactions,
         resFetchTransactionDetails,
       },
     });
@@ -347,7 +340,6 @@ const getTransactionsByIndex = async (req, res, next) => {
 
       default:
         const { user_id } = req.params;
-        console.log(user_id);
         const resFetchTransactions = await transactions.findAll({
           where: { user_id, prescriptionImage: null },
           attributes: [
@@ -379,7 +371,6 @@ const getTransactionsByIndex = async (req, res, next) => {
         });
     }
 
-    console.log({ statusFind, selected });
     const resFetchTransactions = await transactions.findAll({
       where: { user_id, status: statusFind, prescriptionImage: null },
       attributes: [
