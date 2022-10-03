@@ -11,7 +11,7 @@ function Navbar() {
     getSessionAsync();
   }, []);
 
-  // console.log({ session });
+  console.log({ session });
 
   async function getSessionAsync() {
     const session = await getSession();

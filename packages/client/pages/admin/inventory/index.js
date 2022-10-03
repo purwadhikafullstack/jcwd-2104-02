@@ -18,11 +18,13 @@ export async function getServerSideProps(context) {
   try {
     const session = await getSession({ req: context.req });
 
-    if (!session) return { redirect: { destination: '/login' } };
+    // if (!session) return { redirect: { destination: '/login' } };
 
-    if (!session.user.user.isAdmin) {
-      return { redirect: { destination: '/' } };
-    }
+    // if (!session.user.user.isAdmin) {
+    //   return { redirect: { destination: '/' } };
+    // }
+
+    return { props: { session } };
   } catch (error) {
     return { props: { error: error.message } };
   }
