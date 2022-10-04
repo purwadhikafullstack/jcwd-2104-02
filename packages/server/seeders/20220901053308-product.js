@@ -26,6 +26,7 @@ module.exports = {
         description: 'Product desc2',
         packageType: 'Botol',
         servingType: 'Tablet',
+
         isPublic: true,
         defaultQuantity: 20,
         createdAt: new Date(),
