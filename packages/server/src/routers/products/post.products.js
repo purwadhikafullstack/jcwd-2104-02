@@ -57,9 +57,6 @@ async function getAllProductsController(req, res, next) {
 
       product.dataValues.category_id =
         resGetEachCategory?.dataValues.category_id;
-
-      product.dataValues.defaultQuantity =
-        resGetProductDefaultQuantity?.dataValues.quantity;
     }
 
     res.send({
@@ -137,9 +134,6 @@ async function getSpecificProductsController(req, res, next) {
         product.category = resGetEachCategory?.dataValues.categoryName;
 
         product.category_id = resGetEachCategory?.dataValues.category_id;
-
-        product.defaultQuantity =
-          resGetProductDefaultQuantity?.dataValues.quantity;
       }
 
       res.send({
@@ -198,9 +192,6 @@ async function getSpecificProductsController(req, res, next) {
         resGetCategoriesLists?.dataValues?.category_lists_id;
 
       product.category_id = resGetEachCategory?.dataValues.category_id;
-
-      product.defaultQuantity =
-        resGetProductDefaultQuantity?.dataValues.quantity;
     }
 
     // console.log({ specifics });
@@ -277,9 +268,6 @@ async function getAllProductsSortedController(req, res, next) {
 
       product.dataValues.category_id =
         resGetEachCategory?.dataValues.category_id;
-
-      product.dataValues.defaultQuantity =
-        resGetProductDefaultQuantity?.dataValues.quantity;
     }
 
     res.send({
@@ -315,10 +303,13 @@ async function postNewProductController(req, res, next) {
       productPrice: parseInt(productPrice),
       description,
       productStock: parseInt(productStock),
+      defaultQuantity,
       servingType,
       isPublic: false,
       packageType,
     });
+
+    console.log({ resCreateProduct });
 
     await resCreateProduct.update({
       productImage: `http://localhost:8000/public/productImages/${
@@ -331,16 +322,6 @@ async function postNewProductController(req, res, next) {
       product_id: resCreateProduct.dataValues.product_id,
       categoryName: categorySplit[1],
     });
-
-    for (let i = 0; i < productStock; i++) {
-      await product_details.create({
-        product_id: resCreateProduct.dataValues.product_id,
-        quantity: defaultQuantity,
-        current_quantity: defaultQuantity,
-        isOpen: false,
-        isAvailable: true,
-      });
-    }
 
     setTimeout(() => {
       res.send({

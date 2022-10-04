@@ -21,7 +21,7 @@ function AddProductModal({
   setAddProductButton,
   categoriesLists,
 }) {
-  const [productStock, setProductStock] = useState(1);
+  const [productStock, setProductStock] = useState(0);
   const [loading, setLoading] = useState(false);
   const [productImageFile, setProductImageFile] = useState();
   const [newProductImage, setNewProductImage] = useState(
@@ -208,7 +208,7 @@ function AddProductModal({
 
         <ModalFooter justifyContent="space-between">
           <div className="flex w-[50%] justify-evenly">
-            <Button
+            {/* <Button
               colorScheme="linkedin"
               variant="ghost"
               disabled={productStock <= 1}
@@ -217,10 +217,11 @@ function AddProductModal({
               }}
             >
               {'<'}
-            </Button>
+            </Button> */}
 
             <Input
               value={productStock}
+              disabled
               onChange={(event) => {
                 if (
                   parseInt(event.target.value) <= 0 ||
@@ -239,7 +240,7 @@ function AddProductModal({
               className="w-[2.5vw] mx-[1vw] flex items-center justify-center bg-gray-200 rounded-[.2vw]"
             />
 
-            <Button
+            {/* <Button
               colorScheme="linkedin"
               variant="ghost"
               disabled={productStock >= 9999}
@@ -248,7 +249,7 @@ function AddProductModal({
               }}
             >
               {'>'}
-            </Button>
+            </Button> */}
           </div>
           <div className="flex w-[50%] justify-end">
             <Button

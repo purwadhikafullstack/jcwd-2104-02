@@ -27,6 +27,7 @@ async function updateProductController(req, res, next) {
       productPrice: productInputs.productPrice,
       productImage: `http://localhost:8000/public/productImages/${product_id}.${extName[1]}`,
       description: productInputs.description,
+      defaultQuantity: productInputs.defaultQuantity,
       productStock: productInputs.productStock,
       packageType: productInputs.packageType,
       servingType: productInputs.servingType,
@@ -42,15 +43,15 @@ async function updateProductController(req, res, next) {
       where: { product_id },
     });
 
-    for (let i = 0; i < productInputs.productStock; i++) {
-      await product_details.create({
-        product_id: resUpdateProduct.dataValues.product_id,
-        quantity: productInputs.defaultQuantity,
-        current_quantity: productInputs.defaultQuantity,
-        isOpen: false,
-        isAvailable: true,
-      });
-    }
+    // for (let i = 0; i < productInputs.productStock; i++) {
+    //   await product_details.create({
+    //     product_id: resUpdateProduct.dataValues.product_id,
+    //     quantity: productInputs.defaultQuantity,
+    //     current_quantity: productInputs.defaultQuantity,
+    //     isOpen: false,
+    //     isAvailable: true,
+    //   });
+    // }
 
     // if (currentProduct.productStock < productInputs.productStock) {
     //   const resFindProduct = await products.findOne({ where: { product_id } });

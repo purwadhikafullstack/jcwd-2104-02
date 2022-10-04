@@ -30,16 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
-      quantity: {
-        type: DataTypes.INTEGER,
-      },
       current_quantity: {
         type: DataTypes.INTEGER,
       },
       isOpen: {
-        type: DataTypes.BOOLEAN,
-      },
-      isAvailable: {
         type: DataTypes.BOOLEAN,
       },
     },

@@ -16,6 +16,10 @@ const prescriptionsRouter = require('./routers/prescriptions');
 const transactionsRouter = require('./routers/transactions');
 const rajaOngkirRouter = require('./routers/rajaongkir');
 
+
+
+
+
 app.use(cors());
 app.use(bearerToken());
 app.use(express.json());

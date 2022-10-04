@@ -17,16 +17,10 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
-      quantity: {
-        type: Sequelize.INTEGER,
-      },
       current_quantity: {
         type: Sequelize.INTEGER,
       },
       isOpen: {
-        type: Sequelize.BOOLEAN,
-      },
-      isAvailable: {
         type: Sequelize.BOOLEAN,
       },
       createdAt: {
