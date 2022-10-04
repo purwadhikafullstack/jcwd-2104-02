@@ -35,7 +35,7 @@ function Inventory(props) {
   if (session.data) {
     if (!session.data.user.user.isAdmin) {
       router.replace('/');
-    } 
+    }
   }
 
   function showCategoriesSwitch() {

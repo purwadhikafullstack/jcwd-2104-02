@@ -186,9 +186,12 @@ function Cart(props) {
     <ChakraProvider theme={theme}>
       <Navbar />
       {empty ? (
-        <div className="text-[20px] font-[400] text-center mt-[35vh]">
-          Wah keranjang anda kosong!
-        </div>
+        <VStack marginTop={105}>
+          <Image src="/admin/Empty-Transaction.png" width={250} height={250} />
+          <Text paddingTop={6} fontSize={18}>
+            Wah! keranjang anda kosong!
+          </Text>
+        </VStack>
       ) : (
         <HStack>
           <VStack marginLeft={105} width="110vH" alignSelf="start">

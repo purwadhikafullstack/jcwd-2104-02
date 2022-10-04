@@ -245,7 +245,8 @@ function TransactionDetails(props) {
             {rawStatusJoin === 'awaiting payment confirmation' ||
             rawStatusJoin === 'delivering order' ||
             rawStatusJoin === 'processing order' ||
-            rawStatusJoin === 'order confirmed' ? (
+            rawStatusJoin === 'order confirmed' ||
+            rawStatusJoin === 'order cancelled' ? (
               <Button
                 variant={'ghost'}
                 colorScheme={'red'}

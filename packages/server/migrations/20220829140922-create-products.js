@@ -25,6 +25,10 @@ module.exports = {
       },
       isPublic: {
         type: Sequelize.BOOLEAN,
+        defaultValue: true,
+      },
+      defaultQuantity: {
+        type: Sequelize.INTEGER,
       },
       packageType: {
         type: Sequelize.STRING,

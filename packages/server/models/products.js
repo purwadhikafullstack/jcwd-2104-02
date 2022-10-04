@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       products.hasOne(models.transaction_details, {
         foreignKey: 'transaction_details_id',
-      }); 
+      });
       // Error: products.belongsTo called with something that's not a subclass of Sequelize.Model
     }
   }
@@ -57,6 +57,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       isPublic: {
         type: DataTypes.BOOLEAN,
+        defaultValue: true,
+      },
+      defaultQuantity: {
+        type: DataTypes.INTEGER,
       },
       packageType: {
         type: DataTypes.STRING,
