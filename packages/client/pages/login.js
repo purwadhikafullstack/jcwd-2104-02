@@ -18,21 +18,23 @@ import { useRouter } from 'next/router';
 function Login() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [login, setLogin] = useState(false);
   const router = useRouter();
 
   async function getSessionAsync() {
     const session = await getSession();
 
-    // console.log({ session });
-    if (session) {
-      // router.replace('/');
+    if (session?.user.user.isAdmin) {
+      router.replace('/admin');
+    } else if (session) {
+      router.replace('/');
     }
     // console.log({ session });
   }
 
   useEffect(() => {
     getSessionAsync();
-  }, []);
+  });
 
   function PasswordInput() {
     const [show, setShow] = useState(false);
@@ -72,9 +74,10 @@ function Login() {
     // console.log(`ini dia ${res}`);
     // console.log({ res });
     if (!res.error) {
-      router.replace('/');
+      console.log('success login');
+      setLogin(true);
     } else {
-      // console.log(res.error);
+      console.log(res.error);
       alert(res.error);
     }
   };

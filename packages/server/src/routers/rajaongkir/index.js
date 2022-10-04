@@ -15,7 +15,10 @@ axios.defaults.headers.post['Content-Type'] =
 router.get('/provinsi', (req, res) => {
   axios
     .get('/province')
-    .then((response) => res.json(response.data))
+    .then((response) => {
+      // console.log({ response: response.data });
+      res.json(response.data);
+    })
     .catch((err) => res.send(err));
 });
 

@@ -10,7 +10,7 @@ import Link from 'next/link';
 import AddProductModal from '../../../components/AddProductModal';
 import AdminProductDetails from '../../../components/adminProductDetails';
 import EditProductModal from '../../../components/editProductModal';
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 
 function Inventory(props) {
   const router = useRouter();
@@ -29,14 +29,6 @@ function Inventory(props) {
     setProductList(props.products);
     setSelected(params);
   });
-
-  const session = useSession();
-
-  if (session.data) {
-    if (!session.data.user.user.isAdmin) {
-      router.replace('/');
-    }
-  }
 
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);
@@ -404,6 +396,14 @@ function Inventory(props) {
 
 export async function getServerSideProps(context) {
   try {
+    const session = await getSession({ req: context.req });
+
+    if (!session) return { redirect: { destination: '/login' } };
+
+    if (!session.user.user.isAdmin) {
+      return { redirect: { destination: '/' } };
+    }
+
     const resGetCategoriesLists = await axiosInstance.get('categories/getAll');
 
     let resGetProducts = '';

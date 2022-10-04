@@ -37,8 +37,6 @@ function Transaksi(props) {
   if (session.data) {
     if (!session.data.user.user.isAdmin) {
       router.replace('/');
-    } else {
-      router.replace('/admin/inventory');
     }
   }
 
@@ -120,6 +118,7 @@ function Transaksi(props) {
   };
 
   function mappedTransactions() {
+    console.log({ filteredTransactions });
     return filteredTransactions?.map((transaction) => {
       return (
         <AdminTransCard
