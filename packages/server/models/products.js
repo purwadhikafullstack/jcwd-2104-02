@@ -62,6 +62,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
       },
+      defaultQuantity: {
+        type: DataTypes.INTEGER,
+      },
       packageType: {
         type: DataTypes.STRING,
       },

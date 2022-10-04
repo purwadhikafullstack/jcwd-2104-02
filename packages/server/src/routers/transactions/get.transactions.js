@@ -315,6 +315,13 @@ const getTransactionsByIndex = async (req, res, next) => {
   try {
     const { selected } = req.params;
     const { user_id } = req.params;
+    let { page, pageSize } = req.query;
+
+    page = +page;
+    pageSize = +pageSize;
+
+    const limit = pageSize;
+    const offset = (page - 1) * pageSize;
 
     var statusFind;
 
@@ -349,7 +356,8 @@ const getTransactionsByIndex = async (req, res, next) => {
             'totalPrice',
             'status',
           ],
-
+          limit: limit,
+          offset: offset,
           include: [
             {
               model: transaction_details,
@@ -380,7 +388,8 @@ const getTransactionsByIndex = async (req, res, next) => {
         'totalPrice',
         'status',
       ],
-
+      limit: limit,
+      offset: offset,
       include: [
         {
           model: transaction_details,

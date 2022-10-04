@@ -30,6 +30,9 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: true,
       },
+      defaultQuantity: {
+        type: Sequelize.INTEGER,
+      },
       packageType: {
         type: Sequelize.STRING,
       },
