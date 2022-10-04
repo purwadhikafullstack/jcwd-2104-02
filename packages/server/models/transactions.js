@@ -31,6 +31,9 @@ module.exports = (sequelize, DataTypes) => {
       prescriptionImage: {
         type: DataTypes.STRING(255),
       },
+      prescriptionImage: {
+        type: DataTypes.STRING,
+      },
       user_id: {
         type: DataTypes.INTEGER,
         references: {

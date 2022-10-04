@@ -97,8 +97,13 @@ function Transaction(props) {
       <Tabs
         onChange={(index) => setSelected(index)}
         mx={100}
-        variant={'enclosed-colored'}
+        variant={'soft-rounded'}
         colorScheme={'facebook'}
+        border="1px"
+        borderColor="gray.200"
+        rounded={10}
+        padding={6}
+        marginBottom={10}
       >
         <TabList>
           <Tab>Semua</Tab>
@@ -145,31 +150,31 @@ function Transaction(props) {
             </Text>
           </VStack>
         )}
+        {transac.length ? (
+          <HStack paddingLeft={210} paddingBottom={30}>
+            <Button
+              variant={'outline'}
+              marginRight={2}
+              onClick={onPrevClick}
+              isDisabled={page == 1}
+              colorScheme="messenger"
+            >
+              Prev
+            </Button>
+            <Text paddingRight={2}>{page}</Text>
+            <Button
+              variant={'outline'}
+              onClick={onNextClick}
+              isDisabled={page >= transac.length}
+              colorScheme="messenger"
+            >
+              Next
+            </Button>
+          </HStack>
+        ) : (
+          <VStack></VStack>
+        )}
       </Tabs>
-      {transac.length ? (
-        <HStack paddingLeft={210} paddingBottom={30}>
-          <Button
-            variant={'outline'}
-            marginRight={2}
-            onClick={onPrevClick}
-            isDisabled={page == 1}
-            colorScheme="messenger"
-          >
-            Prev
-          </Button>
-          <Text paddingRight={2}>{page}</Text>
-          <Button
-            variant={'outline'}
-            onClick={onNextClick}
-            isDisabled={page >= transac.length}
-            colorScheme="messenger"
-          >
-            Next
-          </Button>
-        </HStack>
-      ) : (
-        <VStack></VStack>
-      )}
     </div>
   );
 }
