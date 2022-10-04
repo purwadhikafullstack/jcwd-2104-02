@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import AdminNavbar from '../../components/AdminNavbar';
+import AdminNavbar from '../../../components/AdminNavbar';
 import { useRouter } from 'next/router';
-import axiosInstance from '../../src/config/api';
+import axiosInstance from '../../../src/config/api';
 
 import Image from 'next/image';
-import EditCategoryModal from '../../components/editCategoryModal';
+import EditCategoryModal from '../../../components/editCategoryModal';
 import {
   Box,
   Button,
@@ -20,12 +20,19 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
+import ReactPaginate from 'react-paginate';
+import styles from '../Admin.module.css';
 
 function Category(props) {
+
+  const {params}= props
+  console.log({props});
   const [categoryList, setCategoryList] = useState(props.categoriesLists)
   const [currentCategory, setCurrentCategory] = useState(
     props.categoriesLists[0],
   );
+  console.log(currentCategory)
+  const [page, setPage] = useState(1);
   const [editCategoryButton, setEditCategoryButton] = useState(false);
   const [selected, setSelected] = useState('');
   
@@ -39,6 +46,20 @@ useEffect(() => {
   //     return <AdminCategoryList key={data.category_lists_id} categoriesLists={data}/>
   //   });
   // }
+    const handlePageClick = (e) => {
+      let pages = e.selected + 1;
+      setPage(e.selected);
+      const path = router.asPath;
+      if (path.includes('page')) {
+        let replaced = path.replace(
+          `page=${router.query.page}`,
+          `page=${pages}`,
+        );
+        router.push(replaced);
+      } else {
+        router.push(`${path}?page=${pages}`);
+      }
+    };
 
     function categoryMap() {
       return categoryList?.map((category, index) => {
@@ -76,6 +97,7 @@ useEffect(() => {
                   onClick={() => {
                     setCurrentCategory(category);
                     setEditCategoryButton(true);
+                    setCategoryList([...categoryList, ])
                   }}
                   sx={{ width: '100%', height: '5vh' }}
                 >
@@ -128,7 +150,39 @@ useEffect(() => {
       />
       <div className="h-[55%] w-[50%] flex flex-col items-center">
         {categoryMap()}
-        
+
+        <div className="flex w-[50%]">
+          <Button
+            onClick={() => {
+              router.replace(`/admin/category/${parseInt(params) - 1}`);
+            }}
+          >
+            {'Previous'}
+          </Button>
+          <Button
+            onClick={() => {
+              router.replace(`/admin/category/${parseInt(params) + 1}`);
+            }}
+          >
+            {'Next'}
+          </Button>
+        </div>
+        {/* <ReactPaginate
+          forcePage={page}
+          breakLabel="..."
+          nextLabel="next >"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={2}
+          pageCount={Math.ceil(props.totalPage / 5)}
+          previousLabel="< previous"
+          renderOnZeroPageCount={null}
+          containerClassName={styles.pagination}
+          pageLinkClassName={styles.pagenum}
+          previousLinkClassName={styles.pagenum}
+          nextLinkClassName={styles.pagenum}
+          activeLinkClassName={styles.active}
+          disabledClassName={styles.disabled}
+        /> */}
       </div>
     </div>
   );
@@ -136,13 +190,23 @@ useEffect(() => {
 
 export async function getServerSideProps(context) {
   try {
-    const resGetCategoriesLists = await axiosInstance.get(`/categoriesLists`);
+
+    const {params}= context.params
+
+   
+    const resGetCategory = await axiosInstance.get(
+      `/categoriesLists/categoryList/${params}`
+    );
+    console.log({resGetCategory})
+
+    // const resGetCategoriesLists = await axiosInstance.get(`/categoriesLists/categoryList`);
 
     // console.log(resGetCategoriesLists.data.data);
 
     return {
       props: {
-        categoriesLists: resGetCategoriesLists.data.data.getCategory,
+        categoriesLists: resGetCategory.data.data.getCategory,params
+        // totalPage: resGetCategory.data.totalPage,
       },
     };
   } catch (error) {

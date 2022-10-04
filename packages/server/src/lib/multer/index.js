@@ -87,8 +87,8 @@ const storagePayment = multer.diskStorage({
     cb(null, paymentPath);
   },
   filename: function (req, file, cb) {
-    const { user_id } = req.user;
-    cb(null, `${user_id}-paymentProof.jpg`);
+    const { transaction_id } = req.params;
+    cb(null, `${transaction_id}-paymentProof.jpg`);
   },
 });
 

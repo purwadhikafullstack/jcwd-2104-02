@@ -28,7 +28,7 @@ function Login() {
 
     // console.log({ session });
     if (!session?.user.user.isAdmin) {
-      router.replace('/');
+      // router.replace('/');
     } else if (session?.user.user.isAdmin) {
       router.replace('/admin/inventory');
     }
