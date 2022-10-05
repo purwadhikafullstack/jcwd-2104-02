@@ -16,6 +16,7 @@ import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
 import axiosInstance from '../../../src/config/api';
 import Link from 'next/link';
+import AddFormulaModal from '../../../components/AddFormulaModal';
 import AddProductModal from '../../../components/AddProductModal';
 import AdminProductDetails from '../../../components/adminProductDetails';
 import EditProductModal from '../../../components/editProductModal';
@@ -39,11 +40,16 @@ function Inventory(props) {
   const [addCategoryButton, setAddCategoryButton] = useState(false);
   const [openProductDetails, setOpenProductDetails] = useState(false);
   const [editProductButton, setEditProductButton] = useState(false);
+  const [productsAll, setProductsAll] = useState(props.productsAll);
+  const [addFormulaButton, setAddFormulaButton] = useState(false);
 
   useEffect(() => {
     setProductList(props.products);
+    setProductsAll(props.productsAll);
     setSelected(params);
   });
+  // console.log(productsAll);
+  // console.log(addFormulaButton, addProductButton);
 
   const session = useSession();
 
@@ -52,6 +58,17 @@ function Inventory(props) {
       router.replace('/');
     }
   }
+
+  // const fetchProducts = async () => {
+  //   try {
+  //     console.log('jalan fetch product');
+  //     const res = await axiosInstance.get(`/products`);
+  //     console.log(res.data.data.resGetAllProducts);
+  //     // setProductsAll(res.data.data.resGetAllProducts);
+  //   } catch (error) {
+  //     alert(error.message);
+  //   }
+  // };
 
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);
@@ -187,6 +204,11 @@ function Inventory(props) {
         <div className="h-[10%] w-[90%] flex items-center font-[500] text-[3vh]">
           Inventory
         </div>
+        <AddFormulaModal
+          addFormulaButton={addFormulaButton}
+          setAddFormulaButton={setAddFormulaButton}
+          allProducts={props.productsAll.data.resGetAllProducts}
+        />
         <AddProductModal
           addProductButton={addProductButton}
           setAddProductButton={setAddProductButton}
@@ -408,6 +430,14 @@ function Inventory(props) {
               <div className="flex">
                 <div
                   onClick={() => {
+                    setAddFormulaButton(true);
+                  }}
+                  className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
+                >
+                  + Tambah Obat Racikan
+                </div>
+                <div
+                  onClick={() => {
                     setAddCategoryButton(true);
                   }}
                   className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
@@ -467,6 +497,7 @@ export async function getServerSideProps(context) {
         { params: { page, limit: 3 } },
       );
     }
+    const resGetAllProductsAll = await axiosInstance.get('products');
 
     return {
       props: {
@@ -474,6 +505,7 @@ export async function getServerSideProps(context) {
         categoriesLists: resGetCategoriesLists.data,
         products: resGetProducts.data.products,
         hasMore: resGetProducts.data.hasMore,
+        productsAll: resGetAllProductsAll.data,
       },
     };
   } catch (error) {

@@ -112,6 +112,24 @@ async function getAllProductsController(req, res, next) {
       products: resGetAllProducts,
     });
   } catch (error) {
+    next(error)
+  }
+}
+    
+
+async function getAllProducts(req, res, next) {
+  try {
+    const resGetAllProducts = await products.findAll({
+      order: [['productName', 'ASC']],
+    });
+    res.send({
+      status: 'success',
+      message: 'get products success',
+      data: {
+        resGetAllProducts,
+      },
+    });
+  } catch (error) {
     next(error);
   }
 }
@@ -327,6 +345,7 @@ router.get('/byId/:product_id', auth, getProductDetail);
 router.get('/landingPage', landingPageProducts);
 router.get('/specifics/:specifics', getSpecificProductsController);
 router.get('/sort/:sortOrder', getAllProductsSortedController);
-router.get('/', getAllProductsController);
+router.get('/all', getAllProductsController);
+router.get('/', getAllProducts);
 
 module.exports = router;
