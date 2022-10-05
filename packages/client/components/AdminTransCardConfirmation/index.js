@@ -20,6 +20,7 @@ export default function AdminTransCardConfirmation(props) {
     productImage,
     courier,
     deliveryCost,
+    transaction_details,
     createdAt,
     fetchTransactions,
   } = props;
@@ -114,6 +115,7 @@ export default function AdminTransCardConfirmation(props) {
               totalPrice={totalPrice}
               trans_id={trans_id}
               courier={courier}
+              transaction_details={transaction_details}
               deliveryCost={deliveryCost}
               createdAt={createdAt}
               props={props}

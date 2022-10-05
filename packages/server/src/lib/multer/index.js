@@ -59,9 +59,8 @@ const storagePrescriptionImage = multer.diskStorage({
     cb(null, prescriptionImagePath);
   },
   filename: function (req, file, cb) {
-    const { user_id } = req.user;
-    const prescriptionCount = req.userPrescription.length;
-    cb(null, `${user_id}-${prescriptionCount}-prescription.jpg`);
+    const { prescription_fileName } = req.params;
+    cb(null, `${prescription_fileName}`);
   },
 });
 

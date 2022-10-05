@@ -20,12 +20,7 @@ const patchTransaction = async (req, res, next) => {
 
     const resFindTransaction = await transactions.findOne({
       where: { transaction_id, status: 'awaiting_payment' },
-      attributes: [
-        'transaction_id',
-        'prescription_id',
-        'user_id',
-        'address_id',
-      ],
+      attributes: ['transaction_id', 'user_id', 'address_id'],
     });
     console.log(resFindTransaction);
 
@@ -88,12 +83,7 @@ const cancelTransaction = async (req, res, next) => {
 
     const resFindTransaction = await transactions.findOne({
       where: { transaction_id },
-      attributes: [
-        'transaction_id',
-        'prescription_id',
-        'user_id',
-        'address_id',
-      ],
+      attributes: ['transaction_id', 'user_id', 'address_id'],
     });
 
     if (resFindTransaction.dataValues) {
@@ -122,12 +112,7 @@ const confirmTransaction = async (req, res, next) => {
 
     const resFindTransaction = await transactions.findOne({
       where: { transaction_id },
-      attributes: [
-        'transaction_id',
-        'prescription_id',
-        'user_id',
-        'address_id',
-      ],
+      attributes: ['transaction_id', 'user_id', 'address_id'],
     });
 
     if (resFindTransaction.dataValues) {

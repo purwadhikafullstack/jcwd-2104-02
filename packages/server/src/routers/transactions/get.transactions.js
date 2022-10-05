@@ -44,9 +44,9 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
 
       default:
         const resFetchTransactions = await transactions.findAll({
+          where: { prescriptionImage: null },
           attributes: [
             'transaction_id',
-            'prescription_id',
             'user_id',
             'address_id',
             'totalPrice',
@@ -81,10 +81,9 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
 
     console.log({ statusFind, selected });
     const resFetchTransactions = await transactions.findAll({
-      where: { status: statusFind },
+      where: { status: statusFind, prescriptionImage: null },
       attributes: [
         'transaction_id',
-        'prescription_id',
         'user_id',
         'address_id',
         'totalPrice',
@@ -127,7 +126,6 @@ const getTransactions = async (req, res, next) => {
       where: { user_id },
       attributes: [
         'transaction_id',
-        'prescription_id',
         'user_id',
         'address_id',
         'totalPrice',
@@ -185,7 +183,6 @@ const getTransactionsById = async (req, res, next) => {
       where: { transaction_id },
       attributes: [
         'transaction_id',
-        'prescription_id',
         'user_id',
         'address_id',
         'totalPrice',
@@ -278,10 +275,9 @@ const getTransactionsByIndex = async (req, res, next) => {
         const { user_id } = req.params;
         console.log(user_id);
         const resFetchTransactions = await transactions.findAll({
-          where: { user_id },
+          where: { user_id, prescriptionImage: null },
           attributes: [
             'transaction_id',
-            'prescription_id',
             'user_id',
             'address_id',
             'totalPrice',
@@ -311,10 +307,9 @@ const getTransactionsByIndex = async (req, res, next) => {
 
     console.log({ statusFind, selected });
     const resFetchTransactions = await transactions.findAll({
-      where: { user_id, status: statusFind },
+      where: { user_id, status: statusFind, prescriptionImage: null },
       attributes: [
         'transaction_id',
-        'prescription_id',
         'user_id',
         'address_id',
         'totalPrice',
