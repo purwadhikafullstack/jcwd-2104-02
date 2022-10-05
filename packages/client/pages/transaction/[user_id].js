@@ -95,7 +95,9 @@ function Transaction(props) {
         Riwayat Pemesanan
       </Text>
       <Tabs
-        onChange={(index) => setSelected(index)}
+        onChange={(index) => {
+          setSelected(index), setPage(1);
+        }}
         mx={100}
         variant={'soft-rounded'}
         colorScheme={'facebook'}
