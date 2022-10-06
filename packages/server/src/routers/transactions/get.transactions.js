@@ -118,6 +118,65 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
   }
 };
 
+const adminGetAllTransactionByPrescription = async (req, res, next) => {
+  try {
+    let { page, pageSize } = req.query;
+
+    page = +page;
+    pageSize = +pageSize;
+
+    const limit = pageSize;
+    const offset = (page - 1) * pageSize;
+
+    const resFetchTransactions = await transactions.findAll({
+      where: { totalPrice: null },
+      attributes: [
+        'transaction_id',
+        'prescriptionImage',
+        'user_id',
+        'address_id',
+        'status',
+        'courier',
+        'deliveryCost',
+        'createdAt',
+      ],
+      limit: limit,
+      offset: offset,
+    });
+
+    res.send({
+      status: 'Success',
+      message: 'Fetch All Transaction by Prescription Success',
+      data: {
+        resFetchTransactions,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const userGetTransactionByPrescription = async (req, res, next) => {
+  try {
+    const { user_id } = req.user;
+
+    const resFetchTransactions = await transactions.findAll({
+      where: { user_id, totalPrice: null },
+      attributes: ['prescriptionImage'],
+    });
+
+    res.send({
+      status: 'Success',
+      message: 'Fetch User Transaction by Prescription Success',
+      data: {
+        resFetchTransactions,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getTransactions = async (req, res, next) => {
   try {
     const { user_id } = req.params;
@@ -345,6 +404,11 @@ router.get(
   auth,
   adminGetTransactionsByIndex,
 );
+router.get(
+  '/admin/transactionsByPrescription',
+  adminGetAllTransactionByPrescription,
+);
+router.get('/userPrescription', auth, userGetTransactionByPrescription);
 router.get('/:user_id', auth, getTransactions);
 router.get('/transById/:transaction_id', auth, getTransactionsById);
 router.get('/getDetails/:transaction_id', auth, getTransactionDetails);
