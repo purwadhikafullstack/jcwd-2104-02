@@ -6,16 +6,6 @@ import { getSession, useSession } from 'next-auth/react';
 function Laporan() {
   const router = useRouter();
 
-  // const session = useSession();
-
-  // if (session.data) {
-  //   if (!session.data.user.user.isAdmin) {
-  //     router.replace('/');
-  //   } else {
-  //     router.replace('/admin/inventory');
-  //   }
-  // }
-
   const path = router.pathname;
 
   return (
@@ -37,6 +27,8 @@ export async function getServerSideProps(context) {
     if (!session.user.user.isAdmin) {
       return { redirect: { destination: '/' } };
     }
+
+    return { props: {} };
   } catch (error) {
     return { props: { error: error.message } };
   }

@@ -5,10 +5,6 @@ import React, { useEffect } from 'react';
 function Index() {
   const router = useRouter();
 
-  useEffect(() => {
-    router.replace('/admin/inventory/byId=1');
-  }, []);
-
   return <div></div>;
 }
 
@@ -23,6 +19,7 @@ export async function getServerSideProps(context) {
     if (!session.user.user.isAdmin) {
       return { redirect: { destination: '/' } };
     }
+    return { redirect: { destination: '/admin/inventory/byId=1' } };
   } catch (error) {
     return { props: { error: error.message } };
   }
