@@ -39,6 +39,9 @@ module.exports = {
       servingType: {
         type: Sequelize.STRING,
       },
+      formula: {
+        type: Sequelize.JSON,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

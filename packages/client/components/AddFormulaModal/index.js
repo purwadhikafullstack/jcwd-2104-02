@@ -15,8 +15,9 @@ import {
   Text,
   HStack,
   Flex,
+  VStack,
+  Box,
 } from '@chakra-ui/react';
-import Image from 'next/image';
 import axiosInstance from '../../src/config/api';
 import { useRouter } from 'next/router';
 
@@ -28,15 +29,25 @@ function AddFormulaModal({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [quantity, setQuantity] = useState(0);
   const [option, setOption] = useState();
+  const [id, setId] = useState();
   const [tempFormula, setTempFormula] = useState([]);
+  const [deleted, setDeleted] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState('');
+  const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
+    checkSameProduct();
     if (addFormulaButton) {
       onOpen();
     } else if (!addFormulaButton) {
       onClose();
     }
-  }, [addFormulaButton, quantity]);
+  }, [addFormulaButton, quantity, tempFormula, option]);
+
+  const onHandleNameChange = (e) => {
+    setName(e.target.value);
+  };
 
   const onHandleOptionChange = (e) => {
     setOption(e.target.value);
@@ -45,6 +56,42 @@ function AddFormulaModal({
   const onHandleQuantityChange = (e) => {
     setQuantity(e.target.value);
   };
+
+  function checkSameProduct() {
+    tempFormula.forEach((product) => {
+      console.log(option == product.productName);
+      if (option == product.productName) {
+        setDisabled(true);
+      } else {
+        setDisabled(false);
+      }
+    });
+  }
+
+  const onAddClick = () => {
+    {
+      setTempFormula([
+        ...tempFormula,
+        {
+          productName: option,
+          quantity,
+        },
+      ]),
+        setQuantity(0),
+        setOption('');
+    }
+  };
+
+  async function onSaveClick({ name, tempFormula }) {
+    try {
+      setLoading(true);
+      const body = { productName: name, formula: tempFormula };
+    } catch (error) {
+      console.log({ error });
+      setLoading(false);
+      setAddFormulaButton(false);
+    }
+  }
 
   function tempFormulaMap() {
     return tempFormula.map((tempForm, index) => {
@@ -59,14 +106,20 @@ function AddFormulaModal({
             mx={6}
             rounded={6}
           >
-            <Text ml={10} mr={2} my={2} fontSize="md">
+            <Text ml={10} mr={2} my={2} fontSize="md" fontWeight={'semibold'}>
               {tempForm.productName}
             </Text>
-            <Text fontSize="xs">x{tempForm.quantity}</Text>
+            <Text fontSize="s">x{tempForm.quantity}</Text>
             <Button
               variant={'ghost'}
               colorScheme={'red'}
-              //   onClick={tempFormula.splice(index, 1)}
+              isLoading={loading}
+              onClick={() => {
+                let tempArray = tempFormula;
+                tempArray.splice(index, 1);
+                setTempFormula(tempArray);
+                setDeleted(deleted + 1);
+              }}
             >
               x
             </Button>
@@ -75,8 +128,8 @@ function AddFormulaModal({
       );
     });
   }
-  console.log(option, quantity);
-  console.log(tempFormula);
+  // console.log( name, option, quantity);
+  // console.log(tempFormula, name);
 
   function productNameMap() {
     return allProducts.map((product) => {
@@ -93,6 +146,7 @@ function AddFormulaModal({
         isOpen={isOpen}
         onClose={() => {
           setAddFormulaButton(false), setTempFormula([]), setQuantity(0);
+          setDeleted(0), setName('');
         }}
       >
         <ModalOverlay />
@@ -100,6 +154,12 @@ function AddFormulaModal({
           <ModalHeader>Tambah Obat Racikan</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+            <Input
+              mb={2}
+              type={'text'}
+              placeholder="Nama Obat"
+              onChange={onHandleNameChange}
+            ></Input>
             <HStack>
               <Select
                 name="productName"
@@ -143,7 +203,31 @@ function AddFormulaModal({
               </Button>
             </HStack>
           </ModalBody>
-          {tempFormulaMap()}
+
+          <Box rounded={10} border="1px" borderColor="gray.100" py={2}>
+            <VStack>
+              {tempFormulaMap()}
+              {tempFormula.length ? (
+                <Button
+                  height={'20px'}
+                  width={'110px'}
+                  variant={'ghost'}
+                  fontSize={'small'}
+                  fontWeight={'normal'}
+                  colorScheme={'red'}
+                  isLoading={loading}
+                  onClick={() => {
+                    setTempFormula([]);
+                  }}
+                >
+                  Hapus Semua
+                </Button>
+              ) : (
+                <></>
+              )}
+            </VStack>
+          </Box>
+
           <ModalFooter>
             <Button
               variant="ghost"
@@ -151,6 +235,7 @@ function AddFormulaModal({
               mr={3}
               onClick={() => {
                 setAddFormulaButton(false), setTempFormula([]), setQuantity(0);
+                setDeleted(0), setName('');
               }}
             >
               Batal
@@ -164,7 +249,10 @@ function AddFormulaModal({
                 onClick={() => {
                   setTempFormula([
                     ...tempFormula,
-                    { productName: option, quantity },
+                    {
+                      productName: option,
+                      quantity,
+                    },
                   ]);
                 }}
               >
@@ -175,21 +263,32 @@ function AddFormulaModal({
                 mr={2}
                 colorScheme="linkedin"
                 variant="outline"
-                onClick={() => {
-                  setTempFormula([
-                    ...tempFormula,
-                    { productName: option, quantity },
-                  ]),
-                    setQuantity(0),
-                    setOption('');
-                }}
+                isDisabled={disabled}
+                onClick={onAddClick}
               >
                 Tambah
               </Button>
             )}
-            <Button colorScheme="teal" variant="outline" onClick={() => {}}>
-              Simpan
-            </Button>
+            {name && tempFormula.length ? (
+              <Button
+                colorScheme="teal"
+                variant="outline"
+                isLoading={loading}
+                onClick={() => {}}
+              >
+                Simpan
+              </Button>
+            ) : (
+              <Button
+                colorScheme="teal"
+                variant="outline"
+                isLoading={loading}
+                isDisabled
+                onClick={() => {}}
+              >
+                Simpan
+              </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

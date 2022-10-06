@@ -75,6 +75,50 @@ async function postNewProductImageController(req, res, next) {
   }
 }
 
+
+const postNewConvertedProduct = async (req, res, next) => {
+  try {
+    const { productName, formula } = req.body;
+    const checkProduct = await products.findOne({
+      where: { productName },
+    });
+    if (checkProduct.length)
+      throw {
+        code: 400,
+        message: 'Product Name exists',
+      };
+
+    let price = 0;
+    const getInitialStock = await Promise.all(
+      formula.map(async (data) => {
+        const existingProducts = await products.findOne({
+          where: {
+            productName: data.productName,
+          },
+          include: { model: product_details },
+        });
+      }),
+    );
+
+    const newProduct = await products.create({
+      productName: productName,
+      formula: formula,
+      productStock: 1,
+      defaultQuantity: 0,
+      isPublic: 0,
+      packageType: 'concoction',
+      servingType: 'concoction',
+      description: 'this is a concoction',
+      productImage,
+      productPrice,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+router.post('/specifics/:specifics', getSpecificProductsController);
+router.post('/sort/:sortOrder', getAllProductsSortedController);
 router.post('/newProduct', postNewProductController);
 router.post(
   '/newProductImage/:product_filename',

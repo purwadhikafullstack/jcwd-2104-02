@@ -71,6 +71,9 @@ module.exports = (sequelize, DataTypes) => {
       servingType: {
         type: DataTypes.STRING,
       },
+      formula: {
+        type: DataTypes.JSON,
+      },
     },
     {
       sequelize,
