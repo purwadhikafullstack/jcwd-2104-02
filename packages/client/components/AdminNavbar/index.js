@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 function AdminNavbar({ path }) {
-  const sideMenu = ['Transaksi', 'Inventory', 'Laporan'];
+  const sideMenu = ['Transaksi', 'Inventory', 'Laporan', 'Resep'];
 
   function sideMenuMap() {
     return sideMenu.map((Menu) => {

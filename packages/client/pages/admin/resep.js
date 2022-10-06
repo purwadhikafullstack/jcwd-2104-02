@@ -87,7 +87,7 @@ function DaftarTransaksiRacikan(props) {
               marginLeft={16}
               marginRight={310}
             >
-              Daftar Pesanan dengan Racikan Obat
+              Daftar Pesanan dengan Resep Dokter
             </Text>
           </Box>
           {transac.length ? (
@@ -119,7 +119,7 @@ function DaftarTransaksiRacikan(props) {
               <Text paddingRight={2}>{page}</Text>
               <Button
                 onClick={onNextClick}
-                isDisabled={page >= transac.length}
+                isDisabled={page >= transac.prescriptionImage}
                 colorScheme="messenger"
               >
                 Next
