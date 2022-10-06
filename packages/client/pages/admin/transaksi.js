@@ -37,8 +37,6 @@ function Transaksi(props) {
   if (session.data) {
     if (!session.data.user.user.isAdmin) {
       router.replace('/');
-    } else {
-      router.replace('/admin/inventory');
     }
   }
 
@@ -147,6 +145,7 @@ function Transaksi(props) {
           key={transaction.transaction_id}
           productName={transaction.transaction_details[0].product.productName}
           productImage={transaction.transaction_details[0].product.productImage}
+          transaction_details={transaction.transaction_details}
           status={transaction.status}
           totalPrice={transaction.totalPrice}
           trans_id={transaction.transaction_id}
@@ -154,6 +153,7 @@ function Transaksi(props) {
           deliveryCost={transaction.deliveryCost}
           createdAt={transaction.createdAt}
           transac={transac}
+          fetchTransactions={fetchTransactions}
           props={props}
         />
       );
@@ -170,7 +170,7 @@ function Transaksi(props) {
               <Text
                 fontSize={21}
                 fontWeight={500}
-                marginTop={4}
+                marginTop={3}
                 marginLeft={16}
                 marginRight={310}
               >
@@ -214,8 +214,12 @@ function Transaksi(props) {
               </HStack>
             </HStack>
           </Box>
-          <Tabs onChange={(index) => setSelected(index)}>
-            <TabList marginLeft={16} marginBottom={2}>
+          <Tabs
+            onChange={(index) => {
+              setSelected(index), setPage(1);
+            }}
+          >
+            <TabList marginLeft={16} marginTop={2}>
               <Tab>Semua</Tab>
               <Tab>Diproses</Tab>
               <Tab>Sedang Dikirim</Tab>
