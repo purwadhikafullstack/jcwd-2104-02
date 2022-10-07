@@ -51,24 +51,35 @@ function Laporan(props) {
 
   async function fetchNewWithFilter() {
     try {
-      console.log({ startDate, endDate });
+      let paramsStartDate;
+      let paramsEndDate;
+
+      if (startDate) {
+        paramsStartDate = new Date(startDate);
+        paramsStartDate.setHours(startDate.getHours() + 7);
+      }
+
+      if (endDate) {
+        paramsEndDate = new Date(endDate);
+        paramsEndDate.setHours(endDate.getHours() + 7);
+      }
+
+      console.log({ paramsStartDate, paramsEndDate });
+
       const fetchNewProduct = await axiosInstance.get(
         'transactions/all/products',
         {
-          params: { startDate, endDate },
+          params: { paramsStartDate, paramsEndDate },
         },
       );
 
-      console.log({ fetchNewProduct });
-      console.log({ transactions });
+      setTransactions(fetchNewProduct.data.allTransaction);
     } catch (error) {
       console.log({ error });
     }
   }
 
   function tableSort() {
-    const { allTransaction } = props.byProduct;
-
     // console.log({ allTransaction });
 
     let saleObjArray = [];
@@ -297,6 +308,42 @@ function Laporan(props) {
         <div className="w-[90%] h-[100%]">
           <div className="h-[10%] flex items-center">
             <p className="text-[2rem] mr-[3vw]">Laporan penjualan</p>
+          </div>
+          <div className="flex items-center h-[10%] w-[100%]">
+            <div className="w-[40%] h-[70%] flex flex-col justify-end pb-[1vh] text-white text-[1.2rem] bg-[#008DEB] px-[2vw] rounded-[.5vw]">
+              <div>Filter by Date</div>
+              <div className="flex w-[100%]">
+                <DatePicker
+                  placeholderText="Start date"
+                  className="border-black border-solid border-[2px] rounded-[.3vw] pl-3 text-black"
+                  selected={startDate}
+                  onChange={(date) => {
+                    setStartDate(date);
+                  }}
+                />
+                <DatePicker
+                  placeholderText="End date"
+                  className="border-black border-solid border-[2px] rounded-[.3vw] pl-3 text-black"
+                  selected={endDate}
+                  onChange={(date) => {
+                    setEndDate(date);
+                  }}
+                />
+              </div>
+            </div>
+
+            <Button
+              colorScheme={'linkedin'}
+              variant="ghost"
+              className="mx-[3vw]"
+              onClick={() => {
+                setStartDate();
+                setEndDate();
+              }}
+            >
+              Reset Filter
+            </Button>
+
             <div className="flex w-[30%] justify-between">
               <Button
                 width="15%"
@@ -323,30 +370,8 @@ function Laporan(props) {
                 By Date
               </Button>
             </div>
-
-            <div className="w-[40%] h-[70%] flex flex-col justify-end pb-[1vh] text-white text-[1.2rem] ml-[3vw] bg-[#008DEB] px-[2vw] rounded-[.5vw]">
-              <div>Filter by Date</div>
-              <div className="flex w-[100%]">
-                <DatePicker
-                  placeholderText="Start date"
-                  className="border-black border-solid border-[2px] rounded-[.3vw] pl-3 text-black"
-                  selected={startDate}
-                  onChange={(date) => {
-                    setStartDate(date);
-                  }}
-                />
-                <DatePicker
-                  placeholderText="End date"
-                  className="border-black border-solid border-[2px] rounded-[.3vw] pl-3 text-black"
-                  selected={endDate}
-                  onChange={(date) => {
-                    setEndDate(date);
-                  }}
-                />
-              </div>
-            </div>
           </div>
-          <div className="h-[90%] bg-gray-200 flex flex-col">
+          <div className="h-[80%] bg-gray-200 flex flex-col">
             <div className="h-[10%] flex text-[1.3rem] hover:cursor-pointer">
               {tabsMap()}
             </div>
@@ -395,7 +420,7 @@ export async function getServerSideProps(context) {
 
     const byProduct = await axiosInstance.get('transactions/all/products');
 
-    console.log(byProduct.data.allTransaction);
+    // console.log(byProduct.data.allTransaction);
 
     return { props: { byProduct: byProduct.data } };
   } catch (error) {

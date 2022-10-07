@@ -349,21 +349,22 @@ const getTransactionsByIndex = async (req, res, next) => {
 
 const getAllTransactions = async (req, res, next) => {
   try {
-    let { startDate, endDate } = req.query;
+    let { paramsStartDate, paramsEndDate } = req.query;
 
-    console.log(typeof startDate);
+    // paramsStartDate?.setDate(paramsStartDate.getDate() + 1);
+    // paramsEndDate?.setDate(paramsEndDate.getDate() + 1);
 
-    // startDate?.setDate(startDate.getDate() + 1);
-    // endDate?.setDate(endDate.getDate() + 1);
+    // console.log({ paramsEndDate, paramsStartDate });
 
     let allTransaction;
 
-    if (startDate && endDate) {
-      console.log({ startDate, endDate });
+    if (paramsStartDate && paramsEndDate) {
+      console.log('jalan1');
+      console.log({ paramsStartDate, paramsEndDate });
       allTransaction = await transactions.findAll({
         where: {
           status: 'order_confirmed',
-          createdAt: { [Op.between]: [startDate, endDate] },
+          createdAt: { [Op.between]: [paramsStartDate, paramsEndDate] },
         },
         attributes: [
           'transaction_id',
@@ -391,13 +392,14 @@ const getAllTransactions = async (req, res, next) => {
           },
         ],
       });
-    } else if (startDate) {
-      endDate = new Date();
-      console.log({ startDate, endDate });
+    } else if (paramsStartDate) {
+      paramsEndDate = new Date('July 21, 3000 01:15:00');
+      console.log('jalan2');
+      console.log({ paramsStartDate, paramsEndDate });
       allTransaction = await transactions.findAll({
         where: {
           status: 'order_confirmed',
-          createdAt: { [Op.between]: [startDate, endDate] },
+          createdAt: { [Op.between]: [paramsStartDate, paramsEndDate] },
         },
         attributes: [
           'transaction_id',
@@ -425,13 +427,14 @@ const getAllTransactions = async (req, res, next) => {
           },
         ],
       });
-    } else if (endDate) {
-      startDate = new Date(1970);
-      console.log({ startDate, endDate });
+    } else if (paramsEndDate) {
+      paramsStartDate = new Date(1970);
+      console.log('jalan3');
+      console.log({ paramsStartDate, paramsEndDate });
       allTransaction = await transactions.findAll({
         where: {
           status: 'order_confirmed',
-          createdAt: { [Op.between]: [startDate, endDate] },
+          createdAt: { [Op.between]: [paramsStartDate, paramsEndDate] },
         },
         attributes: [
           'transaction_id',
@@ -460,7 +463,7 @@ const getAllTransactions = async (req, res, next) => {
         ],
       });
     } else {
-      console.log({ startDate, endDate });
+      console.log({ paramsStartDate, paramsEndDate });
       allTransaction = await transactions.findAll({
         where: { status: 'order_confirmed' },
         attributes: [
