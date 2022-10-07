@@ -20,6 +20,7 @@ import {
 } from '@chakra-ui/react';
 import axiosInstance from '../../src/config/api';
 import { useRouter } from 'next/router';
+import { useToast } from '@chakra-ui/react';
 
 function AddFormulaModal({
   addFormulaButton,
@@ -35,6 +36,7 @@ function AddFormulaModal({
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [disabled, setDisabled] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     checkSameProduct();
@@ -82,10 +84,25 @@ function AddFormulaModal({
     }
   };
 
-  async function onSaveClick({ name, tempFormula }) {
+  async function onSaveClick() {
     try {
       setLoading(true);
+      console.log(name, tempFormula);
       const body = { productName: name, formula: tempFormula };
+      console.log(body);
+      const res = await axiosInstance.post('/products/concoction', body);
+      if (res) {
+        toast({
+          title: 'Concoction Created!',
+          description: res.data.message,
+          position: 'top',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+        setLoading(false);
+        setAddFormulaButton(false);
+      }
     } catch (error) {
       console.log({ error });
       setLoading(false);
@@ -129,7 +146,7 @@ function AddFormulaModal({
     });
   }
   // console.log( name, option, quantity);
-  // console.log(tempFormula, name);
+  console.log(tempFormula, name);
 
   function productNameMap() {
     return allProducts.map((product) => {
@@ -274,7 +291,7 @@ function AddFormulaModal({
                 colorScheme="teal"
                 variant="outline"
                 isLoading={loading}
-                onClick={() => {}}
+                onClick={onSaveClick}
               >
                 Simpan
               </Button>
