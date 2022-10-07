@@ -27,10 +27,10 @@ function Login() {
     const session = await getSession();
 
     // console.log({ session });
-    if (!session?.user.user.isAdmin) {
-      // router.replace('/');
-    } else if (session?.user.user.isAdmin) {
-      router.replace('/admin/inventory');
+    if (session?.user.user.isAdmin) {
+      router.replace('/admin');
+    } else if (session) {
+      router.replace('/');
     }
   }
 

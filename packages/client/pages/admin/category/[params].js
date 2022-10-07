@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import AdminNavbar from '../../../components/AdminNavbar';
 import { useRouter } from 'next/router';
 import axiosInstance from '../../../src/config/api';
-
 import Image from 'next/image';
 import EditCategoryModal from '../../../components/editCategoryModal';
 import {
@@ -21,17 +20,15 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import ReactPaginate from 'react-paginate';
-import styles from '../Admin.module.css';
+
 
 function Category(props) {
 
-  const {params}= props
-  console.log({props});
   const [categoryList, setCategoryList] = useState(props.categoriesLists)
   const [currentCategory, setCurrentCategory] = useState(
     props.categoriesLists[0],
   );
-  console.log(currentCategory)
+
   const [page, setPage] = useState(1);
   const [editCategoryButton, setEditCategoryButton] = useState(false);
   const [selected, setSelected] = useState('');
@@ -41,25 +38,6 @@ useEffect(() => {
   setCategoryList(props.categoriesLists);
   setSelected(params);
 });
-  // const renderCategories = () => {
-  //   return props.categoriesLists.map((data) => {
-  //     return <AdminCategoryList key={data.category_lists_id} categoriesLists={data}/>
-  //   });
-  // }
-    const handlePageClick = (e) => {
-      let pages = e.selected + 1;
-      setPage(e.selected);
-      const path = router.asPath;
-      if (path.includes('page')) {
-        let replaced = path.replace(
-          `page=${router.query.page}`,
-          `page=${pages}`,
-        );
-        router.push(replaced);
-      } else {
-        router.push(`${path}?page=${pages}`);
-      }
-    };
 
     function categoryMap() {
       return categoryList?.map((category, index) => {
@@ -148,41 +126,51 @@ useEffect(() => {
         editCategoryButton={editCategoryButton}
         setEditCategoryButton={setEditCategoryButton}
       />
-      <div className="h-[55%] w-[50%] flex flex-col items-center">
+      <div className="h-[55%]  w-[50%] flex flex-col items-center">
+        <div className="h-[10%] w-[90%] flex items-center font-[500] text-[3vh]">
+          Category
+        </div>
+        <br/>
         {categoryMap()}
 
         <div className="flex w-[50%]">
           <Button
+            disabled={page <= 1}
+            colorScheme="linkedin"
             onClick={() => {
-              router.replace(`/admin/category/${parseInt(params) - 1}`);
+              setPage(page - 1);
+
+              const splitParams = router.query.params.split('=');
+
+              splitParams[splitParams.length - 1] =
+                parseInt(splitParams[splitParams.length - 1]) - 1;
+
+              const joinParams = splitParams.join('=');
+
+              router.replace(`/admin/category/${joinParams}`);
             }}
           >
             {'Previous'}
           </Button>
           <Button
+            colorScheme="linkedin"
             onClick={() => {
-              router.replace(`/admin/category/${parseInt(params) + 1}`);
+              setPage(page + 1);
+
+              const splitParams = router.query.params.split('=');
+
+              splitParams[splitParams.length - 1] =
+                parseInt(splitParams[splitParams.length - 1]) + 1;
+
+              const joinParams = splitParams.join('=');
+
+              router.replace(`/admin/category/${joinParams}`);
             }}
+            disabled={!props.hasMore}
           >
             {'Next'}
           </Button>
         </div>
-        {/* <ReactPaginate
-          forcePage={page}
-          breakLabel="..."
-          nextLabel="next >"
-          onPageChange={handlePageClick}
-          pageRangeDisplayed={2}
-          pageCount={Math.ceil(props.totalPage / 5)}
-          previousLabel="< previous"
-          renderOnZeroPageCount={null}
-          containerClassName={styles.pagination}
-          pageLinkClassName={styles.pagenum}
-          previousLinkClassName={styles.pagenum}
-          nextLinkClassName={styles.pagenum}
-          activeLinkClassName={styles.active}
-          disabledClassName={styles.disabled}
-        /> */}
       </div>
     </div>
   );
@@ -191,13 +179,28 @@ useEffect(() => {
 export async function getServerSideProps(context) {
   try {
 
-    const {params}= context.params
+    let resGetCategoriesLists = ''
+
+    if (context.params.params.includes('byId')) {
+      const splitParams = context.params.params.split('=');
+      const page = splitParams[1];
+      resGetCategoriesLists = await axiosInstance.post(
+        'categoriesLists/categoryList/',
+        {
+          page,
+          limit: 5,
+        },
+      );
+    }
+
+    // console.log(context.params)
+    // console.log({resGetCategoriesLists})
 
    
-    const resGetCategory = await axiosInstance.get(
-      `/categoriesLists/categoryList/${params}`
-    );
-    console.log({resGetCategory})
+    // const resGetCategory = await axiosInstance.get(
+    //   `/categoriesLists/categoryList/`
+    // );
+    // console.log({resGetCategory})
 
     // const resGetCategoriesLists = await axiosInstance.get(`/categoriesLists/categoryList`);
 
@@ -205,8 +208,11 @@ export async function getServerSideProps(context) {
 
     return {
       props: {
-        categoriesLists: resGetCategory.data.data.getCategory,params
+        params: context.params,
+        // categoriesLists: resGetCategory.data.data.getCategory,
+        categoriesLists: resGetCategoriesLists.data.data.getCategory,
         // totalPage: resGetCategory.data.totalPage,
+        hasMore: resGetCategoriesLists.data.hasMore,
       },
     };
   } catch (error) {

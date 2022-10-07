@@ -21,13 +21,13 @@ const postNewCategories = async (req,res,next) => {
         const newCategories =  await categories_list.create({
             category,
         })
-        // console.log(newCategories)
+        
         const test = await newCategories.update({
-          categoryImage: `http://localhost:8000/public/categoriesImage/${
+          categoryImage: `public/categoriesImage/${
             newCategories.dataValues.category_lists_id
           }.${imageExtNameSplit[imageExtNameSplit.length - 1]}`,
         });
-        // console.log(test)
+
         res.send({
           status: 'success',
           message: 'Success create new category',

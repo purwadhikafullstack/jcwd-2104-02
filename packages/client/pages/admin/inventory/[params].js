@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AdminNavbar from '../../../components/AdminNavbar';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Button, Input } from '@chakra-ui/react';
+import { Button, Input, Text } from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
@@ -112,6 +112,11 @@ function Inventory(props) {
               <p className="text-[1.1rem] font-[400]">
                 Stok {product.productStock}
               </p>
+              <Link href={`/`}>
+                <p className="text-[0.9rem] font-[500] text-cyan-500">
+                  Riwayat Produk
+                </p>
+              </Link>
             </div>
 
             <div className="grow" />

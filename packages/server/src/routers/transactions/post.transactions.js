@@ -303,6 +303,8 @@ const createUserPrescriptionImage = async (req, res, next) => {
   }
 };
 
+
+
 router.post('/createTransaction', auth, postTransaction);
 router.post('/getTransactionsByIndex/:user_id', getTransactionsByIndex);
 router.post(
