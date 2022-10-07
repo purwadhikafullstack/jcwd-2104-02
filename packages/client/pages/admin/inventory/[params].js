@@ -11,6 +11,7 @@ import AddProductModal from '../../../components/AddProductModal';
 import AdminProductDetails from '../../../components/adminProductDetails';
 import EditProductModal from '../../../components/editProductModal';
 import { getSession, useSession } from 'next-auth/react';
+import { api_origin } from '../../../constraint/index';
 
 function Inventory(props) {
   const router = useRouter();
@@ -83,9 +84,9 @@ function Inventory(props) {
                 layout="responsive"
                 width={1}
                 height={1}
-                src={product.productImage}
+                src={api_origin + product.productImage}
                 loader={() => {
-                  return product.productImage;
+                  return api_origin + product.productImage;
                 }}
               />
             </div>

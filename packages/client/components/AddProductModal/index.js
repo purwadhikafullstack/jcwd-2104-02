@@ -15,6 +15,7 @@ import {
 import Image from 'next/image';
 import axiosInstance from '../../src/config/api';
 import { useRouter } from 'next/router';
+import { api_origin } from '../../constraint';
 
 function AddProductModal({
   addProductButton,

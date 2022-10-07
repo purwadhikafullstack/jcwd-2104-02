@@ -165,6 +165,7 @@ async function getSpecificProductsController(req, res, next) {
 
     for (let product_id of productsIdMap) {
       resGetProducts = await products.findOne({ where: { product_id } });
+      console.log({ resGetProducts });
       finalProducts.push(resGetProducts.dataValues);
     }
 
@@ -312,7 +313,7 @@ async function postNewProductController(req, res, next) {
     console.log({ resCreateProduct });
 
     await resCreateProduct.update({
-      productImage: `http://localhost:8000/public/productImages/${
+      productImage: `/public/productImages/${
         resCreateProduct.dataValues.product_id
       }.${imageExtNameSplit[imageExtNameSplit.length - 1]}`,
     });

@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { userAgent } from 'next/server';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import { getSession } from 'next-auth/react';
+import { api_origin } from '../../constraint/index';
 
 function ProductCatalog(props) {
   const [selected, setSelected] = useState('');
@@ -59,9 +60,9 @@ function ProductCatalog(props) {
               layout="responsive"
               width={100}
               height={70}
-              src={product.productImage}
+              src={api_origin + product.productImage}
               loader={() => {
-                return product.productImage;
+                return api_origin + product.productImage;
               }}
             />
           </div>

@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import axiosInstance from '../../src/config/api';
+import { api_origin } from '../../constraint';
 
 function EditProductModal({
   currentProduct,
@@ -41,6 +42,8 @@ function EditProductModal({
   );
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  console.log({ newProductImage });
 
   useEffect(() => {
     if (editProductButton) {
@@ -162,10 +165,19 @@ function EditProductModal({
               <Image
                 unoptimized
                 style={{ borderRadius: '.3vw' }}
-                src={newProductImage}
+                src={
+                  newProductImage.includes(api_origin)
+                    ? newProductImage
+                    : api_origin + newProductImage
+                }
                 width={1}
                 height={1}
                 layout="responsive"
+                loader={() => {
+                  return newProductImage.includes(api_origin)
+                    ? newProductImage
+                    : api_origin + newProductImage;
+                }}
               />
             </label>
           </div>

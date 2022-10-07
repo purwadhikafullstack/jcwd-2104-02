@@ -1,12 +1,45 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AdminNavbar from '../../../components/AdminNavbar';
 import { useRouter } from 'next/router';
 import { getSession, useSession } from 'next-auth/react';
+import axiosInstance from '../../../src/config/api';
+import {
+  Button,
+  Table,
+  TableCaption,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react';
+import DatePicker from 'react-datepicker';
 
-function Laporan() {
+import 'react-datepicker/dist/react-datepicker.css';
+
+function Laporan(props) {
   const router = useRouter();
-  const { params } = router.query;
   const session = useSession();
+  const { params } = router.query;
+  const [selected, setSelected] = useState(params);
+  const [mainAsc, setMainAsc] = useState(true);
+  const [asc, setAsc] = useState(true);
+  const [sortOption, setSortOption] = useState('date');
+  const [transactions, setTransactions] = useState(
+    props.byProduct.allTransaction,
+  );
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+
+  // console.log(startDate, endDate);
+  // console.log({ props: props.byProduct.allTransaction[0].createdAt });
+
+  useEffect(() => {
+    setSelected(params);
+    setMainAsc(true);
+    fetchNewWithFilter();
+  }, [params, startDate, endDate]);
 
   const pageTabs = ['Product', 'Transaction', 'User'];
 
@@ -16,14 +49,238 @@ function Laporan() {
     }
   }
 
+  async function fetchNewWithFilter() {
+    try {
+      console.log({ startDate, endDate });
+      const fetchNewProduct = await axiosInstance.get(
+        'transactions/all/products',
+        {
+          params: { startDate, endDate },
+        },
+      );
+
+      console.log({ fetchNewProduct });
+      console.log({ transactions });
+    } catch (error) {
+      console.log({ error });
+    }
+  }
+
+  function tableSort() {
+    const { allTransaction } = props.byProduct;
+
+    // console.log({ allTransaction });
+
+    let saleObjArray = [];
+
+    if (transactions.length) {
+      transactions.forEach((transaction) => {
+        transaction.transaction_details.forEach((details) => {
+          saleObjArray.push({
+            createdAt: details.createdAt.slice(0, 10),
+            transaction_id: transaction.transaction_id,
+            userName: transaction.user.name,
+            user_id: transaction.user.user_id,
+            productName: details.product.productName,
+            qty: details.quantity,
+            totalPrice: `Rp. ${(
+              details.product.productPrice * details.quantity
+            ).toLocaleString('id')}`,
+          });
+        });
+      });
+    }
+
+    switch (selected) {
+      case 'product':
+        saleObjArray = saleObjArray.sort((a, b) => {
+          let x = a.productName.toLowerCase();
+          let y = b.productName.toLowerCase();
+          let xCreatedDate = a.createdAt;
+          let yCreatedDate = b.createdAt;
+          let xTotalPrice = parseInt(a.totalPrice.slice(4).split('.').join(''));
+          let yTotalPrice = parseInt(b.totalPrice.slice(4).split('.').join(''));
+          if (x < y) {
+            return mainAsc ? -1 : 1;
+          } else if (x > y) {
+            return mainAsc ? 1 : -1;
+          } else if (x == y) {
+            if (sortOption == 'date') {
+              if (asc) {
+                if (xCreatedDate < yCreatedDate) {
+                  return -1;
+                } else if (xCreatedDate > yCreatedDate) {
+                  return 1;
+                } else if (xCreatedDate == yCreatedDate) {
+                  return 0;
+                }
+              } else if (!asc) {
+                if (xCreatedDate < yCreatedDate) {
+                  return 1;
+                } else if (xCreatedDate > yCreatedDate) {
+                  return -1;
+                } else if (xCreatedDate == yCreatedDate) {
+                  return 0;
+                }
+              }
+            } else if (sortOption == 'totalPrice') {
+              if (asc) {
+                if (xTotalPrice < yTotalPrice) {
+                  return -1;
+                } else if (xTotalPrice > yTotalPrice) {
+                  return 1;
+                } else if (xTotalPrice == yTotalPrice) {
+                  return 0;
+                }
+              } else if (!asc) {
+                if (xTotalPrice < yTotalPrice) {
+                  return 1;
+                } else if (xTotalPrice > yTotalPrice) {
+                  return -1;
+                } else if (xTotalPrice == yTotalPrice) {
+                  return 0;
+                }
+              }
+            }
+          }
+        });
+
+        break;
+      case 'transaction':
+        saleObjArray = saleObjArray.sort((a, b) => {
+          let xCreatedDate = a.createdAt;
+          let yCreatedDate = b.createdAt;
+          let xTotalPrice = parseInt(a.totalPrice.slice(4).split('.').join(''));
+          let yTotalPrice = parseInt(b.totalPrice.slice(4).split('.').join(''));
+          if (a.transaction_id - b.transaction_id == 0) {
+            if (sortOption == 'date') {
+              if (asc) {
+                if (xCreatedDate < yCreatedDate) {
+                  return -1;
+                } else if (xCreatedDate > yCreatedDate) {
+                  return 1;
+                } else if (xCreatedDate == yCreatedDate) {
+                  return 0;
+                }
+              } else if (!asc) {
+                if (xCreatedDate < yCreatedDate) {
+                  return 1;
+                } else if (xCreatedDate > yCreatedDate) {
+                  return -1;
+                } else if (xCreatedDate == yCreatedDate) {
+                  return 0;
+                }
+              }
+            } else if (sortOption == 'totalPrice') {
+              if (asc) {
+                if (xTotalPrice < yTotalPrice) {
+                  return -1;
+                } else if (xTotalPrice > yTotalPrice) {
+                  return 1;
+                } else if (xTotalPrice == yTotalPrice) {
+                  return 0;
+                }
+              } else if (!asc) {
+                if (xTotalPrice < yTotalPrice) {
+                  return 1;
+                } else if (xTotalPrice > yTotalPrice) {
+                  return -1;
+                } else if (xTotalPrice == yTotalPrice) {
+                  return 0;
+                }
+              }
+            }
+          }
+          return mainAsc
+            ? a.transaction_id - b.transaction_id
+            : b.transaction_id - a.transaction_id;
+        });
+
+        break;
+      case 'user':
+        saleObjArray = saleObjArray.sort((a, b) => {
+          let x = a.userName.toLowerCase();
+          let y = b.userName.toLowerCase();
+          let xCreatedDate = a.createdAt;
+          let yCreatedDate = b.createdAt;
+          let xTotalPrice = parseInt(a.totalPrice.slice(4).split('.').join(''));
+          let yTotalPrice = parseInt(b.totalPrice.slice(4).split('.').join(''));
+          if (x < y) {
+            return mainAsc ? -1 : 1;
+          } else if (x > y) {
+            return mainAsc ? 1 : -1;
+          } else if (x == y) {
+            if (sortOption == 'date') {
+              if (asc) {
+                if (xCreatedDate < yCreatedDate) {
+                  return -1;
+                } else if (xCreatedDate > yCreatedDate) {
+                  return 1;
+                } else if (xCreatedDate == yCreatedDate) {
+                  return 0;
+                }
+              } else if (!asc) {
+                if (xCreatedDate < yCreatedDate) {
+                  return 1;
+                } else if (xCreatedDate > yCreatedDate) {
+                  return -1;
+                } else if (xCreatedDate == yCreatedDate) {
+                  return 0;
+                }
+              }
+            } else if (sortOption == 'totalPrice') {
+              if (asc) {
+                if (xTotalPrice < yTotalPrice) {
+                  return -1;
+                } else if (xTotalPrice > yTotalPrice) {
+                  return 1;
+                } else if (xTotalPrice == yTotalPrice) {
+                  return 0;
+                }
+              } else if (!asc) {
+                if (xTotalPrice < yTotalPrice) {
+                  return 1;
+                } else if (xTotalPrice > yTotalPrice) {
+                  return -1;
+                } else if (xTotalPrice == yTotalPrice) {
+                  return 0;
+                }
+              }
+            }
+          }
+        });
+
+        break;
+    }
+
+    return saleObjArray.map((obj) => {
+      return (
+        <Tr>
+          <Td>{obj.createdAt}</Td>
+          <Td>{obj.transaction_id}</Td>
+          <Td>{obj.userName}</Td>
+          <Td>{obj.user_id}</Td>
+          <Td>{obj.productName}</Td>
+          <Td>{obj.qty}</Td>
+          <Td>{obj.totalPrice}</Td>
+        </Tr>
+      );
+    });
+  }
+
   function tabsMap() {
     return pageTabs.map((content) => {
       return (
         <div
           onClick={() => {
             router.replace(`/admin/laporan/${content.toLowerCase()}`);
+            setMainAsc(!mainAsc);
           }}
-          className="w-[33.3%] flex justify-center items-center bg-gray-500"
+          className={
+            selected.includes(content.toLowerCase())
+              ? 'w-[33.3%] flex justify-center items-center bg-[#008DEB] text-white'
+              : 'w-[33.3%] flex justify-center items-center '
+          }
         >
           Per {content}
         </div>
@@ -39,13 +296,84 @@ function Laporan() {
       <div className="w-[85%] h-[100%] flex justify-center">
         <div className="w-[90%] h-[100%]">
           <div className="h-[10%] flex items-center">
-            <p className="text-[2rem]">Laporan penjualan</p>
+            <p className="text-[2rem] mr-[3vw]">Laporan penjualan</p>
+            <div className="flex w-[30%] justify-between">
+              <Button
+                width="15%"
+                onClick={() => {
+                  setAsc(!asc);
+                }}
+              >
+                {asc ? 'Asc' : 'Desc'}
+              </Button>
+              <Button
+                colorScheme={sortOption == 'totalPrice' ? 'linkedin' : 'gray'}
+                onClick={() => {
+                  setSortOption('totalPrice');
+                }}
+              >
+                By Total Price
+              </Button>
+              <Button
+                colorScheme={sortOption == 'date' ? 'linkedin' : 'gray'}
+                onClick={() => {
+                  setSortOption('date');
+                }}
+              >
+                By Date
+              </Button>
+            </div>
+
+            <div className="w-[40%] h-[70%] flex flex-col justify-end pb-[1vh] text-white text-[1.2rem] ml-[3vw] bg-[#008DEB] px-[2vw] rounded-[.5vw]">
+              <div>Filter by Date</div>
+              <div className="flex w-[100%]">
+                <DatePicker
+                  placeholderText="Start date"
+                  className="border-black border-solid border-[2px] rounded-[.3vw] pl-3 text-black"
+                  selected={startDate}
+                  onChange={(date) => {
+                    setStartDate(date);
+                  }}
+                />
+                <DatePicker
+                  placeholderText="End date"
+                  className="border-black border-solid border-[2px] rounded-[.3vw] pl-3 text-black"
+                  selected={endDate}
+                  onChange={(date) => {
+                    setEndDate(date);
+                  }}
+                />
+              </div>
+            </div>
           </div>
           <div className="h-[90%] bg-gray-200 flex flex-col">
             <div className="h-[10%] flex text-[1.3rem] hover:cursor-pointer">
               {tabsMap()}
             </div>
-            <div>{params}</div>
+            <div className="h-[90%] flex items-center justify-center ">
+              {props.byProduct?.allTransaction.length ? (
+                <div className="w-[100%] h-[100%] overflow-auto scrollbar">
+                  <TableContainer>
+                    <Table variant={'striped'} colorScheme="blue">
+                      <Thead>
+                        <Tr>
+                          <Th>Tanggal</Th>
+                          <Th>Transaction ID</Th>
+                          <Th>User</Th>
+                          <Th>User ID</Th>
+                          <Th>Product</Th>
+                          <Th>Quantity</Th>
+                          <Th>Total</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>{tableSort()}</Tbody>
+                    </Table>
+                  </TableContainer>
+                </div>
+              ) : (
+                <div className="text-[1.5rem]">No Transactions yet</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -65,7 +393,11 @@ export async function getServerSideProps(context) {
       return { redirect: { destination: '/' } };
     }
 
-    return { props: {} };
+    const byProduct = await axiosInstance.get('transactions/all/products');
+
+    console.log(byProduct.data.allTransaction);
+
+    return { props: { byProduct: byProduct.data } };
   } catch (error) {
     return { props: { error: error.message } };
   }
