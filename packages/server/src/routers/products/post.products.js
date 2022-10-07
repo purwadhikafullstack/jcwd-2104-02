@@ -78,11 +78,15 @@ async function postNewProductImageController(req, res, next) {
 
 const postNewConvertedProduct = async (req, res, next) => {
   try {
+    console.log(req.body);
     const { productName, formula } = req.body;
+    console.log(productName);
     const checkProduct = await products.findOne({
       where: { productName },
     });
-    if (checkProduct.length)
+    console.log(checkProduct);
+
+    if (checkProduct)
       throw {
         code: 400,
         message: 'Product Name exists',
@@ -91,26 +95,125 @@ const postNewConvertedProduct = async (req, res, next) => {
     let price = 0;
     const getInitialStock = await Promise.all(
       formula.map(async (data) => {
-        const existingProducts = await products.findOne({
-          where: {
-            productName: data.productName,
-          },
-          include: { model: product_details },
+        const resProduct = await products.findOne({
+          where: { productName: data.productName },
         });
+        price +=
+          (resProduct.productPrice / resProduct.defaultQuantity) *
+          data.quantity;
+
+        const resDetail = await product_details.findOne({
+          where: { product_id: resProduct.product_id },
+        });
+        if (!resDetail) {
+          const newDetail = await product_details.create({
+            product_id: resProduct.product_id,
+            quantity: resProduct.defaultQuantity,
+            current_quantity: resProduct.defaultQuantity,
+          });
+          if (
+            data.quantity > newDetail.current_quantity ||
+            data.quantity == newDetail.current_quantity
+          ) {
+            const sisa = data.quantity % newDetail.current_quantity;
+            const buka = Math.floor(data.quantity / newDetail.current_quantity);
+            const newQuantity = newDetail.current_quantity - sisa;
+            if (sisa == 0) {
+              const updateQuantity = await product_details.update(
+                {
+                  current_quantity: newDetail.defaultQuantity,
+                },
+                { where: { product_id: resProduct.product_id } },
+              );
+            } else {
+              const updateQuantity = await product_details.update(
+                {
+                  current_quantity: newQuantity,
+                },
+                { where: { product_id: resProduct.product_id } },
+              );
+            }
+
+            const newStock = resProduct.productStock - buka;
+            const updateStock = await products.update(
+              {
+                productStock: newStock,
+              },
+              { where: { product_id: resProduct.product_id } },
+            );
+          } else if (data.quantity < newDetail.current_quantity) {
+            const newQuantity = newDetail.current_quantity - data.quantity;
+            const updateQuantity = await product_details.update(
+              {
+                current_quantity: newQuantity,
+              },
+              { where: { product_id: resProduct.product_id } },
+            );
+          }
+        } else {
+          if (
+            data.quantity > resDetail.current_quantity ||
+            data.quantity == resDetail.current_quantity
+          ) {
+            const sisa = data.quantity % resDetail.current_quantity;
+            const buka = Math.floor(data.quantity / resDetail.current_quantity);
+            const newQuantity = resDetail.current_quantity - sisa;
+            if (sisa == 0) {
+              const updateQuantity = await product_details.update(
+                {
+                  current_quantity: resDetail.defaultQuantity,
+                },
+                { where: { product_id: resProduct.product_id } },
+              );
+            } else {
+              const updateQuantity = await product_details.update(
+                {
+                  current_quantity: newQuantity,
+                },
+                { where: { product_id: resProduct.product_id } },
+              );
+            }
+
+            const newStock = resProduct.productStock - buka;
+            const updateStock = await products.update(
+              {
+                productStock: newStock,
+              },
+              { where: { product_id: resProduct.product_id } },
+            );
+          } else if (data.quantity < resDetail.current_quantity) {
+            const newQuantity = resDetail.current_quantity - data.quantity;
+            const updateQuantity = await product_details.update(
+              {
+                current_quantity: newQuantity,
+              },
+              { where: { product_id: resProduct.product_id } },
+            );
+          }
+        }
       }),
     );
+    console.log(price);
 
-    const newProduct = await products.create({
+    const newConcoction = await products.create({
       productName: productName,
       formula: formula,
       productStock: 1,
-      defaultQuantity: 0,
+      defaultQuantity: 1,
       isPublic: 0,
       packageType: 'concoction',
       servingType: 'concoction',
       description: 'this is a concoction',
-      productImage,
-      productPrice,
+      productImage:
+        'http://localhost:8000/public/productImages/default-concoction.png',
+      productPrice: price,
+    });
+    res.send({
+      status: 'success',
+      message: 'new concoction created',
+      data: {
+        newConcoction,
+      },
     });
   } catch (error) {
     next(error);
@@ -125,5 +228,6 @@ router.post(
   uploadProductImage.single('productImageFile'),
   postNewProductImageController,
 );
+router.post('/concoction', postNewConvertedProduct);
 
 module.exports = router;
