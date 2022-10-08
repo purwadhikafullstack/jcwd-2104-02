@@ -1,10 +1,10 @@
 import React from 'react';
 
-function index() {
-  return <div>index</div>;
+function IndexLaporan() {
+  return <div></div>;
 }
 
-export default index;
+export default IndexLaporan;
 
 export async function getServerSideProps() {
   try {
