@@ -5,8 +5,10 @@ import {
   Text,
   VStack,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import Image from 'next/image';
+import axiosInstance from '../../src/config/api';
 import TransactionDetails from '../AdminDetailTrans';
 
 export default function AdminTransCardConfirmation(props) {
@@ -18,9 +20,51 @@ export default function AdminTransCardConfirmation(props) {
     productImage,
     courier,
     deliveryCost,
+    transaction_details,
     createdAt,
+    fetchTransactions,
   } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const toast = useToast();
+
+  const deliverOrder = async () => {
+    try {
+      const res = await axiosInstance.patch(
+        `/transactions/adminConfirmDeliver/${trans_id}`,
+      );
+      fetchTransactions();
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.log({ Error });
+      alert(error.response?.data.message);
+    }
+  };
+
+  const cancelOrder = async () => {
+    try {
+      const res = await axiosInstance.patch(
+        `/transactions/adminCancelOrder/${trans_id}`,
+      );
+      fetchTransactions();
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.log({ Error });
+      alert(error.response?.data.message);
+    }
+  };
 
   const rawStatus = status.split('_');
   return (
@@ -71,6 +115,7 @@ export default function AdminTransCardConfirmation(props) {
               totalPrice={totalPrice}
               trans_id={trans_id}
               courier={courier}
+              transaction_details={transaction_details}
               deliveryCost={deliveryCost}
               createdAt={createdAt}
               props={props}
@@ -94,10 +139,17 @@ export default function AdminTransCardConfirmation(props) {
             colorScheme="green"
             width={180}
             fontSize={14}
+            onClick={deliverOrder}
           >
             Konfirmasi Pesanan
           </Button>
-          <Button variant="outline" colorScheme="red" width={180} fontSize={14}>
+          <Button
+            variant="outline"
+            colorScheme="red"
+            width={180}
+            fontSize={14}
+            onClick={cancelOrder}
+          >
             Batalkan Pesanan
           </Button>
         </VStack>

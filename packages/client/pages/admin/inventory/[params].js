@@ -31,6 +31,14 @@ function Inventory(props) {
     setSelected(params);
   });
 
+  const session = useSession();
+
+  if (session.data) {
+    if (!session.data.user.user.isAdmin) {
+      router.replace('/');
+    } 
+  }
+
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);
   }

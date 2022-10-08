@@ -8,14 +8,8 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      prescription_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'prescriptions',
-          key: 'prescription_id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+      prescriptionImage: {
+        type: Sequelize.STRING(255),
       },
       user_id: {
         type: Sequelize.INTEGER,

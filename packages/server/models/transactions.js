@@ -11,9 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       transactions.belongsTo(models.users, {
         foreignKey: 'user_id',
       });
-      transactions.belongsTo(models.prescriptions, {
-        foreignKey: 'prescription_id',
-      });
+
       transactions.hasOne(models.addresses, {
         foreignKey: 'address_id',
       });
@@ -30,14 +28,8 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      prescription_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: 'prescriptions',
-          key: 'prescription_id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+      prescriptionImage: {
+        type: DataTypes.STRING(255),
       },
       user_id: {
         type: DataTypes.INTEGER,
@@ -71,11 +63,11 @@ module.exports = (sequelize, DataTypes) => {
         ),
         defaultValue: 'awaiting_payment',
       },
-      courier:{
+      courier: {
         type: DataTypes.STRING,
       },
-      deliveryCost:{
-        type: DataTypes.INTEGER
+      deliveryCost: {
+        type: DataTypes.INTEGER,
       },
     },
     {

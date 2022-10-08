@@ -11,6 +11,7 @@ const moment = require('moment');
 const { auth } = require('../../helpers/auth');
 const { Op } = require('sequelize');
 const schedule = require('node-schedule');
+const { uploadPrescriptionImage } = require('../../lib/multer');
 
 const postTransaction = async (req, res, next) => {
   try {
@@ -36,7 +37,7 @@ const postTransaction = async (req, res, next) => {
     // await resFindCarts.destroy({ where: { user_id } });
 
     const dueDate = moment(resCreateTransaction.dataValues.createdAt).add(
-      100,
+      10,
       'minutes',
     );
 
@@ -60,12 +61,7 @@ const postTransaction = async (req, res, next) => {
           transaction_id: resCreateTransaction.dataValues.transaction_id,
           status: 'awaiting_payment',
         },
-        attributes: [
-          'transaction_id',
-          'prescription_id',
-          'user_id',
-          'address_id',
-        ],
+        attributes: ['transaction_id', 'user_id', 'address_id'],
       });
 
       resFindCarts.forEach(async (data) => {
@@ -168,7 +164,6 @@ const getTransactionsByIndex = async (req, res, next) => {
           where: { user_id },
           attributes: [
             'transaction_id',
-            'prescription_id',
             'user_id',
             'address_id',
             'totalPrice',
@@ -221,7 +216,6 @@ const getTransactionsByIndex = async (req, res, next) => {
       where: { user_id, status: statusFind },
       attributes: [
         'transaction_id',
-        'prescription_id',
         'user_id',
         'address_id',
         'totalPrice',
@@ -269,8 +263,54 @@ const getTransactionsByIndex = async (req, res, next) => {
   }
 };
 
+const createUserPrescriptionTransaction = async (req, res, next) => {
+  try {
+    return res.send({
+      status: 'Success',
+      message: 'Upload Prescription Image Success',
+      imageName: req.params.prescription_fileName,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const createUserPrescriptionImage = async (req, res, next) => {
+  try {
+    const { user_id } = req.user;
+    const { address_id, courier, deliveryCost, prescriptionImage } = req.body;
+
+    const resCreateTransaction = await transactions.create({
+      user_id,
+      address_id,
+      courier,
+      deliveryCost: deliveryCost,
+    });
+
+    const test = await resCreateTransaction.update({
+      prescriptionImage: `http://localhost:8000/public/prescriptionImage/${resCreateTransaction.dataValues.transaction_id}.jpg`,
+    });
+
+    res.send({
+      status: 'success',
+      message: 'Create Transcation Success!',
+      data: {
+        resCreateTransaction,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 router.post('/createTransaction', auth, postTransaction);
 router.post('/getTransactionsByIndex/:user_id', getTransactionsByIndex);
+router.post(
+  '/createPrescriptionTransaction/:prescription_fileName',
+  auth,
+  uploadPrescriptionImage.single('prescriptionImage'),
+  createUserPrescriptionTransaction,
+);
+router.post('/uploadPrescriptionImage', auth, createUserPrescriptionImage);
 
 module.exports = router;

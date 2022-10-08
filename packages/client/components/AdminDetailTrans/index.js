@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 
-function SelectAddress(props) {
+function TransactionDetails(props) {
   const {
     isOpen,
     onClose,
@@ -106,4 +106,4 @@ function SelectAddress(props) {
   );
 }
 
-export default SelectAddress;
+export default TransactionDetails;

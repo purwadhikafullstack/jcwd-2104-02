@@ -46,9 +46,9 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
 
       default:
         const resFetchTransactions = await transactions.findAll({
+          where: { prescriptionImage: null },
           attributes: [
             'transaction_id',
-            'prescription_id',
             'user_id',
             'address_id',
             'totalPrice',
@@ -83,10 +83,9 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
 
     console.log({ statusFind, selected });
     const resFetchTransactions = await transactions.findAll({
-      where: { status: statusFind },
+      where: { status: statusFind, prescriptionImage: null },
       attributes: [
         'transaction_id',
-        'prescription_id',
         'user_id',
         'address_id',
         'totalPrice',
@@ -121,6 +120,65 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
   }
 };
 
+const adminGetAllTransactionByPrescription = async (req, res, next) => {
+  try {
+    let { page, pageSize } = req.query;
+
+    page = +page;
+    pageSize = +pageSize;
+
+    const limit = pageSize;
+    const offset = (page - 1) * pageSize;
+
+    const resFetchTransactions = await transactions.findAll({
+      where: { totalPrice: null },
+      attributes: [
+        'transaction_id',
+        'prescriptionImage',
+        'user_id',
+        'address_id',
+        'status',
+        'courier',
+        'deliveryCost',
+        'createdAt',
+      ],
+      limit: limit,
+      offset: offset,
+    });
+
+    res.send({
+      status: 'Success',
+      message: 'Fetch All Transaction by Prescription Success',
+      data: {
+        resFetchTransactions,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const userGetTransactionByPrescription = async (req, res, next) => {
+  try {
+    const { user_id } = req.user;
+
+    const resFetchTransactions = await transactions.findAll({
+      where: { user_id, totalPrice: null },
+      attributes: ['prescriptionImage'],
+    });
+
+    res.send({
+      status: 'Success',
+      message: 'Fetch User Transaction by Prescription Success',
+      data: {
+        resFetchTransactions,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getTransactions = async (req, res, next) => {
   try {
     const { user_id } = req.params;
@@ -129,7 +187,6 @@ const getTransactions = async (req, res, next) => {
       where: { user_id },
       attributes: [
         'transaction_id',
-        'prescription_id',
         'user_id',
         'address_id',
         'totalPrice',
@@ -187,7 +244,6 @@ const getTransactionsById = async (req, res, next) => {
       where: { transaction_id },
       attributes: [
         'transaction_id',
-        'prescription_id',
         'user_id',
         'address_id',
         'totalPrice',
@@ -280,10 +336,9 @@ const getTransactionsByIndex = async (req, res, next) => {
         const { user_id } = req.params;
         console.log(user_id);
         const resFetchTransactions = await transactions.findAll({
-          where: { user_id },
+          where: { user_id, prescriptionImage: null },
           attributes: [
             'transaction_id',
-            'prescription_id',
             'user_id',
             'address_id',
             'totalPrice',
@@ -313,10 +368,9 @@ const getTransactionsByIndex = async (req, res, next) => {
 
     console.log({ statusFind, selected });
     const resFetchTransactions = await transactions.findAll({
-      where: { user_id, status: statusFind },
+      where: { user_id, status: statusFind, prescriptionImage: null },
       attributes: [
         'transaction_id',
-        'prescription_id',
         'user_id',
         'address_id',
         'totalPrice',
@@ -510,6 +564,11 @@ router.get(
   auth,
   adminGetTransactionsByIndex,
 );
+router.get(
+  '/admin/transactionsByPrescription',
+  adminGetAllTransactionByPrescription,
+);
+router.get('/userPrescription', auth, userGetTransactionByPrescription);
 router.get('/:user_id', auth, getTransactions);
 router.get('/transById/:transaction_id', auth, getTransactionsById);
 router.get('/getDetails/:transaction_id', auth, getTransactionDetails);
