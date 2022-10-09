@@ -17,9 +17,6 @@ module.exports = (sequelize, DataTypes) => {
       users.hasMany(models.prescriptions, {
         foreignKey: 'user_id',
       });
-      users.hasMany(models.stock_opname, {
-        foreignKey: 'user_id',
-      });
       users.hasMany(models.transaction_details, {
         foreignKey: 'user_id',
       });

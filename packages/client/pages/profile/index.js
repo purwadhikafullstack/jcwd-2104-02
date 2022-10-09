@@ -31,6 +31,9 @@ function Profile(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalEdit, setModalEdit] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState('');
+  const [selectedAddressDetail, setSelectedAddressDetail] = useState('');
+  const [selectedRecipient, setSelectedRecipient] = useState('');
+  const [selectedPostalCode, setSelectedPostalCode] = useState('');
 
   const toast = useToast();
 
@@ -41,7 +44,12 @@ function Profile(props) {
     console.log(imgSource);
   }, []);
 
-  useEffect(() => {}, [selectedAddressId]);
+  useEffect(() => {}, [
+    selectedAddressId,
+    selectedAddressDetail,
+    selectedRecipient,
+    selectedPostalCode,
+  ]);
 
   const RenderUserAddresses = async () => {
     try {
@@ -184,6 +192,9 @@ function Profile(props) {
                   size="xxs"
                   onClick={() => {
                     setSelectedAddressId(address.address_id);
+                    setSelectedAddressDetail(address.addressDetail);
+                    setSelectedRecipient(address.recipient);
+                    setSelectedPostalCode(address.postalCode);
                     setModalEdit(true);
                   }}
                 >
@@ -192,6 +203,9 @@ function Profile(props) {
                     isOpen={modalEdit}
                     onClose={() => setModalEdit(false)}
                     address_id={selectedAddressId}
+                    editAddressDetail={selectedAddressDetail}
+                    editRecipient={selectedRecipient}
+                    editPostalCode={selectedPostalCode}
                     RenderUserAddresses={RenderUserAddresses}
                   />
                 </Button>

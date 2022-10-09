@@ -154,7 +154,7 @@ function UploadPrescriptionImage(props) {
       }, 1000);
     } catch (error) {
       console.log({ Error });
-      alert(error.response.data.message);
+      alert(error.response?.data.message);
     }
   };
 

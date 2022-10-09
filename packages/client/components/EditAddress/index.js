@@ -18,8 +18,16 @@ import { getSession } from 'next-auth/react';
 import axiosInstance from '../../src/config/api';
 
 function EditAddress(props) {
-  const { isOpen, onClose, address_id, RenderUserAddresses } = props;
-  const [userAddress, setUserAddress] = useState({});
+  const {
+    isOpen,
+    onClose,
+    address_id,
+    RenderUserAddresses,
+    editAddressDetail,
+    editRecipient,
+    editPostalCode,
+  } = props;
+  const [userAddress, setUserAddress] = useState('');
   const [getProvince, setGetProvince] = useState([]);
   const [getCity, setGetCity] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState('');
@@ -35,7 +43,11 @@ function EditAddress(props) {
 
   const toast = useToast();
 
-  const { recipient, addressDetail, postalCode } = userAddress;
+  const {
+    recipient = editRecipient,
+    addressDetail = editAddressDetail,
+    postalCode = editPostalCode,
+  } = userAddress;
 
   useEffect(() => {
     fetchProvince();

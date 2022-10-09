@@ -9,6 +9,7 @@ const {
   categories,
   categories_list,
   product_details,
+  stock_opname,
 } = require('../../../models');
 
 async function updateProductController(req, res, next) {
@@ -53,63 +54,6 @@ async function updateProductController(req, res, next) {
     //   });
     // }
 
-    // if (currentProduct.productStock < productInputs.productStock) {
-    //   const resFindProduct = await products.findOne({ where: { product_id } });
-
-    //   const addition = productInputs.productStock - currentProduct.productStock;
-
-    //   const findProductDetails = await product_details.findAll({
-    //     where: { product_id },
-    //   });
-
-    //   console.log({
-    //     method: 'increment',
-    //     findProductDetails: findProductDetails[0].dataValues,
-    //     resUpdateProduct,
-    //   });
-
-    //   res.send({
-    //     status: 'success',
-    //     method: 'increment',
-    //     addition,
-    //   });
-    // } else if (currentProduct.productStock > productInputs.productStock) {
-    //   const resFindProduct = await products.findOne({ where: { product_id } });
-
-    //   const resUpdateProduct = await resFindProduct.update({
-    //     productName: productInputs.productName,
-    //     productPrice: productInputs.productPrice,
-    //     productImage: productInputs.productImage,
-    //     description: productInputs.description,
-    //     productStock: productInputs.productStock,
-    //     packageType: productInputs.packageType,
-    //     servingType: productInputs.servingType,
-    //   });
-
-    //   const reduceValue =
-    //     currentProduct.productStock - productInputs.productStock;
-
-    //   const findProductDetails = await product_details.findAll({
-    //     where: { product_id },
-    //   });
-
-    //   console.log({
-    //     method: 'reduce',
-    //     findProductDetails: findProductDetails[0].dataValues,
-    //     resUpdateProduct,
-    //   });
-
-    //   res.send({
-    //     status: 'success',
-    //     method: 'reduce',
-    //     reduceValue,
-    //   });
-    // } else {
-    //   res.send({
-    //     status: 'success',
-    //   });
-    // }
-
     res.send({
       status: 'success',
       resUpdateProduct,
@@ -119,6 +63,111 @@ async function updateProductController(req, res, next) {
   }
 }
 
+const addProductStock = async (req, res, next) => {
+  try {
+    const { productStock } = req.body;
+
+    const { product_id } = req.params;
+
+    const getProductStock = await products.findOne({
+      where: {
+        product_id,
+      },
+      raw: true,
+    });
+
+    const totalStock = getProductStock['productStock'] + productStock;
+
+    const addProductStock = await products.update(
+      { productStock: totalStock },
+      {
+        where: {
+          product_id,
+        },
+      },
+    );
+
+    const createHistoryProduct = await stock_opname.create(
+      { product_id, activity: 'tambah_stock', stock: productStock },
+      {
+        where: {
+          product_id,
+        },
+      },
+    );
+
+    res.send({
+      status: 'Success',
+      message: 'Add Product Stock Success',
+      data: createHistoryProduct,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateAddedStock = async (req, res, next) => {
+  try {
+    const { productStock } = req.body;
+    const { product_id } = req.params;
+    const { stock_opname_id } = req.params;
+
+    const getStockOpnameID = await stock_opname.findOne({
+      where: {
+        stock_opname_id,
+      },
+      raw: true,
+    });
+
+    const getProductStock = await products.findOne({
+      where: {
+        product_id,
+      },
+      raw: true,
+    });
+
+    let remainingTotal =
+      getProductStock['productStock'] +
+      Math.abs(getStockOpnameID['stock'] - productStock);
+
+    if (productStock < getStockOpnameID['stock']) {
+      remainingTotal =
+        getProductStock['productStock'] -
+        (getStockOpnameID['stock'] - productStock);
+    }
+
+    const addProductStock = await products.update(
+      { productStock: remainingTotal },
+      {
+        where: {
+          product_id,
+        },
+      },
+    );
+
+    const createHistoryProduct = await stock_opname.update(
+      { stock: productStock },
+      {
+        where: {
+          product_id,
+          stock_opname_id,
+        },
+      },
+    );
+    res.send({
+      status: 'Success',
+      message: 'Update Added Product Success',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 router.patch('/productsUpdate/:product_id', updateProductController);
+router.patch('/addStock/:product_id', addProductStock);
+router.patch(
+  '/updateAddedStock/:product_id/:stock_opname_id',
+  updateAddedStock,
+);
 
 module.exports = router;
