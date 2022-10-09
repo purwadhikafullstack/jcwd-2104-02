@@ -29,7 +29,6 @@ function Login() {
     } else if (session) {
       router.replace('/');
     }
-    // console.log({ session });
   }
 
   useEffect(() => {
@@ -70,9 +69,6 @@ function Login() {
       email,
       password,
     });
-
-    // console.log(`ini dia ${res}`);
-    // console.log({ res });
     if (!res.error) {
       console.log('success login');
       setLogin(true);
