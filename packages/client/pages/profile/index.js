@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
-import { api_origin } from '../../constraint';
+import Api_origin from '../../constraint';
 import theme from '../../components/theme';
 import { LockIcon, AddIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import AddAddress from '../../components/AddAddress';
@@ -27,7 +27,7 @@ import EditAddress from '../../components/EditAddress';
 function Profile(props) {
   const [user, setUser] = useState(props.user);
   const [addresses, setAddresses] = useState(props.addresses);
-  const [imgSource, setimgSource] = useState(api_origin + props.user.avatar);
+  const [imgSource, setimgSource] = useState(Api_origin() + props.user.avatar);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalEdit, setModalEdit] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState('');

@@ -347,31 +347,10 @@ async function postNewProductImageController(req, res, next) {
   }
 }
 
-const getProductDetail = async (req, res, next) => {
-  try {
-    const { product_id } = req.params;
-
-    const resProductDetail = await products.findOne({
-      where: {
-        product_id,
-      },
-    });
-
-    res.send({
-      status: 'Success',
-      message: 'Success get product detail',
-      data: resProductDetail,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 router.post('/specifics/:specifics', getSpecificProductsController);
 router.post('/sort/:sortOrder', getAllProductsSortedController);
 router.post('/newProduct', postNewProductController);
 router.post('/', getAllProductsController);
-router.get('/:product_id', auth, getProductDetail);
 router.post(
   '/newProductImage/:product_filename',
   uploadProductImage.single('productImageFile'),

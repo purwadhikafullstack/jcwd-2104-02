@@ -68,7 +68,7 @@ function DetailPage(props) {
   return (
     <div>
       <Navbar />
-      <div className="container" >
+      <div className="container">
         <div className="flex-col">
           <div className="w-[65%] ml-[1vw] my-[3vh] columns-2">
             <Image
@@ -183,7 +183,7 @@ export async function getServerSideProps(context) {
     // console.log(product_id);
 
     const resGetProduct = await axiosInstance.get(
-      `/products/${product_id}`,
+      `/products/byId/${product_id}`,
       config,
     );
     // console.log(resGetProduct);

@@ -6,10 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { userAgent } from 'next/server';
-import { config } from '@fortawesome/fontawesome-svg-core';
 import { getSession } from 'next-auth/react';
-import { api_origin } from '../../constraint/index';
+import Api_origin from '../../constraint/index';
 
 function ProductCatalog(props) {
   const [selected, setSelected] = useState('');
@@ -24,9 +22,6 @@ function ProductCatalog(props) {
 
   const router = useRouter();
   const { session } = props;
-  // console.log(session);
-  // console.log({ props });
-  // console.log(props.products);
 
   useEffect(() => {
     const { params } = router.query;
@@ -60,9 +55,9 @@ function ProductCatalog(props) {
               layout="responsive"
               width={100}
               height={70}
-              src={api_origin + product.productImage}
+              src={Api_origin() + product.productImage}
               loader={() => {
-                return api_origin + product.productImage;
+                return Api_origin() + product.productImage;
               }}
             />
           </div>
