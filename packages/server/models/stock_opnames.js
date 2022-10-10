@@ -48,6 +48,12 @@ module.exports = (sequelize, DataTypes) => {
       activity: {
         type: DataTypes.ENUM('terjual', 'tambah_stok', 'unit_conversion'),
       },
+      stock: {
+        type: DataTypes.INTEGER,
+      },
+      activity: {
+        type: DataTypes.ENUM('terjual', 'tambah_stok', 'unit_conversion'),
+      },
     },
     {
       sequelize,
