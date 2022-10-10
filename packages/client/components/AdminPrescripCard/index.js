@@ -1,10 +1,79 @@
-import { Box, HStack, Text, VStack, Button } from '@chakra-ui/react';
+import {
+  Box,
+  HStack,
+  Text,
+  VStack,
+  Button,
+  Icon,
+  Select,
+} from '@chakra-ui/react';
+import { CheckIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import { api_origin } from '../../constraint';
+import { useState, useEffect } from 'react';
+import axiosInstance from '../../src/config/api';
+import { useToast } from '@chakra-ui/react';
 
 export default function AdminPrescripCard(props) {
-  const { trans_id, deliveryCost, prescriptionImage, createdAt } = props;
+  const {
+    trans_id,
+    deliveryCost,
+    prescriptionImage,
+    createdAt,
+    products,
+    userId,
+  } = props;
+  const [show, setShow] = useState(false);
+  const [option, setOption] = useState('');
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
+
+  function productNameMap() {
+    return products.map((product) => {
+      if (product.formula) {
+        return (
+          <option key={product.product_id} value={`${product.product_id}`}>
+            {product.productName}
+          </option>
+        );
+      }
+    });
+  }
+
+  const onHandleOptionChange = (e) => {
+    setOption(e.target.value);
+  };
+
+  async function onCheckClick() {
+    console.log(parseInt(option), trans_id, userId);
+
+    try {
+      setLoading(true);
+      const parsedProduct_id = parseInt(option);
+      const body = {
+        product_id: parsedProduct_id,
+        transaction_id: trans_id,
+        user_id: userId,
+        // totalPrice: products.productPrice,
+      };
+      const res = await axiosInstance.patch('/transactions/adminConfirm', body);
+      if (res) {
+        toast({
+          title: 'Prescription Confirmed!',
+          description: res.data.message,
+          position: 'top',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      alert(error.message);
+      setLoading(false);
+      setOption('');
+    }
+  }
 
   return (
     <Box marginTop={3}>
@@ -44,19 +113,53 @@ export default function AdminPrescripCard(props) {
             {createdAt.slice(0, 10)}
           </Text>
         </VStack>
-        <Link href="/">
+        {show ? (
+          <HStack>
+            <Select
+              fontSize={'md'}
+              placeholder="pilih obat racik"
+              variant={'flushed'}
+              onChange={onHandleOptionChange}
+            >
+              {productNameMap()}
+            </Select>
+            <Button
+              color="green.300"
+              variant="ghost"
+              fontSize={13}
+              fontWeight={500}
+              onClick={onCheckClick}
+            >
+              <CheckIcon></CheckIcon>
+            </Button>
+            <Button
+              color="red.300"
+              variant="ghost"
+              fontSize={13}
+              fontWeight={500}
+              onClick={() => {
+                setShow(false);
+              }}
+            >
+              <SmallCloseIcon></SmallCloseIcon>
+            </Button>
+          </HStack>
+        ) : (
           <Button
             color="linkedin.500"
             variant="link"
             paddingRight={95}
             fontSize={13}
             fontWeight={500}
+            onClick={() => {
+              setShow(true), setOption('');
+            }}
           >
             <Text w="11vH" fontSize="16" fontWeight={600}>
               Tambah Obat
             </Text>
           </Button>
-        </Link>
+        )}
       </HStack>
     </Box>
   );

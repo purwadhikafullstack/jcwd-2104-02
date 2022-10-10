@@ -102,11 +102,16 @@ function AddFormulaModal({
         });
         setLoading(false);
         setAddFormulaButton(false);
+        setTempFormula([]), setQuantity(0);
+        setDeleted(0), setName('');
       }
     } catch (error) {
+      alert(error);
       console.log({ error });
       setLoading(false);
       setAddFormulaButton(false);
+      setTempFormula([]), setQuantity(0);
+      setDeleted(0), setName('');
     }
   }
 

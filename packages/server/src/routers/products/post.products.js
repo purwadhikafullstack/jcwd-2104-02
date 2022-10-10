@@ -119,9 +119,9 @@ const postNewConvertedProduct = async (req, res, next) => {
             const buka = Math.floor(data.quantity / newDetail.current_quantity);
             const newQuantity = newDetail.current_quantity - sisa;
             if (sisa == 0) {
-              const updateQuantity = await product_details.update(
+              const defaultUpdate = await product_details.update(
                 {
-                  current_quantity: newDetail.defaultQuantity,
+                  current_quantity: resProduct.defaultQuantity,
                 },
                 { where: { product_id: resProduct.product_id } },
               );
@@ -161,7 +161,7 @@ const postNewConvertedProduct = async (req, res, next) => {
             if (sisa == 0) {
               const updateQuantity = await product_details.update(
                 {
-                  current_quantity: resDetail.defaultQuantity,
+                  current_quantity: resDetail.quantity,
                 },
                 { where: { product_id: resProduct.product_id } },
               );
@@ -193,7 +193,7 @@ const postNewConvertedProduct = async (req, res, next) => {
         }
       }),
     );
-    console.log(price);
+    // console.log(price);
 
     const newConcoction = await products.create({
       productName: productName,

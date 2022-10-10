@@ -347,5 +347,4 @@ router.get('/specifics/:specifics', getSpecificProductsController);
 router.get('/sort/:sortOrder', getAllProductsSortedController);
 router.get('/all', getAllProductsController);
 router.get('/', getAllProducts);
-
 module.exports = router;

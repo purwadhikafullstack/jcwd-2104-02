@@ -265,6 +265,7 @@ const adminCancelOrder = async (req, res, next) => {
 
 const adminPaymentConfirm = async (req, res, next) => {
   try {
+    
     const { transaction_id } = req.params;
 
     const resconfirmDeliver = await transactions.update(
@@ -280,6 +281,42 @@ const adminPaymentConfirm = async (req, res, next) => {
         resconfirmDeliver,
       },
     });
+  } catch (error) {
+    next(error)
+  }
+}
+
+const adminConfirmPrescription = async (req, res, next) => {
+  try {
+    const { transaction_id, product_id, user_id } = req.body;
+    const createTransactionDetail = await transaction_details.create({
+      transaction_id: transaction_id,
+      product_id: product_id,
+      user_id: user_id,
+      quantity: 1,
+    });
+
+    if (createTransactionDetail) {
+      const resProduct = await products.findOne({
+        where: createTransactionDetail.product_id,
+      });
+      const harga = resProduct.dataValues.productPrice;
+      const resConfirmPrescription = await transactions.update(
+        {
+          prescriptionImage: null,
+          totalPrice: harga,
+        },
+        { where: { transaction_id: createTransactionDetail.transaction_id } },
+      );
+      res.send({
+        status: 'success',
+        message: 'prescription confirmed',
+        data: {
+          resConfirmPrescription,
+          createTransactionDetail,
+        },
+      });
+    }
   } catch (error) {
     next(error);
   }
@@ -322,5 +359,6 @@ router.patch('/adminConfirmDeliver/:transaction_id', adminConfirmDeliver);
 router.patch('/adminCancelOrder/:transaction_id', adminCancelOrder);
 router.patch('/adminPaymentConfirm/:transaction_id', adminPaymentConfirm);
 router.patch('/adminCancelPayment/:transaction_id', adminCancelPayment);
+router.patch('/adminConfirm', adminConfirmPrescription);
 
 module.exports = router;
