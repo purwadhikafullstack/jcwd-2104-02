@@ -288,7 +288,7 @@ const createUserPrescriptionImage = async (req, res, next) => {
     });
 
     const test = await resCreateTransaction.update({
-      prescriptionImage: `http://localhost:8000/public/prescriptionImage/${resCreateTransaction.dataValues.transaction_id}.jpg`,
+      prescriptionImage: `/public/prescriptionImage/${resCreateTransaction.dataValues.transaction_id}.jpg`,
     });
 
     res.send({

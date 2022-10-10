@@ -38,7 +38,6 @@ module.exports = {
       },
       avatar: {
         type: Sequelize.STRING(255),
-        defaultValue: '/public/avatar/default-profile-icon.jpg',
       },
       password: {
         type: Sequelize.STRING,

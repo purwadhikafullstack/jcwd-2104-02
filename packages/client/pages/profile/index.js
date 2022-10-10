@@ -27,7 +27,9 @@ import EditAddress from '../../components/EditAddress';
 function Profile(props) {
   const [user, setUser] = useState(props.user);
   const [addresses, setAddresses] = useState(props.addresses);
-  const [imgSource, setimgSource] = useState(Api_origin() + props.user.avatar);
+  const [imgSource, setimgSource] = useState(
+    api_origin + '/public/avatar/default-profile-icon.jpg',
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalEdit, setModalEdit] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState('');
