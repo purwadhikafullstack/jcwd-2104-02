@@ -27,7 +27,7 @@ function Laporan(props) {
   const [asc, setAsc] = useState(true);
   const [sortOption, setSortOption] = useState('date');
   const [transactions, setTransactions] = useState(
-    props.byProduct.allTransaction,
+    props.byProduct?.allTransaction,
   );
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();

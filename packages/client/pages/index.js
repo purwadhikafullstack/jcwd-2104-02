@@ -12,13 +12,15 @@ import {
 } from '@chakra-ui/react';
 import { getSession } from 'next-auth/react';
 import axiosInstance from '../src/config/api';
-import Api_origin from '../constraint/index';
+import { api_origin } from '../constraint/index';
+import { useRouter } from 'next/router';
 
 export default function Home(props) {
-  const { session, fetchedCategories } = props;
   const [hasMore, setHasMore] = useState();
   const [products, setProducts] = useState();
   const [productsPage, setProductsPage] = useState(1);
+  const { session, fetchedCategories } = props;
+  const router = useRouter();
 
   useEffect(() => {
     fetchProducts();
@@ -29,6 +31,9 @@ export default function Home(props) {
       return (
         <div
           key={category.category_list_id}
+          onClick={() => {
+            router.replace(`/productCatalog/${category.category}=1`);
+          }}
           className="flex flex-col hover:cursor-pointer flex-none items-center justify-start w-[25%] desktop:flex-row desktop:h-[9vh] desktop:w-[31%] desktop:bg-white desktop:shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]"
         >
           <div className="w-[35px] h-[35px] desktop:w-[3.5vw] desktop:h-[3.5vw] desktop:mx-[1vw]">
@@ -38,9 +43,9 @@ export default function Home(props) {
               layout="responsive"
               width={35}
               height={35}
-              src={Api_origin() + category.categoryImage}
+              src={api_origin + category.categoryImage}
               loader={() => {
-                return Api_origin() + category.categoryImage;
+                return api_origin + category.categoryImage;
               }}
             />
           </div>
@@ -83,9 +88,9 @@ export default function Home(props) {
               layout="responsive"
               width={102}
               height={66}
-              src={Api_origin() + product.productImage}
+              src={api_origin + product.productImage}
               loader={() => {
-                return Api_origin() + product.productImage;
+                return api_origin + product.productImage;
               }}
             />
           </div>
@@ -107,8 +112,12 @@ export default function Home(props) {
           <div className="grow" />
           <div className="w-[100%]">
             <Button
+              onClick={() => {
+                router.replace(`/detailPage/${product.product_id}`);
+              }}
               variant="outline"
               colorScheme="linkedin"
+              disabled={!props.session?.user.user.isVerified}
               sx={{ width: '100%', height: '5vh', marginBottom: '6vh' }}
             >
               <p className="text-[12px]">Tambah</p>
@@ -140,9 +149,11 @@ export default function Home(props) {
         <p className="absolute z-[2] text-white font-[400] text-[4vw] left-[15vw] bottom-[200px]">
           Your Pharmacy, <br /> Everywhere
         </p>
-        <p className="absolute z-[2] text-white font-[500] text-[14px] bottom-[55px] left-[15vw] underline underline-offset-4 decoration-white hover:cursor-pointer">
-          Lihat Semua Obat
-        </p>
+        <Link href={'/productCatalog'}>
+          <p className="absolute z-[2] text-white font-[500] text-[14px] bottom-[55px] left-[15vw] underline underline-offset-4 decoration-white hover:cursor-pointer">
+            Lihat Semua Obat
+          </p>
+        </Link>
         <div
           id="searchbar desktop"
           className="bg-[#F5F6F6] flex absolute w-[40vw] h-[8vh] z-[2] left-[15vw] bottom-[88px] justify-end"
@@ -258,11 +269,11 @@ export default function Home(props) {
               onClick={() => {
                 setProductsPage(productsPage - 1);
               }}
-              width={'6vh'}
-              height={'6vh'}
+              width={'5vh'}
+              height={'5vh'}
               rounded={'50%'}
             >
-              {'<'}
+              {'<<'}
             </Button>
             <div className="flex w-[100%]">{productsMap()}</div>
             <Button
@@ -270,11 +281,11 @@ export default function Home(props) {
               onClick={() => {
                 setProductsPage(productsPage + 1);
               }}
-              width={'6vh'}
-              height={'6vh'}
+              width={'5vh'}
+              height={'5vh'}
               rounded={'50%'}
             >
-              {'>'}
+              {'>>'}
             </Button>
           </div>
         </div>

@@ -43,8 +43,6 @@ function EditProductModal({
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  console.log({ newProductImage });
-
   useEffect(() => {
     if (editProductButton) {
       onOpen();

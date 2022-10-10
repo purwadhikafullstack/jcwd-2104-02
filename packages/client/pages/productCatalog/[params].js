@@ -7,7 +7,7 @@ import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { getSession } from 'next-auth/react';
-import Api_origin from '../../constraint/index';
+import { api_origin } from '../../constraint/index';
 
 function ProductCatalog(props) {
   const [selected, setSelected] = useState('');
@@ -33,10 +33,6 @@ function ProductCatalog(props) {
     setShowCategories(!showCategories);
   }
 
-  function showFilterSwitch() {
-    setShowFilter(!showFilter);
-  }
-
   function showSortSwitch() {
     setShowSort(!showSort);
   }
@@ -55,9 +51,9 @@ function ProductCatalog(props) {
               layout="responsive"
               width={100}
               height={70}
-              src={Api_origin() + product.productImage}
+              src={api_origin + product.productImage}
               loader={() => {
-                return Api_origin() + product.productImage;
+                return api_origin + product.productImage;
               }}
             />
           </div>
@@ -84,6 +80,7 @@ function ProductCatalog(props) {
                 if (props.session?.user.user.isVerified) {
                   router.replace(`/detailPage/${product.product_id}`);
                 }
+                router.replace('/login');
               }}
               colorScheme="linkedin"
               sx={{ width: '100%', height: '5vh' }}

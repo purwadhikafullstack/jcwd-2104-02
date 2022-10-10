@@ -1,20 +1,5 @@
-function Api_origin(props) {
-  const api_origin = 'http://localhost:8000';
+import { API_URL } from '../src/config/api';
 
-  return api_origin;
-}
+const api_origin = API_URL;
 
-export async function getServerSideProps(context) {
-  try {
-    const { API_PORT } = process.env;
-    return {
-      props: { API_PORT },
-    };
-  } catch (error) {
-    return {
-      props: { error: error.message },
-    };
-  }
-}
-
-export default Api_origin;
+module.exports = { api_origin };

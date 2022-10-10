@@ -24,6 +24,7 @@ module.exports = {
         birthDate: new Date('10-11-2021 07:00:00'),
         phoneNumber: '3213212854',
         isAdmin: false,
+        isVerified: true,
         password:
           '$2a$10$XB3xnB6q2icy.a1YG388ZO/eNWAo6AMR/O6.MUFpIJhpGwm0t1LP6',
         createdAt: new Date(),
@@ -37,6 +38,7 @@ module.exports = {
         birthDate: new Date('10-27-2021 07:00:00'),
         phoneNumber: '9213212878',
         isAdmin: false,
+        isVerified: true,
         password:
           '$2a$10$XB3xnB6q2icy.a1YG388ZO/eNWAo6AMR/O6.MUFpIJhpGwm0t1LP6',
         createdAt: new Date(),

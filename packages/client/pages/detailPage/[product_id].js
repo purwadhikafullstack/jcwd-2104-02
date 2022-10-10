@@ -13,8 +13,8 @@ import axiosInstance from '../../src/config/api';
 import React, { useEffect, useState } from 'react';
 import { getSession } from 'next-auth/react';
 import Image from 'next/image';
-import next from 'next';
 import { useToast } from '@chakra-ui/react';
+import { api_origin } from '../../constraint/index';
 
 function DetailPage(props) {
   const { products } = props;
@@ -77,7 +77,10 @@ function DetailPage(props) {
               layout="responsive"
               width={50}
               height={50}
-              src={products.productImage}
+              src={api_origin + products.productImage}
+              loader={() => {
+                return api_origin + products.productImage;
+              }}
             />
             <div className="flex-row font-semibold">
               <p className="text-[25px]">{products.productName}</p>

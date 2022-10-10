@@ -48,8 +48,6 @@ function AdminProductDetails({
     }
   }, [openProductDetails]);
 
-  async function getProductCateories() {}
-
   return (
     <Modal
       isOpen={isOpen}
