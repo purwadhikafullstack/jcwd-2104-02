@@ -6,9 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { userAgent } from 'next/server';
-import { config } from '@fortawesome/fontawesome-svg-core';
 import { getSession } from 'next-auth/react';
+import { api_origin } from '../../constraint/index';
 
 function ProductCatalog(props) {
   const [selected, setSelected] = useState('');
@@ -23,9 +22,6 @@ function ProductCatalog(props) {
 
   const router = useRouter();
   const { session } = props;
-  // console.log(session);
-  // console.log({ props });
-  // console.log(props.products);
 
   useEffect(() => {
     const { params } = router.query;
@@ -35,10 +31,6 @@ function ProductCatalog(props) {
 
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);
-  }
-
-  function showFilterSwitch() {
-    setShowFilter(!showFilter);
   }
 
   function showSortSwitch() {
@@ -59,9 +51,9 @@ function ProductCatalog(props) {
               layout="responsive"
               width={100}
               height={70}
-              src={product.productImage}
+              src={api_origin + product.productImage}
               loader={() => {
-                return product.productImage;
+                return api_origin + product.productImage;
               }}
             />
           </div>
@@ -88,6 +80,7 @@ function ProductCatalog(props) {
                 if (props.session?.user.user.isVerified) {
                   router.replace(`/detailPage/${product.product_id}`);
                 }
+                router.replace('/login');
               }}
               colorScheme="linkedin"
               sx={{ width: '100%', height: '5vh' }}

@@ -57,9 +57,6 @@ async function getAllProductsController(req, res, next) {
 
       product.dataValues.category_id =
         resGetEachCategory?.dataValues.category_id;
-
-      product.dataValues.defaultQuantity =
-        resGetProductDefaultQuantity?.dataValues.quantity;
     }
 
     res.send({
@@ -137,9 +134,6 @@ async function getSpecificProductsController(req, res, next) {
         product.category = resGetEachCategory?.dataValues.categoryName;
 
         product.category_id = resGetEachCategory?.dataValues.category_id;
-
-        product.defaultQuantity =
-          resGetProductDefaultQuantity?.dataValues.quantity;
       }
 
       res.send({
@@ -171,6 +165,7 @@ async function getSpecificProductsController(req, res, next) {
 
     for (let product_id of productsIdMap) {
       resGetProducts = await products.findOne({ where: { product_id } });
+      console.log({ resGetProducts });
       finalProducts.push(resGetProducts.dataValues);
     }
 
@@ -198,9 +193,6 @@ async function getSpecificProductsController(req, res, next) {
         resGetCategoriesLists?.dataValues?.category_lists_id;
 
       product.category_id = resGetEachCategory?.dataValues.category_id;
-
-      product.defaultQuantity =
-        resGetProductDefaultQuantity?.dataValues.quantity;
     }
 
     // console.log({ specifics });
@@ -277,9 +269,6 @@ async function getAllProductsSortedController(req, res, next) {
 
       product.dataValues.category_id =
         resGetEachCategory?.dataValues.category_id;
-
-      product.dataValues.defaultQuantity =
-        resGetProductDefaultQuantity?.dataValues.quantity;
     }
 
     res.send({
@@ -315,13 +304,16 @@ async function postNewProductController(req, res, next) {
       productPrice: parseInt(productPrice),
       description,
       productStock: parseInt(productStock),
+      defaultQuantity,
       servingType,
       isPublic: false,
       packageType,
     });
 
+    console.log({ resCreateProduct });
+
     await resCreateProduct.update({
-      productImage: `http://localhost:8000/public/productImages/${
+      productImage: `/public/productImages/${
         resCreateProduct.dataValues.product_id
       }.${imageExtNameSplit[imageExtNameSplit.length - 1]}`,
     });
@@ -331,16 +323,6 @@ async function postNewProductController(req, res, next) {
       product_id: resCreateProduct.dataValues.product_id,
       categoryName: categorySplit[1],
     });
-
-    for (let i = 0; i < productStock; i++) {
-      await product_details.create({
-        product_id: resCreateProduct.dataValues.product_id,
-        quantity: defaultQuantity,
-        current_quantity: defaultQuantity,
-        isOpen: false,
-        isAvailable: true,
-      });
-    }
 
     setTimeout(() => {
       res.send({
@@ -365,31 +347,10 @@ async function postNewProductImageController(req, res, next) {
   }
 }
 
-const getProductDetail = async (req, res, next) => {
-  try {
-    const { product_id } = req.params;
-
-    const resProductDetail = await products.findOne({
-      where: {
-        product_id,
-      },
-    });
-
-    res.send({
-      status: 'Success',
-      message: 'Success get product detail',
-      data: resProductDetail,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 router.post('/specifics/:specifics', getSpecificProductsController);
 router.post('/sort/:sortOrder', getAllProductsSortedController);
 router.post('/newProduct', postNewProductController);
 router.post('/', getAllProductsController);
-router.get('/:product_id', auth, getProductDetail);
 router.post(
   '/newProductImage/:product_filename',
   uploadProductImage.single('productImageFile'),

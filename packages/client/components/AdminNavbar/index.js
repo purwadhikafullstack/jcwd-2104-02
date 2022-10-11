@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 
 function AdminNavbar({ path }) {
   const sideMenu = ['Transaksi', 'Inventory', 'Laporan', 'Resep'];
@@ -47,7 +48,12 @@ function AdminNavbar({ path }) {
 
       <div className="grow" />
 
-      <button className="border-[1px] w-[80%] h-[6%] border-white text-white flex items-center justify-evenly mb-[3vh]">
+      <button
+        onClick={() => {
+          signOut();
+        }}
+        className="border-[1px] w-[80%] h-[6%] border-white text-white flex items-center justify-evenly mb-[3vh]"
+      >
         <div className="w-[7%]">
           <Image
             src="/admin/LogoutAdmin.svg"

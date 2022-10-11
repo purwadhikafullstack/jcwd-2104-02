@@ -15,6 +15,22 @@ async function getAllCategoriesController(req, res, next) {
   }
 }
 
+async function getLandingCategoriesController(req, res, next) {
+  try {
+    const resGetCategories = await categories_list.findAll({
+      limit: 9,
+    });
+
+    res.send({
+      status: 'success',
+      resGetCategories,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 router.get('/getAll', getAllCategoriesController);
+router.get('/getLandingCategories', getLandingCategoriesController);
 
 module.exports = router;

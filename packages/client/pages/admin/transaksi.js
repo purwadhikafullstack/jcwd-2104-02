@@ -118,6 +118,7 @@ function Transaksi(props) {
   };
 
   function mappedTransactions() {
+    console.log({ filteredTransactions });
     return filteredTransactions?.map((transaction) => {
       return (
         <AdminTransCard

@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import axiosInstance from '../../src/config/api';
+import { api_origin } from '../../constraint';
 
 function EditProductModal({
   currentProduct,
@@ -63,6 +64,8 @@ function EditProductModal({
     setNewProductImage(currentProduct.productImage);
   }, [editProductButton, productStock]);
 
+  // console.log({ currentProduct });
+
   useEffect(() => {
     setProductStock(currentProduct.productStock);
   }, [currentProduct]);
@@ -95,7 +98,7 @@ function EditProductModal({
         },
       );
 
-      console.log({ resAddProduct });
+      // console.log({ resAddProduct });
 
       const extName = productInputs.productImage.split('.');
 
@@ -160,10 +163,19 @@ function EditProductModal({
               <Image
                 unoptimized
                 style={{ borderRadius: '.3vw' }}
-                src={newProductImage}
+                src={
+                  newProductImage.includes(api_origin)
+                    ? newProductImage
+                    : api_origin + newProductImage
+                }
                 width={1}
                 height={1}
                 layout="responsive"
+                loader={() => {
+                  return newProductImage.includes(api_origin)
+                    ? newProductImage
+                    : api_origin + newProductImage;
+                }}
               />
             </label>
           </div>
@@ -232,7 +244,7 @@ function EditProductModal({
 
         <ModalFooter justifyContent="space-between">
           <div className="flex w-[50%] justify-evenly">
-            <Button
+            {/* <Button
               colorScheme="linkedin"
               variant="ghost"
               disabled={productStock <= 1}
@@ -241,9 +253,10 @@ function EditProductModal({
               }}
             >
               {'<'}
-            </Button>
+            </Button> */}
 
             <Input
+              disabled
               value={productStock}
               onChange={(event) => {
                 if (
@@ -263,7 +276,7 @@ function EditProductModal({
               className="w-[2.5vw] mx-[1vw] flex items-center justify-center bg-gray-200 rounded-[.2vw]"
             />
 
-            <Button
+            {/* <Button
               colorScheme="linkedin"
               variant="ghost"
               disabled={productStock >= 9999}
@@ -272,7 +285,7 @@ function EditProductModal({
               }}
             >
               {'>'}
-            </Button>
+            </Button> */}
           </div>
           <div className="flex w-[50%] justify-end">
             <Button

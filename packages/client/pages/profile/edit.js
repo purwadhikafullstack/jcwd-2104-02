@@ -21,23 +21,25 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
-import { api_origin } from '../../constraint';
 import theme from '../../components/theme';
 import { useRouter } from 'next/router';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
+import Api_origin from '../../constraint';
 
 function Edit(props) {
   const router = useRouter();
   const [avatar, setAvatar] = useState({});
   const [user, setUser] = useState(props.user);
   const [birthDateIsSet, setBirthDateIsSet] = useState(false);
-  const [imgSource, setimgSource] = useState(api_origin + props.user.avatar);
+  const [imgSource, setimgSource] = useState(Api_origin() + props.user.avatar);
 
   const toast = useToast();
 
   const { name, email, gender, birthDate, phoneNumber } = user;
+
+  console.log({ imgSource });
 
   const onSaveAvatarUpdate = async () => {
     try {
@@ -161,6 +163,10 @@ function Edit(props) {
             <Image
               className="rounded-full"
               src={imgSource}
+              loader={() => {
+                return imgSource;
+              }}
+              layout={'fixed'}
               width={86}
               height={86}
             />

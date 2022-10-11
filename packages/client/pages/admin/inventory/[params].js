@@ -10,7 +10,8 @@ import Link from 'next/link';
 import AddProductModal from '../../../components/AddProductModal';
 import AdminProductDetails from '../../../components/adminProductDetails';
 import EditProductModal from '../../../components/editProductModal';
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
+import { api_origin } from '../../../constraint/index';
 
 function Inventory(props) {
   const router = useRouter();
@@ -58,9 +59,9 @@ function Inventory(props) {
               : 'h-[7vh] pl-[1vw] flex items-center font-[400] text-[1.1rem] border-transparent hover:text-white hover:cursor-pointer hover:bg-[#008DEB] bg-white'
           }
         >
-          {category.category.length <= 25
+          {category.category.length <= 20
             ? category.category
-            : `${category.category.slice(0, 25)}...`}
+            : `${category.category.slice(0, 20)}...`}
         </div>
       );
     });
@@ -91,14 +92,14 @@ function Inventory(props) {
                 layout="responsive"
                 width={1}
                 height={1}
-                src={product.productImage}
+                src={api_origin + product.productImage}
                 loader={() => {
-                  return product.productImage;
+                  return api_origin + product.productImage;
                 }}
               />
             </div>
 
-            <div className="flex flex-col w-[40%] text-black h-[7vw] justify-center pl-[2vw] text-[#6E6E6E]">
+            <div className="flex flex-col w-[70%] text-black h-[7vw] justify-center pl-[2vw] text-[#6E6E6E]">
               <p className="font-[500] text-[1.5rem]">
                 {product.productName.length <= 40
                   ? product.productName
@@ -404,6 +405,14 @@ function Inventory(props) {
 
 export async function getServerSideProps(context) {
   try {
+    const session = await getSession({ req: context.req });
+
+    if (!session) return { redirect: { destination: '/login' } };
+
+    if (!session.user.user.isAdmin) {
+      return { redirect: { destination: '/' } };
+    }
+
     const resGetCategoriesLists = await axiosInstance.get('categories/getAll');
 
     let resGetProducts = '';

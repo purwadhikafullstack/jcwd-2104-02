@@ -15,6 +15,10 @@ const addressesRouter = require('./routers/addresses');
 const transactionsRouter = require('./routers/transactions');
 const rajaOngkirRouter = require('./routers/rajaongkir');
 
+
+
+
+
 app.use(cors());
 app.use(bearerToken());
 app.use(express.json());
