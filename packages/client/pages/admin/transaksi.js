@@ -121,7 +121,6 @@ function Transaksi(props) {
   };
 
   function mappedTransactions() {
-    console.log({ filteredTransactions });
     return filteredTransactions?.map((transaction) => {
       return (
         <AdminTransCard
@@ -288,9 +287,7 @@ function Transaksi(props) {
                 Next
               </Button>
             </HStack>
-          ) : (
-            <VStack></VStack>
-          )}
+          ) : null}
         </VStack>
       </div>
     </ChakraProvider>

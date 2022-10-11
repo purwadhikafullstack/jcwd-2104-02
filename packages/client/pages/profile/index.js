@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
-import Api_origin from '../../constraint';
+import { api_origin } from '../../constraint';
 import theme from '../../components/theme';
 import { LockIcon, AddIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import AddAddress from '../../components/AddAddress';
@@ -28,9 +28,7 @@ import DeleteAddress from '../../components/deleteAddress';
 function Profile(props) {
   const [user, setUser] = useState(props.user);
   const [addresses, setAddresses] = useState(props.addresses);
-  const [imgSource, setimgSource] = useState(
-    api_origin + '/public/avatar/default-profile-icon.jpg',
-  );
+  const [imgSource, setImgSource] = useState(api_origin + props.user.avatar);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalEdit, setModalEdit] = useState(false);
   const [modalDelete, setModalDelete] = useState(false);
@@ -45,7 +43,6 @@ function Profile(props) {
 
   useEffect(() => {
     RenderUserAddresses();
-    console.log(imgSource);
   }, []);
 
   useEffect(() => {}, [
@@ -556,7 +553,6 @@ export async function getServerSideProps(context) {
     };
 
     const user_id = session.user.user.user_id;
-    // console.log(user_id)
     const userRes = await axiosInstance.get(
       `/users/profile/${user_id}`,
       config,

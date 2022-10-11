@@ -11,7 +11,6 @@ import {
   Button,
   useToast,
 } from '@chakra-ui/react';
-import { getSession } from 'next-auth/react';
 import axiosInstance from '../../src/config/api';
 
 function DeleteAddress(props) {
@@ -21,17 +20,8 @@ function DeleteAddress(props) {
 
   async function onDeleteClick() {
     try {
-      const session = await getSession();
-
-      const { user_token } = session.user;
-
-      const config = {
-        headers: { Authorization: `Bearer ${user_token}` },
-      };
-
       const resDeleteAddress = await axiosInstance.delete(
         `/addresses/${address_id}`,
-        config,
       );
       toast({
         description: resDeleteAddress.data.message,

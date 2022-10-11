@@ -27,6 +27,10 @@ export default function Home(props) {
   }, [productsPage]);
 
   function categoriesMap() {
+    if (!fetchedCategories) {
+      return 'Empty Categories';
+    }
+
     return fetchedCategories.map((category) => {
       return (
         <div
@@ -252,7 +256,7 @@ export default function Home(props) {
           <p className="flex pl-[4vw] mt-[3vh] mb-[2vh] font-[500] text-[16px] desktop:text-[22px] w-[100%] desktop:pl-0">
             Jelajahi Kategori Obat
           </p>
-          <div className="w-[100%] h-[13vh] items-start flex flex-nowrap overflow-x-auto  desktop:flex-wrap desktop:h-[30vh] desktop:justify-evenly">
+          <div className="w-[100%] h-[30vh] items-center flex justify-evenly">
             {categoriesMap()}
           </div>
         </div>

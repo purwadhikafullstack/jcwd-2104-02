@@ -64,6 +64,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       avatar: {
         type: DataTypes.STRING(255),
+        defaultValue: '/public/avatar/default-profile-icon.jpg'
       },
       password: {
         type: DataTypes.STRING,

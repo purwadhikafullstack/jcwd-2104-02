@@ -34,7 +34,6 @@ function Cart(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user_id, user_token } = props;
   const [cartsPrice, setCartsPrice] = useState([]);
-  // console.log(cartsPrice)
 
   useEffect(() => {
     fetchCarts();
@@ -74,7 +73,6 @@ function Cart(props) {
     try {
       const session = await getSession();
       const { user_id } = props;
-      // console.log(user_id)
 
       const { user_token } = session.user;
 
@@ -90,7 +88,6 @@ function Cart(props) {
       alert(error.message);
     }
   };
-  // console.log({ fetchCarts });
 
   const countTotalPrice = (body) => {
     const result = carts.reduce(
@@ -99,7 +96,6 @@ function Cart(props) {
     );
     return result;
   };
-  // console.log(")
 
   const onCheckoutClick = async () => {
     try {
@@ -112,7 +108,6 @@ function Cart(props) {
       };
       const deliveryCost = selectedDeliveryCost.split(',');
       const getDeliveryCost = parseInt(deliveryCost[1]);
-      console.log(getDeliveryCost);
       const body = {
         totalPrice: countTotalPrice(),
         address_id: selectAddress.address_id,
@@ -120,7 +115,6 @@ function Cart(props) {
         deliveryCost: getDeliveryCost,
       };
 
-      console.log(body);
       const res = await axiosInstance.post(
         `/transactions/createTransaction/`,
         body,
@@ -234,9 +228,7 @@ function Cart(props) {
                         />
                       </Button>
                     </VStack>
-                  ) : (
-                    <VStack></VStack>
-                  )}
+                  ) : null}
                 </VStack>
               ) : (
                 <VStack align="start" marginTop={5}>

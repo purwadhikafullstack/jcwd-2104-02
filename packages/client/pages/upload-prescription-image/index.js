@@ -116,7 +116,6 @@ function UploadPrescriptionImage(props) {
 
       const deliveryCost = selectedDeliveryCost.split(',');
       const getDeliveryCost = parseInt(deliveryCost[1]);
-      console.log(deliveryCost);
       const body = new FormData();
       const body2 = {
         address_id: selectAddress.address_id,
@@ -326,9 +325,7 @@ function UploadPrescriptionImage(props) {
                         />
                       </Button>
                     </VStack>
-                  ) : (
-                    <VStack></VStack>
-                  )}
+                  ) : null}
                 </VStack>
               ) : (
                 <VStack align="start" marginTop={5}>

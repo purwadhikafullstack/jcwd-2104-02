@@ -14,7 +14,6 @@ import { useState, useEffect } from 'react';
 import AdminPrescripCard from '../../components/AdminPrescripCard';
 import axiosInstance from '../../src/config/api';
 import theme from '../../components/theme';
-import { api_origin } from '../../constraint';
 
 function DaftarTransaksiRacikan(props) {
   const [transac, setTransac] = useState([]);
@@ -63,7 +62,7 @@ function DaftarTransaksiRacikan(props) {
       return (
         <AdminPrescripCard
           key={transaction.transaction_id}
-          prescriptionImage={api_origin + transaction.prescriptionImage}
+          prescriptionImage={transaction.prescriptionImage}
           trans_id={transaction.transaction_id}
           deliveryCost={transaction.deliveryCost}
           createdAt={transaction.createdAt}
@@ -126,9 +125,7 @@ function DaftarTransaksiRacikan(props) {
                 Next
               </Button>
             </HStack>
-          ) : (
-            <VStack></VStack>
-          )}
+          ) : null}
         </VStack>
       </div>
     </ChakraProvider>

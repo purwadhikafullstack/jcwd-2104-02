@@ -36,7 +36,7 @@ function Inventory(props) {
   if (session.data) {
     if (!session.data.user.user.isAdmin) {
       router.replace('/');
-    } 
+    }
   }
 
   function showCategoriesSwitch() {
@@ -150,8 +150,6 @@ function Inventory(props) {
       const resDeleteProduct = await axiosInstance.delete(
         `/products/${product_id}`,
       );
-
-      console.log({ resDeleteProduct });
     } catch (error) {
       console.log({ error });
     }
@@ -439,9 +437,6 @@ export async function getServerSideProps(context) {
         { page, limit: 3 },
       );
     }
-
-    // console.log(context.params);
-    // console.log({ resGetProducts });
 
     return {
       props: {
