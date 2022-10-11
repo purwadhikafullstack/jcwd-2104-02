@@ -59,43 +59,47 @@ function Transaksi(props) {
   };
 
   const btnSearchHandler = () => {
-    const filteredTransactions = transac.filter((transaction) => {
-      return transaction.transaction_id
-        .toString()
-        .includes(formState.invoiceID);
-    });
-    setFilteredTransactions(filteredTransactions);
+    let invoice_id = formState.invoiceID;
+    if (formState.invoiceID == '') {
+      invoice_id = 'undefined';
+    }
+    fetchTransactions('transaction_id', 'DESC', invoice_id);
   };
 
   const selectSortHandler = (event) => {
     const sortBy = event.target.value;
-    const sortedTransactions = [...filteredTransactions];
-
     switch (sortBy) {
       case 'ascInvoice':
-        sortedTransactions.sort((a, b) => a.transaction_id - b.transaction_id);
-        setFilteredTransactions(sortedTransactions);
+        order_by = 'transaction_id';
+        ordered_method = 'ASC';
+        fetchTransactions(order_by, ordered_method);
         break;
       case 'descInvoice':
-        sortedTransactions.sort((a, b) => b.transaction_id - a.transaction_id);
-        setFilteredTransactions(sortedTransactions);
+        order_by = 'transaction_id';
+        ordered_method = 'DESC';
+        fetchTransactions(order_by, ordered_method);
         break;
       case 'ascDate':
-        sortedTransactions.sort(
-          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-        );
-        setFilteredTransactions(sortedTransactions);
+        order_by = 'createdAt';
+        ordered_method = 'ASC';
+        fetchTransactions(order_by, ordered_method);
         break;
       case 'descDate':
-        sortedTransactions.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-        );
-        setFilteredTransactions(sortedTransactions);
+        order_by = 'createdAt';
+        ordered_method = 'DESC';
+        fetchTransactions(order_by, ordered_method);
         break;
     }
   };
 
-  const fetchTransactions = async () => {
+  let order_by = 'transaction_id';
+  let ordered_method = 'ASC';
+
+  const fetchTransactions = async (
+    order_by,
+    ordered_method,
+    transaction_id,
+  ) => {
     try {
       const session = await getSession();
 
@@ -105,9 +109,8 @@ function Transaksi(props) {
         params: { page, pageSize },
         headers: { Authorization: `Bearer ${user_token}` },
       };
-      console.log({ selected });
       const res = await axiosInstance.get(
-        `/transactions/admin/transactionsByIndex/${selected}`,
+        `/transactions/admin/transactionsByIndex/${selected}?order_by=${order_by}&ordered_method=${ordered_method}&transaction=${transaction_id}`,
         config,
       );
       setTransac(res.data.data.resFetchTransactions);

@@ -23,6 +23,7 @@ import theme from '../../components/theme';
 import { LockIcon, AddIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import AddAddress from '../../components/AddAddress';
 import EditAddress from '../../components/EditAddress';
+import DeleteAddress from '../../components/deleteAddress';
 
 function Profile(props) {
   const [user, setUser] = useState(props.user);
@@ -32,6 +33,7 @@ function Profile(props) {
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalEdit, setModalEdit] = useState(false);
+  const [modalDelete, setModalDelete] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState('');
   const [selectedAddressDetail, setSelectedAddressDetail] = useState('');
   const [selectedRecipient, setSelectedRecipient] = useState('');
@@ -74,24 +76,6 @@ function Profile(props) {
       console.log({ error });
     }
   };
-
-  async function onDeleteClick(address_id) {
-    try {
-      const resDeleteAddress = await axiosInstance.delete(
-        `/addresses/${address_id}`,
-      );
-      toast({
-        description: resDeleteAddress.data.message,
-        position: 'top',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      });
-      RenderUserAddresses();
-    } catch (error) {
-      console.log({ error });
-    }
-  }
 
   async function onSetDefaultAddress(address_id) {
     try {
@@ -217,9 +201,18 @@ function Profile(props) {
                   colorScheme="white"
                   variant="solid"
                   size="xxs"
-                  onClick={() => onDeleteClick(address.address_id)}
+                  onClick={() => {
+                    setSelectedAddressId(address.address_id);
+                    setModalDelete(true);
+                  }}
                 >
                   <DeleteIcon w={3.5} h={3.5} color="#004776" />
+                  <DeleteAddress
+                    isOpen={modalDelete}
+                    onClose={() => setModalDelete(false)}
+                    address_id={selectedAddressId}
+                    RenderUserAddresses={RenderUserAddresses}
+                  />
                 </Button>
               </HStack>
             </VStack>
