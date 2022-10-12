@@ -6,8 +6,10 @@ import { getSession } from 'next-auth/react';
 import { useToast } from '@chakra-ui/react';
 import Image from 'next/image';
 import TransDetailCard from '../../components/TransDetailCard';
+import { useRouter } from 'next/router';
 
 function TransactionDetails(props) {
+  const router = useRouter();
   const { transaction_details, transactions, user_id } = props;
   const [transac, setTransac] = useState(
     transaction_details.resFetchTransactionDetails,
@@ -80,8 +82,11 @@ function TransactionDetails(props) {
         duration: 3000,
         isClosable: true,
       });
+      setTimeout(() => {
+        router.replace(`/transaction/${user_id}`);
+      }, 1000);
     } catch (error) {
-      console.log({ Error });
+      console.log({ error });
       toast({
         description: 'Bukti Pembayaran Belum Dipilih',
         position: 'top',
@@ -190,11 +195,9 @@ function TransactionDetails(props) {
                 <input type={'file'} onChange={onFileChange} />
               </VStack>
               <VStack paddingLeft={28}>
-                <Link href={`/transaction/${user_id}`}>
-                  <Button onClick={onSavePayment} colorScheme={'linkedin'}>
-                    Unggah Bukti Pembayaran
-                  </Button>
-                </Link>
+                <Button onClick={onSavePayment} colorScheme={'linkedin'}>
+                  Unggah Bukti Pembayaran
+                </Button>
               </VStack>
             </VStack>
           ) : null}

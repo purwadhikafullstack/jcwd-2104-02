@@ -65,7 +65,7 @@ function Edit(props) {
     } catch (error) {
       console.log({ Error });
       toast({
-        description: 'Gambar Belum Dipilih',
+        description: error.response.data.message,
         position: 'top',
         status: 'error',
         duration: 3000,
