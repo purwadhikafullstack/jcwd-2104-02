@@ -96,7 +96,13 @@ function EditAddress(props) {
       RenderUserAddresses();
     } catch (error) {
       console.log({ error });
-      alert(error.response.data.message);
+      toast({
+        description: 'Semua Field Harus Terisi',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 

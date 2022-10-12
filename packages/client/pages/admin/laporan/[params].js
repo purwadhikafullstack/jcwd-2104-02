@@ -90,6 +90,7 @@ function Laporan(props) {
           saleObjArray.push({
             createdAt: details.createdAt.slice(0, 10),
             transaction_id: transaction.transaction_id,
+            transaction_details_id: details.transaction_details_id,
             userName: transaction.user.name,
             user_id: transaction.user.user_id,
             productName: details.product.productName,
@@ -266,7 +267,7 @@ function Laporan(props) {
 
     return saleObjArray.map((obj) => {
       return (
-        <Tr>
+        <Tr key={obj.transaction_details_id}>
           <Td>{obj.createdAt}</Td>
           <Td>{obj.transaction_id}</Td>
           <Td>{obj.userName}</Td>
@@ -283,6 +284,7 @@ function Laporan(props) {
     return pageTabs.map((content) => {
       return (
         <div
+          key={content}
           onClick={() => {
             router.replace(`/admin/laporan/${content.toLowerCase()}`);
             setMainAsc(!mainAsc);

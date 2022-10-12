@@ -11,10 +11,13 @@ const {
   product_details,
   stock_opname,
 } = require('../../../models');
+require('dotenv').config();
 
 async function updateProductController(req, res, next) {
   try {
     const { productInputs, currentProduct } = req.body;
+
+    const {API_URL} =  process.env
 
     const { product_id } = req.params;
 
@@ -26,7 +29,7 @@ async function updateProductController(req, res, next) {
     const resUpdateProduct = await resFindProduct.update({
       productName: productInputs.productName,
       productPrice: productInputs.productPrice,
-      productImage: `http://localhost:8000/public/productImages/${product_id}.${extName[1]}`,
+      productImage: `${API_URL}/public/productImages/${product_id}.${extName[1]}`,
       description: productInputs.description,
       defaultQuantity: productInputs.defaultQuantity,
       productStock: productInputs.productStock,

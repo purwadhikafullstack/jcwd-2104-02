@@ -15,10 +15,14 @@ import { api_origin } from '../../../constraint/index';
 
 function Inventory(props) {
   const router = useRouter();
+  const { params } = router.query;
+  const splitParams = params.split('=');
   const [selected, setSelected] = useState('');
   const [showCategories, setShowCategories] = useState(false);
   const [productList, setProductList] = useState(props.products);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(
+    splitParams[splitParams.length - 1],
+  );
   const [searchKeyword, setSearchKeyword] = useState('');
   const [currentProduct, setCurrentProduct] = useState(props.products[0]);
   const [addProductButton, setAddProductButton] = useState(false);
@@ -26,7 +30,6 @@ function Inventory(props) {
   const [editProductButton, setEditProductButton] = useState(false);
 
   useEffect(() => {
-    const { params } = router.query;
     setProductList(props.products);
     setSelected(params);
   });
@@ -418,23 +421,22 @@ export async function getServerSideProps(context) {
     if (context.params.params.includes('byId')) {
       const splitParams = context.params.params.split('=');
       const page = splitParams[1];
-      resGetProducts = await axiosInstance.post('products/', {
-        page,
-        limit: 3,
+      resGetProducts = await axiosInstance.get('products/', {
+        params: { page, limit: 3 },
       });
     } else if (context.params.params.includes('sort')) {
       const splitParams = context.params.params.split('=');
       const page = splitParams[splitParams.length - 1];
-      resGetProducts = await axiosInstance.post(
+      resGetProducts = await axiosInstance.get(
         `products/sort/${context.params.params}`,
-        { page, limit: 3 },
+        { params: { page, limit: 3 } },
       );
     } else {
       const splitParams = context.params.params.split('=');
       const page = splitParams[splitParams.length - 1];
-      resGetProducts = await axiosInstance.post(
+      resGetProducts = await axiosInstance.get(
         `products/specifics/${splitParams[0]}`,
-        { page, limit: 3 },
+        { params: { page, limit: 3 } },
       );
     }
 

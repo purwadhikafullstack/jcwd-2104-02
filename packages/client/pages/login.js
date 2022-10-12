@@ -165,3 +165,19 @@ function Login() {
 }
 
 export default Login;
+
+export async function getServerSideProps() {
+  try {
+    const session = await getSession();
+
+    if (session?.user.user.isAdmin) {
+      return { redirect: { destination: '/admin' } };
+    } else if (session) {
+      return { redirect: { destination: '/' } };
+    }
+
+    return { props: {} };
+  } catch (error) {
+    return { props: { error: error.message } };
+  }
+}

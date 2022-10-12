@@ -19,6 +19,7 @@ export default function Home(props) {
   const [hasMore, setHasMore] = useState();
   const [products, setProducts] = useState();
   const [productsPage, setProductsPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
   const { session, fetchedCategories } = props;
   const router = useRouter();
 
@@ -166,8 +167,16 @@ export default function Home(props) {
             variant="unstyled"
             placeholder="Cari Obat"
             sx={{ paddingLeft: '5%' }}
+            onChange={(event) => {
+              setSearchQuery(event.target.value);
+            }}
           />
-          <div className="bg-[#008DEB] flex items-center justify-center w-[20%] hover:cursor-pointer">
+          <div
+            onClick={() => {
+              router.replace(`/productCatalog/${searchQuery}=1`);
+            }}
+            className="bg-[#008DEB] flex items-center justify-center w-[20%] hover:cursor-pointer"
+          >
             <Image
               src="/landingpage/Search-desktop.png"
               alt="arrow-logo"
@@ -184,25 +193,6 @@ export default function Home(props) {
           width={1440}
           height={408}
         />
-      </div>
-      <div
-        id="searchbar"
-        className="w-[90vw] absolute z-[2] top-[19vh] bg-white rounded-[2vw] left-[5vw] desktop:hidden"
-      >
-        <InputGroup>
-          <Input variant="filled" placeholder="Cari Obat" size="lg" />
-          <InputRightElement>
-            <div className="flex items-end h-[65%]">
-              <Image
-                src="/landingpage/Search.png"
-                alt="search-logo"
-                layout="fixed"
-                width={18}
-                height={18}
-              />
-            </div>
-          </InputRightElement>
-        </InputGroup>
       </div>
       <div className="w-[100%] desktop:flex desktop:flex-col desktop:items-center">
         <div id="resep doktor" className="desktop:w-[70%]">
@@ -256,7 +246,7 @@ export default function Home(props) {
           <p className="flex pl-[4vw] mt-[3vh] mb-[2vh] font-[500] text-[16px] desktop:text-[22px] w-[100%] desktop:pl-0">
             Jelajahi Kategori Obat
           </p>
-          <div className="w-[100%] h-[30vh] items-center flex justify-evenly">
+          <div className="w-[100%] h-[30vh] items-center flex flex-wrap justify-evenly">
             {categoriesMap()}
           </div>
         </div>

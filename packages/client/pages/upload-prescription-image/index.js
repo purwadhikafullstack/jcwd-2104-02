@@ -39,6 +39,7 @@ function UploadPrescriptionImage(props) {
   const [prescriptionPost, setPrescriptionPost] = useState({
     prescriptionImage: '',
   });
+  const [imageName, setImageName] = useState('');
   const [imgSource, setimgSource] = useState(
     api_origin + `/public/prescriptionImage/default-prescription-image.png`,
   );
@@ -78,6 +79,7 @@ function UploadPrescriptionImage(props) {
   const onFileChange = (event) => {
     setPrescriptionImage(event.target.files[0]);
     setimgSource(URL.createObjectURL(event.target.files[0]));
+    setImageName(event.target.files[0].name);
   };
 
   const renderCourier = () => {
@@ -121,6 +123,7 @@ function UploadPrescriptionImage(props) {
         address_id: selectAddress.address_id,
         courier: selectedCourier,
         deliveryCost: getDeliveryCost,
+        imageName,
       };
 
       body.append('prescriptionImage', prescriptionImage);
@@ -135,8 +138,11 @@ function UploadPrescriptionImage(props) {
         config,
       );
 
+      const imageNameInserted =
+        resCreateTransaction.data.data.prescriptionImageName;
+
       const resPostPrescriptionImage = await axiosInstance.post(
-        `/transactions/createPrescriptionTransaction/${resCreateTransaction.data.data.resCreateTransaction.transaction_id}.jpg`,
+        `/transactions/createPrescriptionTransaction/${imageNameInserted}`,
         body,
         config,
       );
@@ -153,7 +159,13 @@ function UploadPrescriptionImage(props) {
       }, 1000);
     } catch (error) {
       console.log({ Error });
-      alert(error.response?.data.message);
+      toast({
+        description: 'Resep Dokter, Alamat, dan Kurir Tidak Boleh Kosong',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -356,7 +368,6 @@ function UploadPrescriptionImage(props) {
                 </VStack>
               )}
             </Box>
-
             <Box width="60vH" boxShadow="md" rounded="md" padding={6}>
               <Text fontWeight={600}>Metode Pengiriman</Text>
               <HStack marginY={6}>

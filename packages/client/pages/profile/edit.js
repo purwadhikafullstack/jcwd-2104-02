@@ -64,7 +64,13 @@ function Edit(props) {
       });
     } catch (error) {
       console.log({ Error });
-      alert(error.response.data.message);
+      toast({
+        description: 'Gambar Belum Dipilih',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
