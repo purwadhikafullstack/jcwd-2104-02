@@ -27,7 +27,12 @@ export default function AdminPrescripCard(props) {
   const [show, setShow] = useState(false);
   const [option, setOption] = useState('');
   const [loading, setLoading] = useState(false);
+  const [saved, setSaved] = useState(false);
   const toast = useToast();
+
+  useEffect(() => {
+    onCheckClick;
+  }, [saved]);
 
   function productNameMap() {
     return products.map((product) => {
@@ -67,6 +72,11 @@ export default function AdminPrescripCard(props) {
           duration: 3000,
           isClosable: true,
         });
+        setLoading(false);
+        setOption('');
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
       }
     } catch (error) {
       alert(error.message);
@@ -123,22 +133,26 @@ export default function AdminPrescripCard(props) {
             >
               {productNameMap()}
             </Select>
-            <Button
-              color="green.300"
-              variant="ghost"
-              fontSize={13}
-              fontWeight={500}
-              onClick={onCheckClick}
-            >
-              <CheckIcon></CheckIcon>
-            </Button>
+            {option ? (
+              <Button
+                color="green.300"
+                variant="ghost"
+                fontSize={13}
+                fontWeight={500}
+                onClick={onCheckClick}
+              >
+                <CheckIcon></CheckIcon>
+              </Button>
+            ) : (
+              <></>
+            )}
             <Button
               color="red.300"
               variant="ghost"
               fontSize={13}
               fontWeight={500}
               onClick={() => {
-                setShow(false);
+                setShow(false), setOption('');
               }}
             >
               <SmallCloseIcon></SmallCloseIcon>

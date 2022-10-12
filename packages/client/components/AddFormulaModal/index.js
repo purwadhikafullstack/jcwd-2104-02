@@ -36,6 +36,7 @@ function AddFormulaModal({
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [disabled, setDisabled] = useState(false);
+  const [amount, setAmount] = useState(0);
   const toast = useToast();
 
   useEffect(() => {
@@ -57,6 +58,9 @@ function AddFormulaModal({
 
   const onHandleQuantityChange = (e) => {
     setQuantity(e.target.value);
+  };
+  const onHandleAmountChange = (e) => {
+    setAmount(e.target.value);
   };
 
   function checkSameProduct() {
@@ -88,7 +92,7 @@ function AddFormulaModal({
     try {
       setLoading(true);
       console.log(name, tempFormula);
-      const body = { productName: name, formula: tempFormula };
+      const body = { productName: name, formula: tempFormula, amount: amount };
       console.log(body);
       const res = await axiosInstance.post('/products/concoction', body);
       if (res) {
@@ -103,7 +107,7 @@ function AddFormulaModal({
         setLoading(false);
         setAddFormulaButton(false);
         setTempFormula([]), setQuantity(0);
-        setDeleted(0), setName('');
+        setDeleted(0), setName(''), setAmount(0);
       }
     } catch (error) {
       alert(error);
@@ -111,7 +115,7 @@ function AddFormulaModal({
       setLoading(false);
       setAddFormulaButton(false);
       setTempFormula([]), setQuantity(0);
-      setDeleted(0), setName('');
+      setDeleted(0), setName(''), setAmount(0);
     }
   }
 
@@ -155,11 +159,13 @@ function AddFormulaModal({
 
   function productNameMap() {
     return allProducts.map((product) => {
-      return (
-        <option key={product.product_id} value={`${product.productName}`}>
-          {product.productName}
-        </option>
-      );
+      if (!product.formula) {
+        return (
+          <option key={product.product_id} value={`${product.productName}`}>
+            {product.productName}
+          </option>
+        );
+      }
     });
   }
   {
@@ -168,7 +174,7 @@ function AddFormulaModal({
         isOpen={isOpen}
         onClose={() => {
           setAddFormulaButton(false), setTempFormula([]), setQuantity(0);
-          setDeleted(0), setName('');
+          setDeleted(0), setName(''), setAmount(0);
         }}
       >
         <ModalOverlay />
@@ -182,16 +188,60 @@ function AddFormulaModal({
               placeholder="Nama Obat"
               onChange={onHandleNameChange}
             ></Input>
+            <HStack my={3}>
+              <Text>Jumlah Racikan:</Text>
+              {amount == 0 ? (
+                <Button
+                  colorScheme={'linkedin'}
+                  variant={'ghost'}
+                  isDisabled
+                  onClick={() => {
+                    setAmount(amount - 1);
+                  }}
+                >
+                  -
+                </Button>
+              ) : (
+                <Button
+                  colorScheme={'linkedin'}
+                  variant={'ghost'}
+                  onClick={() => {
+                    setAmount(amount - 1);
+                  }}
+                >
+                  -
+                </Button>
+              )}
+
+              <Input
+                placeholder="Jumlah Racikan"
+                type={'text'}
+                width={'70px'}
+                value={amount}
+                onChange={onHandleAmountChange}
+              ></Input>
+              <Button
+                colorScheme={'linkedin'}
+                variant={'ghost'}
+                onClick={() => {
+                  setAmount(amount + 1);
+                }}
+              >
+                +
+              </Button>
+            </HStack>
             <HStack>
               <Select
                 name="productName"
-                placeholder="Select Medicine"
+                placeholder="Pilih Obat"
                 onChange={onHandleOptionChange}
               >
                 {productNameMap()}
               </Select>
               {quantity == 0 ? (
                 <Button
+                  colorScheme={'linkedin'}
+                  variant={'ghost'}
                   isDisabled
                   onClick={() => {
                     setQuantity(quantity - 1);
@@ -201,6 +251,8 @@ function AddFormulaModal({
                 </Button>
               ) : (
                 <Button
+                  colorScheme={'linkedin'}
+                  variant={'ghost'}
                   onClick={() => {
                     setQuantity(quantity - 1);
                   }}
@@ -210,13 +262,14 @@ function AddFormulaModal({
               )}
 
               <Input
-                name="quantity"
                 type={'text'}
                 width={'70px'}
                 value={quantity}
                 onChange={onHandleQuantityChange}
               ></Input>
               <Button
+                colorScheme={'linkedin'}
+                variant={'ghost'}
                 onClick={() => {
                   setQuantity(quantity + 1);
                 }}
@@ -257,7 +310,7 @@ function AddFormulaModal({
               mr={3}
               onClick={() => {
                 setAddFormulaButton(false), setTempFormula([]), setQuantity(0);
-                setDeleted(0), setName('');
+                setDeleted(0), setName(''), setAmount(0);
               }}
             >
               Batal
@@ -291,7 +344,7 @@ function AddFormulaModal({
                 Tambah
               </Button>
             )}
-            {name && tempFormula.length ? (
+            {name && tempFormula.length && amount > 0 ? (
               <Button
                 colorScheme="teal"
                 variant="outline"
