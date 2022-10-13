@@ -21,12 +21,12 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
-import { api_origin } from '../../constraint';
 import theme from '../../components/theme';
 import { useRouter } from 'next/router';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
+import { api_origin } from '../../constraint';
 
 function Edit(props) {
   const router = useRouter();
@@ -64,7 +64,13 @@ function Edit(props) {
       });
     } catch (error) {
       console.log({ Error });
-      alert(error.response.data.message);
+      toast({
+        description: error.response.data.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -161,6 +167,10 @@ function Edit(props) {
             <Image
               className="rounded-full"
               src={imgSource}
+              loader={() => {
+                return imgSource;
+              }}
+              layout={'fixed'}
               width={86}
               height={86}
             />

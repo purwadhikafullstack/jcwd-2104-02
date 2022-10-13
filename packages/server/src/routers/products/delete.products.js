@@ -39,6 +39,7 @@ async function deleteProductController(req, res, next) {
 
 const deleteAddedStock = async (req, res, next) => {
   try {
+    const { productStock } = req.body;
     const { product_id } = req.params;
     const { stock_opname_id } = req.params;
 
@@ -58,7 +59,6 @@ const deleteAddedStock = async (req, res, next) => {
 
     const remainingTotal =
       getProductStock['productStock'] - getStockOpnameID['stock'];
-console.log(remainingTotal);
 
     const createHistoryProduct = await stock_opnames.destroy({
       where: {

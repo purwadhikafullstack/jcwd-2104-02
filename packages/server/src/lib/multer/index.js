@@ -48,7 +48,8 @@ const storageAvatar = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const { user_id } = req.user;
-    cb(null, `${user_id}-avatar.jpg`);
+    const splitExt = file.originalname.split('.');
+    cb(null, `${user_id}-avatar.${splitExt[splitExt.length - 1]}`);
   },
 });
 const storageCategories = multer.diskStorage({

@@ -1,16 +1,26 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const router = express.Router();
 const {
   transactions,
   products,
   transaction_details,
   addresses,
+  users,
 } = require('../../../models');
 const { auth } = require('../../helpers/auth');
 
 const adminGetTransactionsByIndex = async (req, res, next) => {
   try {
     const { selected } = req.params;
+    let order_by = req.query.order_by;
+    let ordered_method = req.query.ordered_method;
+    let transactionID = req.query.transaction;
+
+    if (order_by == 'undefined' || ordered_method == 'undefined') {
+      order_by = 'transaction_id';
+      ordered_method = 'DESC';
+    }
 
     let { page, pageSize } = req.query;
 
@@ -21,6 +31,10 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
     const offset = (page - 1) * pageSize;
 
     var statusFind;
+    let whereController = { prescriptionImage: null };
+    if (transactionID != 'undefined') {
+      whereController['transaction_id'] = parseInt(transactionID);
+    }
 
     switch (selected) {
       case '1' || 1:
@@ -44,7 +58,7 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
 
       default:
         const resFetchTransactions = await transactions.findAll({
-          where: { prescriptionImage: null },
+          where: whereController,
           attributes: [
             'transaction_id',
             'user_id',
@@ -67,7 +81,7 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
               ],
             },
           ],
-          order: [['transaction_id', 'DESC']],
+          order: [[order_by, ordered_method]],
         });
 
         res.send({
@@ -400,6 +414,164 @@ const getTransactionsByIndex = async (req, res, next) => {
   }
 };
 
+const getAllTransactions = async (req, res, next) => {
+  try {
+    let { paramsStartDate, paramsEndDate } = req.query;
+
+    // paramsStartDate?.setDate(paramsStartDate.getDate() + 1);
+    // paramsEndDate?.setDate(paramsEndDate.getDate() + 1);
+
+    // console.log({ paramsEndDate, paramsStartDate });
+
+    let allTransaction;
+
+    if (paramsStartDate && paramsEndDate) {
+      console.log('jalan1');
+      console.log({ paramsStartDate, paramsEndDate });
+      allTransaction = await transactions.findAll({
+        where: {
+          status: 'order_confirmed',
+          createdAt: { [Op.between]: [paramsStartDate, paramsEndDate] },
+        },
+        attributes: [
+          'transaction_id',
+          'prescription_id',
+          'user_id',
+          'address_id',
+          'totalPrice',
+          'status',
+          'courier',
+          'deliveryCost',
+          'createdAt',
+          'updatedAt',
+        ],
+        include: [
+          {
+            model: transaction_details,
+            include: [
+              {
+                model: products,
+              },
+            ],
+          },
+          {
+            model: users,
+          },
+        ],
+      });
+    } else if (paramsStartDate) {
+      paramsEndDate = new Date('July 21, 3000 01:15:00');
+      console.log('jalan2');
+      console.log({ paramsStartDate, paramsEndDate });
+      allTransaction = await transactions.findAll({
+        where: {
+          status: 'order_confirmed',
+          createdAt: { [Op.between]: [paramsStartDate, paramsEndDate] },
+        },
+        attributes: [
+          'transaction_id',
+          'prescription_id',
+          'user_id',
+          'address_id',
+          'totalPrice',
+          'status',
+          'courier',
+          'deliveryCost',
+          'createdAt',
+          'updatedAt',
+        ],
+        include: [
+          {
+            model: transaction_details,
+            include: [
+              {
+                model: products,
+              },
+            ],
+          },
+          {
+            model: users,
+          },
+        ],
+      });
+    } else if (paramsEndDate) {
+      paramsStartDate = new Date(1970);
+      console.log('jalan3');
+      console.log({ paramsStartDate, paramsEndDate });
+      allTransaction = await transactions.findAll({
+        where: {
+          status: 'order_confirmed',
+          createdAt: { [Op.between]: [paramsStartDate, paramsEndDate] },
+        },
+        attributes: [
+          'transaction_id',
+          'prescription_id',
+          'user_id',
+          'address_id',
+          'totalPrice',
+          'status',
+          'courier',
+          'deliveryCost',
+          'createdAt',
+          'updatedAt',
+        ],
+        include: [
+          {
+            model: transaction_details,
+            include: [
+              {
+                model: products,
+              },
+            ],
+          },
+          {
+            model: users,
+          },
+        ],
+      });
+    } else {
+      console.log({ paramsStartDate, paramsEndDate });
+      allTransaction = await transactions.findAll({
+        where: { status: 'order_confirmed' },
+        attributes: [
+          'transaction_id',
+          'prescription_id',
+          'user_id',
+          'address_id',
+          'totalPrice',
+          'status',
+          'courier',
+          'deliveryCost',
+          'createdAt',
+          'updatedAt',
+        ],
+        include: [
+          {
+            model: transaction_details,
+            include: [
+              {
+                model: products,
+              },
+            ],
+          },
+          {
+            model: users,
+          },
+        ],
+      });
+    }
+
+    console.log({ length: allTransaction.length });
+
+    res.send({
+      status: 'Success',
+      allTransaction,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 router.get(
   '/admin/transactionsByIndex/:selected',
   auth,
@@ -418,5 +590,6 @@ router.get(
   auth,
   getTransactionsByIndex,
 );
+router.get('/all/products/', getAllTransactions);
 
 module.exports = router;

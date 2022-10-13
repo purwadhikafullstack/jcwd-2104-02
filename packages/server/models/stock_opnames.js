@@ -36,23 +36,11 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
-      transaction_id: {
+      stock: {
         type: DataTypes.INTEGER,
-        references: {
-          model: 'transactions',
-          key: 'transaction_id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
       },
-      transaction_details_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: 'transaction_details',
-          key: 'transaction_details_id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+      activity: {
+        type: DataTypes.ENUM('terjual', 'tambah_stock', 'unit_conversion'),
       },
       stock: {
         type: DataTypes.INTEGER,

@@ -191,7 +191,7 @@ export async function getServerSideProps(context) {
     const res = await axiosInstance.get(`/users/${user_id}`, config);
 
     return {
-      props: { user: res.data.dataValues, session },
+      props: { user: res.data.data, session },
     };
   } catch (error) {
     console.log({ error });

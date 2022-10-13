@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { getSession } from 'next-auth/react';
 import axiosInstance from '../../src/config/api';
 import { DeleteIcon, AddIcon, WarningIcon } from '@chakra-ui/icons';
-import axios from 'axios';
+import { api_origin } from '../../constraint';
 
 export default function CartCards(props) {
   //, totalPrice, fetchCarts
@@ -88,7 +88,7 @@ export default function CartCards(props) {
         alt="resep-logo"
         width={80}
         height={80}
-        src={product.productImage}
+        src={api_origin + product.productImage}
       />
       <p className="text-[17px] font-[500]">{product.productName}</p>
       <div className=" text-[#6E6E6E] text-[14px] font-[500]">

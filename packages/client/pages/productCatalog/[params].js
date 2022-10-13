@@ -6,39 +6,33 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { userAgent } from 'next/server';
-import { config } from '@fortawesome/fontawesome-svg-core';
 import { getSession } from 'next-auth/react';
+import { api_origin } from '../../constraint/index';
 
 function ProductCatalog(props) {
   const [selected, setSelected] = useState('');
   const [showCategories, setShowCategories] = useState(false);
-  const [showFilter, setShowFilter] = useState(false);
   const [showSort, setShowSort] = useState(false);
   const [productList, setProductList] = useState(props.products);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
-  // const [user, setProduct] = useState(props.users);
   const [verified, setVerified] = useState(false);
 
   const router = useRouter();
   const { session } = props;
-  // console.log(session);
-  // console.log({ props });
-  // console.log(props.products);
 
   useEffect(() => {
     const { params } = router.query;
     setSelected(params);
     setProductList(props.products);
+    if (!params.includes('sort') && !params.includes('semuaObat')) {
+      const splitParams = params.split('=');
+      setSearchKeyword(splitParams[0]);
+    }
   });
 
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);
-  }
-
-  function showFilterSwitch() {
-    setShowFilter(!showFilter);
   }
 
   function showSortSwitch() {
@@ -59,9 +53,9 @@ function ProductCatalog(props) {
               layout="responsive"
               width={100}
               height={70}
-              src={product.productImage}
+              src={api_origin + product.productImage}
               loader={() => {
-                return product.productImage;
+                return api_origin + product.productImage;
               }}
             />
           </div>
@@ -87,6 +81,8 @@ function ProductCatalog(props) {
               onClick={() => {
                 if (props.session?.user.user.isVerified) {
                   router.replace(`/detailPage/${product.product_id}`);
+                } else {
+                  router.replace('/login');
                 }
               }}
               colorScheme="linkedin"
@@ -362,29 +358,27 @@ export async function getServerSideProps(context) {
 
       const page = splitParams[1];
 
-      resGetProducts = await axiosInstance.post('products/', {
-        page,
-        limit: 10,
+      resGetProducts = await axiosInstance.get('products/', {
+        params: { page, limit: 10 },
       });
     } else if (context.params.params.includes('sort')) {
       const splitParams = context.params.params.split('=');
 
       const page = splitParams[splitParams.length - 1];
 
-      resGetProducts = await axiosInstance.post(
+      resGetProducts = await axiosInstance.get(
         `products/sort/${context.params.params}`,
-        { page, limit: 10 },
+        { params: { page, limit: 10 } },
       );
     } else {
       const splitParams = context.params.params.split('=');
 
       const page = splitParams[splitParams.length - 1];
 
-      resGetProducts = await axiosInstance.post(
+      resGetProducts = await axiosInstance.get(
         `products/specifics/${splitParams[0]}`,
         {
-          page,
-          limit: 10,
+          params: { page, limit: 10 },
         },
       );
     }

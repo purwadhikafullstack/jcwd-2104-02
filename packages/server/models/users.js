@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
+
   users.init(
     {
       user_id: {
@@ -63,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       avatar: {
         type: DataTypes.STRING(255),
-        defaultValue: 'http://localhost:8000/avatar/default-profile-icon.jpg',
+        defaultValue: '/public/avatar/default-profile-icon.jpg'
       },
       password: {
         type: DataTypes.STRING,

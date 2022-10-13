@@ -17,6 +17,10 @@ const transactionsRouter = require('./routers/transactions');
 const stockOpnameRouter = require('./routers/stockOpname')
 const rajaOngkirRouter = require('./routers/rajaongkir');
 
+
+
+
+
 app.use(cors());
 app.use(bearerToken());
 app.use(express.json());

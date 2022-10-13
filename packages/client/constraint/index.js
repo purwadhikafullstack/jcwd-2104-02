@@ -1,3 +1,5 @@
-const api_origin = 'http://localhost:8000';
+import { API_URL } from '../src/config/api';
+
+const api_origin = API_URL;
 
 module.exports = { api_origin };

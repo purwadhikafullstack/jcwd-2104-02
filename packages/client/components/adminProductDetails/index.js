@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import axiosInstance from '../../src/config/api';
+import { api_origin } from '../../constraint';
 
 function AdminProductDetails({
   currentProduct,
@@ -47,8 +48,6 @@ function AdminProductDetails({
     }
   }, [openProductDetails]);
 
-  async function getProductCateories() {}
-
   return (
     <Modal
       isOpen={isOpen}
@@ -70,12 +69,18 @@ function AdminProductDetails({
               <Image
                 unoptimized
                 style={{ borderRadius: '.3vw' }}
-                src={productImage}
+                src={
+                  productImage.includes(api_origin)
+                    ? productImage
+                    : api_origin + productImage
+                }
                 width={1}
                 height={1}
                 layout="responsive"
                 loader={() => {
-                  return productImage;
+                  return productImage.includes(api_origin)
+                    ? productImage
+                    : api_origin + productImage;
                 }}
               />
             </label>

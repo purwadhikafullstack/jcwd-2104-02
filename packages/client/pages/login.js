@@ -26,7 +26,6 @@ function Login() {
   async function getSessionAsync() {
     const session = await getSession();
 
-    // console.log({ session });
     if (session?.user.user.isAdmin) {
       router.replace('/admin');
     } else if (session) {
@@ -72,14 +71,11 @@ function Login() {
       email,
       password,
     });
-
-    // console.warn(`ini dia ${res}`);
-    // console.warn({ res });
     if (!res.error) {
-      console.log({res});
-      setIsLogin(true)
+      console.log('success login');
+      setLogin(true);
     } else {
-      // console.log(res.error);
+      console.log(res.error);
       alert(res.error);
     }
   };
@@ -173,3 +169,19 @@ function Login() {
 
 
 export default Login;
+
+export async function getServerSideProps() {
+  try {
+    const session = await getSession();
+
+    if (session?.user.user.isAdmin) {
+      return { redirect: { destination: '/admin' } };
+    } else if (session) {
+      return { redirect: { destination: '/' } };
+    }
+
+    return { props: {} };
+  } catch (error) {
+    return { props: { error: error.message } };
+  }
+}

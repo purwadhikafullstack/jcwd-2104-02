@@ -125,9 +125,7 @@ function DaftarTransaksiRacikan(props) {
                 Next
               </Button>
             </HStack>
-          ) : (
-            <VStack></VStack>
-          )}
+          ) : null}
         </VStack>
       </div>
     </ChakraProvider>

@@ -1,6 +1,7 @@
 import { Box, HStack, Text, VStack, Button } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { api_origin } from '../../constraint';
 
 export default function AdminPrescripCard(props) {
   const { trans_id, deliveryCost, prescriptionImage, createdAt } = props;
@@ -25,7 +26,7 @@ export default function AdminPrescripCard(props) {
           alt="resep-logo"
           width={70}
           height={70}
-          src={prescriptionImage}
+          src={api_origin + prescriptionImage}
         />
         <VStack>
           <Text w="25vH" fontSize={16} fontWeight={600}>

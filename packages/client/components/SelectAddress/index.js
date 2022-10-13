@@ -22,12 +22,20 @@ function SelectAddress(props) {
   const [addresses, setAddresses] = useState(userAllAddress);
   const [modalEdit, setModalEdit] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState('');
+  const [selectedAddressDetail, setSelectedAddressDetail] = useState('');
+  const [selectedRecipient, setSelectedRecipient] = useState('');
+  const [selectedPostalCode, setSelectedPostalCode] = useState('');
 
   useEffect(() => {
     RenderUserAddresses();
   }, []);
 
-  useEffect(() => {}, [selectedAddressId]);
+  useEffect(() => {}, [
+    selectedAddressId,
+    selectedAddressDetail,
+    selectedRecipient,
+    selectedPostalCode,
+  ]);
 
   const RenderUserAddresses = async () => {
     try {
@@ -93,6 +101,9 @@ function SelectAddress(props) {
           size="xxs"
           onClick={() => {
             setSelectedAddressId(address.address_id);
+            setSelectedAddressDetail(address.addressDetail);
+            setSelectedRecipient(address.recipient);
+            setSelectedPostalCode(address.postalCode);
             setModalEdit(true);
           }}
         >
@@ -101,6 +112,9 @@ function SelectAddress(props) {
             isOpen={modalEdit}
             onClose={() => setModalEdit(false)}
             address_id={selectedAddressId}
+            editAddressDetail={selectedAddressDetail}
+            editRecipient={selectedRecipient}
+            editPostalCode={selectedPostalCode}
             RenderUserAddresses={RenderUserAddresses}
           />
         </Button>

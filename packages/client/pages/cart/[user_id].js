@@ -11,6 +11,8 @@ import {
   useDisclosure,
   HStack,
   Checkbox,
+  useToast,
+  Link,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import '@fontsource/poppins';
@@ -20,9 +22,11 @@ import theme from '../../components/theme';
 import SelectAddress from '../../components/SelectAddress';
 import AddAddress from '../../components/AddAddress';
 import { AddIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/router';
 import GetDeliveryCost from '../../components/GetDeliveryCost';
 
 function Cart(props) {
+  const router = useRouter();
   const [carts, setCarts] = useState([]);
   const [empty, setEmpty] = useState(false);
   const [userAllAddress, setUserAllAddress] = useState(props.userAllAddress);
@@ -32,9 +36,10 @@ function Cart(props) {
   const [modalSelectAddress, setModalSelectAddress] = useState(false);
   const [modalSelectCourier, setModalSelectCourier] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user_id, user_token } = props;
+  const { user_id } = props;
   const [cartsPrice, setCartsPrice] = useState([]);
-  // console.log(cartsPrice)
+
+  const toast = useToast();
 
   useEffect(() => {
     fetchCarts();
@@ -74,7 +79,6 @@ function Cart(props) {
     try {
       const session = await getSession();
       const { user_id } = props;
-      // console.log(user_id)
 
       const { user_token } = session.user;
 
@@ -90,7 +94,6 @@ function Cart(props) {
       alert(error.message);
     }
   };
-  // console.log({ fetchCarts });
 
   const countTotalPrice = (body) => {
     const result = carts.reduce(
@@ -99,7 +102,6 @@ function Cart(props) {
     );
     return result;
   };
-  // console.log(")
 
   const onCheckoutClick = async () => {
     try {
@@ -119,16 +121,29 @@ function Cart(props) {
         courier: selectedCourier,
         deliveryCost: getDeliveryCost
       };
-    
-      console.log(body)
       const res = await axiosInstance.post(
         `/transactions/createTransaction/`,
         body,
         config,
-        );
-      alert("sukses")
+      );
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      setTimeout(() => {
+        router.replace(`/transaction/${user_id}`);
+      }, 1000);
     } catch (error) {
-      alert(alert.message)
+      toast({
+        description: 'Alamat dan Kurir Tidak Boleh Kosong',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   }
 
@@ -240,9 +255,7 @@ function Cart(props) {
                         />
                       </Button>
                     </VStack>
-                  ) : (
-                    <VStack></VStack>
-                  )}
+                  ) : null}
                 </VStack>
               ) : (
                 <VStack align="start" marginTop={5}>

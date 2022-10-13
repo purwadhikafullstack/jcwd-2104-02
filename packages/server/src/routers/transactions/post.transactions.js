@@ -17,7 +17,6 @@ const postTransaction = async (req, res, next) => {
   try {
     const { user_id } = req.user;
     const { totalPrice, address_id, courier, deliveryCost } = req.body;
-    // console.log(req.body)
     const resFindCarts = await carts.findAll({
       where: {
         user_id,
@@ -26,15 +25,11 @@ const postTransaction = async (req, res, next) => {
 
     const resCreateTransaction = await transactions.create({
       user_id,
-      // mapCarts
       totalPrice: totalPrice,
       address_id,
       courier,
       deliveryCost: deliveryCost,
-      // console.log(resCreateTransaction)
     });
-
-    // await resFindCarts.destroy({ where: { user_id } });
 
     const dueDate = moment(resCreateTransaction.dataValues.createdAt).add(
       10,
@@ -55,7 +50,6 @@ const postTransaction = async (req, res, next) => {
     );
 
     schedule.scheduleJob(new Date(dueDate), async () => {
-      // console.log("disini")
       const checkingStatus = await transactions.findOne({
         where: {
           transaction_id: resCreateTransaction.dataValues.transaction_id,
@@ -78,7 +72,6 @@ const postTransaction = async (req, res, next) => {
           const updateProduct = await products.findOne({
             where: { product_id: data.dataValues.product_id },
           });
-          // console.log(updateProduct)
           await products.update(
             {
               productStock:
@@ -87,7 +80,6 @@ const postTransaction = async (req, res, next) => {
             },
             { where: { product_id: data.dataValues.product_id } },
           );
-          // console.log("sukses ngab")
         }
       });
     });
@@ -103,9 +95,8 @@ const postTransaction = async (req, res, next) => {
         },
         { where: { product_id: data.dataValues.product_id } },
       );
-      // console.log("jalan")
-       await carts.destroy({ where: { user_id } });
-    })
+      await carts.destroy({ where: { user_id } });
+    });
 
     res.send({
       status: 'success',
@@ -279,7 +270,9 @@ const createUserPrescriptionTransaction = async (req, res, next) => {
 const createUserPrescriptionImage = async (req, res, next) => {
   try {
     const { user_id } = req.user;
-    const { address_id, courier, deliveryCost, prescriptionImage } = req.body;
+    const { address_id, courier, deliveryCost, imageName } = req.body;
+
+    const imageSplit = imageName.split('.');
 
     const resCreateTransaction = await transactions.create({
       user_id,
@@ -288,8 +281,10 @@ const createUserPrescriptionImage = async (req, res, next) => {
       deliveryCost: deliveryCost,
     });
 
-    const test = await resCreateTransaction.update({
-      prescriptionImage: `http://localhost:8000/public/prescriptionImage/${resCreateTransaction.dataValues.transaction_id}.jpg`,
+    const resUpdatePrescription = await resCreateTransaction.update({
+      prescriptionImage: `/public/prescriptionImage/${
+        resCreateTransaction.dataValues.transaction_id
+      }.${imageSplit[imageSplit.length - 1]}`,
     });
 
     res.send({
@@ -297,6 +292,9 @@ const createUserPrescriptionImage = async (req, res, next) => {
       message: 'Create Transcation Success!',
       data: {
         resCreateTransaction,
+        prescriptionImageName: `${
+          resCreateTransaction.dataValues.transaction_id
+        }.${imageSplit[imageSplit.length - 1]}`,
       },
     });
   } catch (error) {

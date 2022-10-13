@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import AdminNavbar from '../../../components/AdminNavbar';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import {
   Button,
@@ -21,14 +20,20 @@ import AddProductModal from '../../../components/AddProductModal';
 import AdminProductDetails from '../../../components/adminProductDetails';
 import EditProductModal from '../../../components/editProductModal';
 import AddCategoryModal from '../../../components/AddCategoryModal';
+import { getSession, useSession } from 'next-auth/react';
+import { api_origin } from '../../../constraint/index';
 
 function Inventory(props) {
   
   const router = useRouter();
+  const { params } = router.query;
+  const splitParams = params.split('=');
   const [selected, setSelected] = useState('');
   const [showCategories, setShowCategories] = useState(false);
   const [productList, setProductList] = useState(props.products);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(
+    splitParams[splitParams.length - 1],
+  );
   const [searchKeyword, setSearchKeyword] = useState('');
   const [currentProduct, setCurrentProduct] = useState(props.products[0]);
   const [addProductButton, setAddProductButton] = useState(false);
@@ -37,7 +42,6 @@ function Inventory(props) {
   const [editProductButton, setEditProductButton] = useState(false);
 
   useEffect(() => {
-    const { params } = router.query;
     setProductList(props.products);
     setSelected(params);
   });
@@ -47,7 +51,7 @@ function Inventory(props) {
   if (session.data) {
     if (!session.data.user.user.isAdmin) {
       router.replace('/');
-    } 
+    }
   }
 
 
@@ -71,9 +75,9 @@ function Inventory(props) {
               : 'h-[7vh] pl-[1vw] flex items-center font-[400] text-[1.1rem] border-transparent hover:text-white hover:cursor-pointer hover:bg-[#008DEB] bg-white'
           }
         >
-          {category.category.length <= 25
+          {category.category.length <= 20
             ? category.category
-            : `${category.category.slice(0, 25)}...`}
+            : `${category.category.slice(0, 20)}...`}
         </div>
       );
     });
@@ -104,14 +108,14 @@ function Inventory(props) {
                 layout="responsive"
                 width={1}
                 height={1}
-                src={product.productImage}
+                src={api_origin + product.productImage}
                 loader={() => {
-                  return product.productImage;
+                  return api_origin + product.productImage;
                 }}
               />
             </div>
 
-            <div className="flex flex-col w-[40%] text-black h-[7vw] justify-center pl-[2vw] text-[#6E6E6E]">
+            <div className="flex flex-col w-[70%] text-black h-[7vw] justify-center pl-[2vw] text-[#6E6E6E]">
               <p className="font-[500] text-[1.5rem]">
                 {product.productName.length <= 40
                   ? product.productName
@@ -173,8 +177,6 @@ function Inventory(props) {
       const resDeleteProduct = await axiosInstance.delete(
         `/products/${product_id}`,
       );
-
-      console.log({ resDeleteProduct });
     } catch (error) {
       console.log({ error });
     }
@@ -434,6 +436,14 @@ function Inventory(props) {
 
 export async function getServerSideProps(context) {
   try {
+    const session = await getSession({ req: context.req });
+
+    if (!session) return { redirect: { destination: '/login' } };
+
+    if (!session.user.user.isAdmin) {
+      return { redirect: { destination: '/' } };
+    }
+
     const resGetCategoriesLists = await axiosInstance.get('categories/getAll');
 
     let resGetProducts = '';
@@ -441,26 +451,24 @@ export async function getServerSideProps(context) {
     if (context.params.params.includes('byId')) {
       const splitParams = context.params.params.split('=');
       const page = splitParams[1];
-      resGetProducts = await axiosInstance.post('products/', {
-        page,
-        limit: 3,
+      resGetProducts = await axiosInstance.get('products/', {
+        params: { page, limit: 3 },
       });
     } else if (context.params.params.includes('sort')) {
       const splitParams = context.params.params.split('=');
       const page = splitParams[splitParams.length - 1];
-      resGetProducts = await axiosInstance.post(
+      resGetProducts = await axiosInstance.get(
         `products/sort/${context.params.params}`,
-        { page, limit: 3 },
+        { params: { page, limit: 3 } },
       );
     } else {
       const splitParams = context.params.params.split('=');
       const page = splitParams[splitParams.length - 1];
-      resGetProducts = await axiosInstance.post(
+      resGetProducts = await axiosInstance.get(
         `products/specifics/${splitParams[0]}`,
-        { page, limit: 3 },
+        { params: { page, limit: 3 } },
       );
     }
-
 
     return {
       props: {
