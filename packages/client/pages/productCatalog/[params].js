@@ -12,12 +12,10 @@ import { api_origin } from '../../constraint/index';
 function ProductCatalog(props) {
   const [selected, setSelected] = useState('');
   const [showCategories, setShowCategories] = useState(false);
-  const [showFilter, setShowFilter] = useState(false);
   const [showSort, setShowSort] = useState(false);
   const [productList, setProductList] = useState(props.products);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
-  // const [user, setProduct] = useState(props.users);
   const [verified, setVerified] = useState(false);
 
   const router = useRouter();
@@ -27,6 +25,10 @@ function ProductCatalog(props) {
     const { params } = router.query;
     setSelected(params);
     setProductList(props.products);
+    if (!params.includes('sort') && !params.includes('semuaObat')) {
+      const splitParams = params.split('=');
+      setSearchKeyword(splitParams[0]);
+    }
   });
 
   function showCategoriesSwitch() {
@@ -79,8 +81,9 @@ function ProductCatalog(props) {
               onClick={() => {
                 if (props.session?.user.user.isVerified) {
                   router.replace(`/detailPage/${product.product_id}`);
+                } else {
+                  router.replace('/login');
                 }
-                router.replace('/login');
               }}
               colorScheme="linkedin"
               sx={{ width: '100%', height: '5vh' }}
@@ -355,29 +358,27 @@ export async function getServerSideProps(context) {
 
       const page = splitParams[1];
 
-      resGetProducts = await axiosInstance.post('products/', {
-        page,
-        limit: 10,
+      resGetProducts = await axiosInstance.get('products/', {
+        params: { page, limit: 10 },
       });
     } else if (context.params.params.includes('sort')) {
       const splitParams = context.params.params.split('=');
 
       const page = splitParams[splitParams.length - 1];
 
-      resGetProducts = await axiosInstance.post(
+      resGetProducts = await axiosInstance.get(
         `products/sort/${context.params.params}`,
-        { page, limit: 10 },
+        { params: { page, limit: 10 } },
       );
     } else {
       const splitParams = context.params.params.split('=');
 
       const page = splitParams[splitParams.length - 1];
 
-      resGetProducts = await axiosInstance.post(
+      resGetProducts = await axiosInstance.get(
         `products/specifics/${splitParams[0]}`,
         {
-          page,
-          limit: 10,
+          params: { page, limit: 10 },
         },
       );
     }

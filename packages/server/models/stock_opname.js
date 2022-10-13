@@ -8,9 +8,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      stock_opname.hasOne(models.users, {
-        foreignKey: 'user_id',
-      });
       stock_opname.hasOne(models.products, {
         foreignKey: 'product_id',
       });
@@ -30,15 +27,6 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      user_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: 'users',
-          key: 'user_id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-      },
       product_id: {
         type: DataTypes.INTEGER,
         references: {
@@ -48,23 +36,11 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
-      transaction_id: {
+      stock: {
         type: DataTypes.INTEGER,
-        references: {
-          model: 'transactions',
-          key: 'transaction_id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
       },
-      transaction_details_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: 'transaction_details',
-          key: 'transaction_details_id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+      activity: {
+        type: DataTypes.ENUM('terjual', 'tambah_stock', 'unit_conversion'),
       },
     },
     {

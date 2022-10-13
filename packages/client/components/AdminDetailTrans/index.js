@@ -10,6 +10,7 @@ import {
   HStack,
 } from '@chakra-ui/react';
 import Image from 'next/image';
+import { api_origin } from '../../constraint';
 
 function TransactionDetails(props) {
   const {
@@ -42,7 +43,7 @@ function TransactionDetails(props) {
                 alt="resep-logo"
                 width={70}
                 height={70}
-                src={transaction.product.productImage}
+                src={api_origin + transaction.product.productImage}
               />
             </VStack>
             <VStack align="start" paddingBottom={5} fontSize={13}>

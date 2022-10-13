@@ -17,9 +17,6 @@ module.exports = (sequelize, DataTypes) => {
       users.hasMany(models.prescriptions, {
         foreignKey: 'user_id',
       });
-      users.hasMany(models.stock_opname, {
-        foreignKey: 'user_id',
-      });
       users.hasMany(models.transaction_details, {
         foreignKey: 'user_id',
       });
@@ -67,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       avatar: {
         type: DataTypes.STRING(255),
-        defaultValue: '/public/avatar/default-profile-icon.jpg',
+        defaultValue: '/public/avatar/default-profile-icon.jpg'
       },
       password: {
         type: DataTypes.STRING,

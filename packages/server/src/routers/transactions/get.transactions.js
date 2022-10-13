@@ -13,6 +13,14 @@ const { auth } = require('../../helpers/auth');
 const adminGetTransactionsByIndex = async (req, res, next) => {
   try {
     const { selected } = req.params;
+    let order_by = req.query.order_by;
+    let ordered_method = req.query.ordered_method;
+    let transactionID = req.query.transaction;
+
+    if (order_by == 'undefined' || ordered_method == 'undefined') {
+      order_by = 'transaction_id';
+      ordered_method = 'DESC';
+    }
 
     let { page, pageSize } = req.query;
 
@@ -23,6 +31,10 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
     const offset = (page - 1) * pageSize;
 
     var statusFind;
+    let whereController = { prescriptionImage: null };
+    if (transactionID != 'undefined') {
+      whereController['transaction_id'] = parseInt(transactionID);
+    }
 
     switch (selected) {
       case '1' || 1:
@@ -46,7 +58,7 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
 
       default:
         const resFetchTransactions = await transactions.findAll({
-          where: { prescriptionImage: null },
+          where: whereController,
           attributes: [
             'transaction_id',
             'user_id',
@@ -69,7 +81,7 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
               ],
             },
           ],
-          order: [['transaction_id', 'DESC']],
+          order: [[order_by, ordered_method]],
         });
 
         res.send({

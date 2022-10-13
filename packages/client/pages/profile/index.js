@@ -18,19 +18,24 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
-import Api_origin from '../../constraint';
+import { api_origin } from '../../constraint';
 import theme from '../../components/theme';
 import { LockIcon, AddIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import AddAddress from '../../components/AddAddress';
 import EditAddress from '../../components/EditAddress';
+import DeleteAddress from '../../components/deleteAddress';
 
 function Profile(props) {
   const [user, setUser] = useState(props.user);
   const [addresses, setAddresses] = useState(props.addresses);
-  const [imgSource, setimgSource] = useState(Api_origin() + props.user.avatar);
+  const [imgSource, setImgSource] = useState(api_origin + props.user.avatar);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalEdit, setModalEdit] = useState(false);
+  const [modalDelete, setModalDelete] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState('');
+  const [selectedAddressDetail, setSelectedAddressDetail] = useState('');
+  const [selectedRecipient, setSelectedRecipient] = useState('');
+  const [selectedPostalCode, setSelectedPostalCode] = useState('');
 
   const toast = useToast();
 
@@ -38,10 +43,14 @@ function Profile(props) {
 
   useEffect(() => {
     RenderUserAddresses();
-    console.log(imgSource);
   }, []);
 
-  useEffect(() => {}, [selectedAddressId]);
+  useEffect(() => {}, [
+    selectedAddressId,
+    selectedAddressDetail,
+    selectedRecipient,
+    selectedPostalCode,
+  ]);
 
   const RenderUserAddresses = async () => {
     try {
@@ -64,24 +73,6 @@ function Profile(props) {
       console.log({ error });
     }
   };
-
-  async function onDeleteClick(address_id) {
-    try {
-      const resDeleteAddress = await axiosInstance.delete(
-        `/addresses/${address_id}`,
-      );
-      toast({
-        description: resDeleteAddress.data.message,
-        position: 'top',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      });
-      RenderUserAddresses();
-    } catch (error) {
-      console.log({ error });
-    }
-  }
 
   async function onSetDefaultAddress(address_id) {
     try {
@@ -184,6 +175,9 @@ function Profile(props) {
                   size="xxs"
                   onClick={() => {
                     setSelectedAddressId(address.address_id);
+                    setSelectedAddressDetail(address.addressDetail);
+                    setSelectedRecipient(address.recipient);
+                    setSelectedPostalCode(address.postalCode);
                     setModalEdit(true);
                   }}
                 >
@@ -192,6 +186,9 @@ function Profile(props) {
                     isOpen={modalEdit}
                     onClose={() => setModalEdit(false)}
                     address_id={selectedAddressId}
+                    editAddressDetail={selectedAddressDetail}
+                    editRecipient={selectedRecipient}
+                    editPostalCode={selectedPostalCode}
                     RenderUserAddresses={RenderUserAddresses}
                   />
                 </Button>
@@ -201,9 +198,18 @@ function Profile(props) {
                   colorScheme="white"
                   variant="solid"
                   size="xxs"
-                  onClick={() => onDeleteClick(address.address_id)}
+                  onClick={() => {
+                    setSelectedAddressId(address.address_id);
+                    setModalDelete(true);
+                  }}
                 >
                   <DeleteIcon w={3.5} h={3.5} color="#004776" />
+                  <DeleteAddress
+                    isOpen={modalDelete}
+                    onClose={() => setModalDelete(false)}
+                    address_id={selectedAddressId}
+                    RenderUserAddresses={RenderUserAddresses}
+                  />
                 </Button>
               </HStack>
             </VStack>
@@ -547,7 +553,6 @@ export async function getServerSideProps(context) {
     };
 
     const user_id = session.user.user.user_id;
-    // console.log(user_id)
     const userRes = await axiosInstance.get(
       `/users/profile/${user_id}`,
       config,

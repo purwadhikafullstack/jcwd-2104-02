@@ -26,20 +26,18 @@ import { useRouter } from 'next/router';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
-import Api_origin from '../../constraint';
+import { api_origin } from '../../constraint';
 
 function Edit(props) {
   const router = useRouter();
   const [avatar, setAvatar] = useState({});
   const [user, setUser] = useState(props.user);
   const [birthDateIsSet, setBirthDateIsSet] = useState(false);
-  const [imgSource, setimgSource] = useState(Api_origin() + props.user.avatar);
+  const [imgSource, setimgSource] = useState(api_origin + props.user.avatar);
 
   const toast = useToast();
 
   const { name, email, gender, birthDate, phoneNumber } = user;
-
-  console.log({ imgSource });
 
   const onSaveAvatarUpdate = async () => {
     try {
@@ -66,7 +64,13 @@ function Edit(props) {
       });
     } catch (error) {
       console.log({ Error });
-      alert(error.response.data.message);
+      toast({
+        description: error.response.data.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 

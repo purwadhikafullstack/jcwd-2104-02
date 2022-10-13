@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import TransactionDetails from '../AdminDetailTrans';
+import { api_origin } from '../../constraint';
 
 export default function AdminTransCard(props) {
   const {
@@ -48,7 +49,7 @@ export default function AdminTransCard(props) {
           alt="resep-logo"
           width={70}
           height={70}
-          src={productImage}
+          src={api_origin + productImage}
         />
         <VStack>
           <Text w="200px" fontSize={16} fontWeight={600}>

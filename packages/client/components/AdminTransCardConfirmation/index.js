@@ -10,6 +10,7 @@ import {
 import Image from 'next/image';
 import axiosInstance from '../../src/config/api';
 import TransactionDetails from '../AdminDetailTrans';
+import { api_origin } from '../../constraint';
 
 export default function AdminTransCardConfirmation(props) {
   const {
@@ -87,7 +88,7 @@ export default function AdminTransCardConfirmation(props) {
           alt="resep-logo"
           width={70}
           height={70}
-          src={productImage}
+          src={api_origin + productImage}
         />
         <VStack>
           <Text w="200px" fontSize={16} fontWeight={600}>
