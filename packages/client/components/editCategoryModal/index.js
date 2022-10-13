@@ -12,91 +12,116 @@ import {
   Select,
   Textarea,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import axiosInstance from '../../src/config/api';
-
-function EditCategoryModal({editCategoryButton, setEditCategoryButton, currentCategory}) {
-const [newCategory, setNewCategory] = useState({
- category: currentCategory.category,
- categoryImage: currentCategory.categoryImage
-});
-const [categoryImageFile, setCategoryImageFile] = useState();
-const [newCategoryImage, setNewCategoryImage] = useState(
-  currentCategory.categoryImage,
-);
-
-const { isOpen, onOpen, onClose } = useDisclosure();
-
-useEffect(() => {
-  if (editCategoryButton) {
-    onOpen();
-  } else if (!editCategoryButton) {
-    onClose();
-  }
-
-  setNewCategory({
+import { api_origin } from '../.././constraint';
+function EditCategoryModal({
+  editCategoryButton,
+  setEditCategoryButton,
+  currentCategory,
+}) {
+  const [newCategory, setNewCategory] = useState({
     category: currentCategory.category,
     categoryImage: currentCategory.categoryImage,
   });
-  setNewCategoryImage(currentCategory.categoryImage);
-}, [editCategoryButton]);
+  const [categoryImageFile, setCategoryImageFile] = useState();
+  const [newCategoryImage, setNewCategoryImage] = useState(
+    currentCategory.categoryImage,
+  );
+  const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [loading, setLoading] = useState(false);
 
-async function updateCategoryClick() {
-  try {
+  useEffect(() => {
+    if (editCategoryButton) {
+      onOpen();
+    } else if (!editCategoryButton) {
+      onClose();
+    }
 
-    const categoryImageFileBody = new FormData();
+    setNewCategory({
+      category: currentCategory.category,
+      categoryImage: currentCategory.categoryImage,
+    });
+    setNewCategoryImage(currentCategory.categoryImage);
+  }, [editCategoryButton]);
 
-    categoryImageFileBody.append('categoriesImage', categoryImageFile);
+  async function updateCategoryClick() {
+    try {
+      setLoading(true);
+      if (
+        Object.values(newCategory).includes('') ||
+        Object.values(newCategory).includes(undefined)
+      ) {
+        toast({
+          description: 'Tolong Isi Semua',
+          position: 'top',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+        setLoading(false);
+        return;
+      }
+      const categoryImageFileBody = new FormData();
 
-    const config = {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    };
+      categoryImageFileBody.append('categoriesImage', categoryImageFile);
 
-    const resPatchCategory = await axiosInstance.patch(
-      `/categoriesLists/categoryUpdate/${currentCategory.category_lists_id}`,
-      {
-        newCategory,
-        currentCategory,
-      },
-    );
+      const config = {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      };
 
-    console.log({ resPatchCategory });
-
-    const extName = newCategory.categoryImage.split('.');
-
-    const resPatchCategoryImage = await axiosInstance.post(
-      `/categoriesLists/upload/${resPatchCategory.data.data.resUpdateCategoryList.category_lists_id}.${extName[1]}`,
-      categoryImageFileBody,
-      config,
+      const resPatchCategory = await axiosInstance.patch(
+        `/categoriesLists/categoryUpdate/${currentCategory.category_lists_id}`,
+        {
+          newCategory,
+          currentCategory,
+        },
       );
-      console.log("jalan")
 
-    if (resPatchCategory) {
-      console.log({ resPatchCategory, extName, resPatchCategoryImage });
+      const extName = newCategory.categoryImage.split('.');
 
+      const resPatchCategoryImage = await axiosInstance.post(
+        `/categoriesLists/upload/${resPatchCategory.data.data.resUpdateCategoryList.category_lists_id}.${extName[1]}`,
+        categoryImageFileBody,
+        config,
+      );
+
+      if (resPatchCategory) {
+        // console.log({ resPatchCategory, extName, resPatchCategoryImage });
+
+        setEditCategoryButton(false);
+      }
+      toast({
+        description: resPatchCategory.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
+      setLoading(false);
+    } catch (error) {
+      console.log({ error });
+      setLoading(false);
       setEditCategoryButton(false);
     }
-    alert(resPatchCategory.data.message)
-  } catch (error) {
-    console.log({ error });
-    
-    setEditCategoryButton(false);
   }
-}
 
-function handleImageChange(event) {
-  setNewCategoryImage(URL.createObjectURL(event.target.files[0]));
-  setNewCategory({
-    ...newCategory,
-    categoryImage: event.target.files[0].name,
-  });
-  setCategoryImageFile(event.target.files[0]);
-}
+  function handleImageChange(event) {
+    setNewCategoryImage(URL.createObjectURL(event.target.files[0]));
+    setNewCategory({
+      ...newCategory,
+      categoryImage: event.target.files[0].name,
+    });
+    setCategoryImageFile(event.target.files[0]);
+  }
 
-const handleChange = (prop) => (event) => {
-  setNewCategory({ ...newCategory, [prop]: event.target.value });
-};
+  const handleChange = (prop) => (event) => {
+    setNewCategory({ ...newCategory, [prop]: event.target.value });
+  };
 
   // const { isOpen, onClose, onSaveUpdate, categoriesLists } = props;
   // // console.log(categoriesLists)
@@ -110,6 +135,8 @@ const handleChange = (prop) => (event) => {
   // const onHandleChange = (prop) => (e) => {
   //   setNewCategory({ ...newCategory, [prop]: e.target.value });
   // };
+
+  // console.log({ api_origin, newCategoryImage });
 
   return (
     <Modal
@@ -130,7 +157,11 @@ const handleChange = (prop) => (event) => {
             >
               <Image
                 unoptimized
-                src={newCategoryImage}
+                src={
+                  newCategoryImage.includes(api_origin.slice(0, 16))
+                    ? newCategoryImage
+                    : api_origin + newCategoryImage
+                }
                 style={{ borderRadius: '.3vw' }}
                 width={1}
                 height={1}
@@ -158,6 +189,7 @@ const handleChange = (prop) => (event) => {
             <Button
               style={{ width: '40%', marginRight: '.3vw' }}
               colorScheme="linkedin"
+              isLoading={loading}
               onClick={() => {
                 updateCategoryClick();
               }}

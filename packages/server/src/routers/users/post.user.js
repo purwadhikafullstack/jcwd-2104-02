@@ -129,46 +129,6 @@ const loginUser = async (req, res, next) => {
       where: { email },
     });
 
-    if (resFindUser.dataValues.isAdmin) {
-      const { email, password } = req.body;
-
-      const resFindUser = await users.findOne({
-        where: { email: email },
-      });
-      console.log(resFindUser);
-
-      if (!resFindUser) {
-        throw {
-          code: 400,
-          message: 'Wrong Email',
-        };
-      }
-
-      const user = resFindUser.dataValues;
-      const isPasswordMatch = compare(password, user.password);
-      if (!isPasswordMatch) {
-        throw {
-          code: 401,
-          message: `Password or email is incorrect`,
-        };
-      }
-      const token = createToken({
-        user_id: user.user_id,
-        name: user.name,
-      });
-
-      res.send({
-        status: 'success',
-        message: 'login admin success',
-        data: {
-          result: {
-            user,
-            user_token: token,
-          },
-        },
-      });
-    }
-
     if (resFindUser) {
       const user = resFindUser.dataValues;
 
@@ -222,7 +182,7 @@ const resendEmailVerification = async (req, res, next) => {
 
     res.send({
       status: 'success',
-      message: 'success resend verification',
+      message: 'Success Resend Email Verification',
       data: {
         result: updateToken,
       },

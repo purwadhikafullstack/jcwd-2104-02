@@ -1,12 +1,21 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getSession, signOut } from 'next-auth/react';
-import { Button,  } from '@chakra-ui/react';
+import { getSession, signOut, useSession } from 'next-auth/react';
+import { Button } from '@chakra-ui/react';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 
 function AdminNavbar({ path }) {
   const sideMenu = ['Transaksi', 'Inventory', 'Laporan', 'Resep', 'Category'];
+
+  const router = useRouter();
+
+  const session = useSession();
+
+  if (!session) {
+    router.replace('/login');
+  }
 
   function sideMenuMap() {
     return sideMenu.map((Menu) => {
@@ -49,25 +58,24 @@ function AdminNavbar({ path }) {
       <div className="w-[100%] h-[25%] text-white">{sideMenuMap()}</div>
 
       <div className="grow" />
-      
-        <button
-          className="border-[1px] w-[80%] h-[6%] border-white text-white flex items-center justify-evenly mb-[3vh] "
-          onClick={() => {
-            signOut();
-          }}
-        >
-          <div className="w-[7%]">
-            <Image
-              src="/admin/LogoutAdmin.svg"
-              alt="medbox-logo"
-              layout="responsive"
-              width={16}
-              height={14}
-            />
-          </div>
-          Logout
-        </button>
-    
+
+      <button
+        className="border-[1px] w-[80%] h-[6%] border-white text-white flex items-center justify-evenly mb-[3vh] "
+        onClick={() => {
+          signOut();
+        }}
+      >
+        <div className="w-[7%]">
+          <Image
+            src="/admin/LogoutAdmin.svg"
+            alt="medbox-logo"
+            layout="responsive"
+            width={16}
+            height={14}
+          />
+        </div>
+        Logout
+      </button>
     </div>
   );
 }

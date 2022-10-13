@@ -20,7 +20,7 @@ import { getSession, useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import AdminTransCard from '../../components/AdminTransCard';
 import AdminTransCardConfirmation from '../../components/AdminTransCardConfirmation';
-import AdminPaymentConfirm from '../../components/AdminPaymentConfirm'
+import AdminPaymentConfirm from '../../components/AdminPaymentConfirm';
 import axiosInstance from '../../src/config/api';
 import theme from '../../components/theme';
 
@@ -33,8 +33,7 @@ function Transaksi(props) {
   const [formState, setFormState] = useState({ InvoiceID: '' });
 
   const router = useRouter();
-  const session = useSession()
-
+  const session = useSession();
 
   if (session.data) {
     if (!session.data.user.user.isAdmin) {
@@ -142,30 +141,27 @@ function Transaksi(props) {
       );
     });
   }
-   function mappedTransactionsPayment() {
-     return filteredTransactions?.map((transaction) => {
-       return (
-         <AdminPaymentConfirm
-           key={transaction.transaction_id}
-           productName={transaction.transaction_details[0].product.productName}
-           productImage={
-             transaction.transaction_details[0].product.productImage
-           }
-           paymentProof={transaction.transaction_details[0].paymentProof}
-           status={transaction.status}
-           totalPrice={transaction.totalPrice}
-           trans_id={transaction.transaction_id}
-           courier={transaction.courier}
-           deliveryCost={transaction.deliveryCost}
-           createdAt={transaction.createdAt}
-           transac={transac}
-           fetchTransactions={fetchTransactions}
-           props={props}
-         />
-       );
-     });
-   }
-
+  function mappedTransactionsPayment() {
+    return filteredTransactions?.map((transaction) => {
+      return (
+        <AdminPaymentConfirm
+          key={transaction.transaction_id}
+          productName={transaction.transaction_details[0].product.productName}
+          productImage={transaction.transaction_details[0].product.productImage}
+          paymentProof={transaction.transaction_details[0].paymentProof}
+          status={transaction.status}
+          totalPrice={transaction.totalPrice}
+          trans_id={transaction.transaction_id}
+          courier={transaction.courier}
+          deliveryCost={transaction.deliveryCost}
+          createdAt={transaction.createdAt}
+          transac={transac}
+          fetchTransactions={fetchTransactions}
+          props={props}
+        />
+      );
+    });
+  }
 
   function mappedTransactionsConfirmation() {
     return filteredTransactions?.map((transaction) => {

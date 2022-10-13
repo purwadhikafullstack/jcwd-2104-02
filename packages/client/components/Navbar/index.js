@@ -30,6 +30,7 @@ function Navbar(props) {
   const [userId, setUserId] = useState('');
 
   const initialFocusRef = React.useRef();
+  const toast = useToast();
 
   useEffect(() => {
     getSessionAsync();
@@ -40,9 +41,14 @@ function Navbar(props) {
       email: session.user.user.email,
       user_id: session.user.user.user_id,
     };
-    console.log(body);
-    await axiosInstance.post('/users/resendVerif', body);
-    alert('Success sending email');
+    const res = await axiosInstance.post('/users/resendVerif', body);
+    toast({
+      description: res.data.message,
+      position: 'top',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
   };
 
   async function getSessionAsync() {
@@ -64,19 +70,21 @@ function Navbar(props) {
     }
   }
 
-  // console.log(session.user.user.isVerified);
-
   return (
     <div className="h-[100px] flex items-end desktop:h-[72px] shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]">
       <div className="flex w-[100%] h-[70px] desktop:h-[100%] items-center justify-between">
         <div className="flex ml-[7vw] h-[70%] items-center">
           <Link href="/">
-            <Image
-              className="hover:cursor-pointer"
-              src="/landingpage/Medbox.svg"
-              alt="medbox-logo"
-              width={'20vh'}
-            />
+            <div className="w-[20vh]">
+              <Image
+                className="hover:cursor-pointer"
+                src="/landingpage/Medbox.svg"
+                alt="medbox-logo"
+                layout="responsive"
+                width={20}
+                height={10}
+              />
+            </div>
           </Link>
           <div className="desktop:flex ml-[5vw] justify-between w-[20vw] hidden">
             <Link href="/">
@@ -110,7 +118,6 @@ function Navbar(props) {
                 </Button>
               </PopoverTrigger>
               <PopoverContent w={'11vw'} h={'7.5vh'}>
-                <PopoverCloseButton />
                 <PopoverArrow />
                 <PopoverHeader
                   pt={4}

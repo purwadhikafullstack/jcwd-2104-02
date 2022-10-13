@@ -5,7 +5,7 @@ import {
   Text,
   VStack,
   useDisclosure,
-  useToast
+  useToast,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import { api_origin } from '../../constraint';
@@ -30,11 +30,9 @@ export default function AdminPaymentConfirm(props) {
 
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [modalDetails, setModalDetails] = useState(false)
+  const [modalDetails, setModalDetails] = useState(false);
 
   const rawStatus = status.split('_');
-
-
 
   const confirmPayment = async () => {
     try {
@@ -48,7 +46,7 @@ export default function AdminPaymentConfirm(props) {
         duration: 3000,
         isClosable: true,
       });
-      fetchTransactions()
+      fetchTransactions();
     } catch (error) {
       console.log({ Error });
       alert(error.response?.data.message);
@@ -67,15 +65,12 @@ export default function AdminPaymentConfirm(props) {
         duration: 3000,
         isClosable: true,
       });
-      fetchTransactions()
+      fetchTransactions();
     } catch (error) {
       console.log({ Error });
       alert(error.response?.data.message);
     }
   };
-
-
-
 
   return (
     <Box>
@@ -97,7 +92,7 @@ export default function AdminPaymentConfirm(props) {
           alt="resep-logo"
           width={70}
           height={70}
-          src={productImage}
+          src={api_origin + productImage}
         />
         <VStack>
           <Text w="200px" fontSize={16} fontWeight={600}>
@@ -172,7 +167,7 @@ export default function AdminPaymentConfirm(props) {
             width={180}
             fontSize={14}
             onClick={confirmPayment}
-            >
+          >
             Konfirmasi Pesanan
           </Button>
           <Button

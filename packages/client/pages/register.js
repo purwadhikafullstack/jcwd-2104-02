@@ -178,16 +178,12 @@ export default function Register() {
                 </Field>
                 <Field name="phoneNumber">
                   {({ field }) => (
-                    <InputGroup>
-                      <InputLeftAddon children="+62" mt={'2.5vh'} />
-                      <TextField
-                        {...field}
-                        label="Phone Number"
-                        name="phoneNumber"
-                        type="number"
-                        w={'20vw'}
-                      />
-                    </InputGroup>
+                    <TextField
+                      {...field}
+                      label="Phone Number"
+                      name="phoneNumber"
+                      type="number"
+                    />
                   )}
                 </Field>
                 <Field name="password">

@@ -24,7 +24,6 @@ import { getSession, useSession } from 'next-auth/react';
 import { api_origin } from '../../../constraint/index';
 
 function Inventory(props) {
-  
   const router = useRouter();
   const { params } = router.query;
   const splitParams = params.split('=');
@@ -32,7 +31,7 @@ function Inventory(props) {
   const [showCategories, setShowCategories] = useState(false);
   const [productList, setProductList] = useState(props.products);
   const [currentPage, setCurrentPage] = useState(
-    splitParams[splitParams.length - 1],
+    parseInt(splitParams[splitParams.length - 1]),
   );
   const [searchKeyword, setSearchKeyword] = useState('');
   const [currentProduct, setCurrentProduct] = useState(props.products[0]);
@@ -53,7 +52,6 @@ function Inventory(props) {
       router.replace('/');
     }
   }
-
 
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);
@@ -129,7 +127,7 @@ function Inventory(props) {
               </p>
               <Link href={`/admin/adminDetailProduct/${product.product_id}`}>
                 <Button
-                width={125}
+                  width={125}
                   bgColor="white"
                   _hover="white"
                   variant="solid"

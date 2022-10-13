@@ -11,19 +11,22 @@ import {
   Select,
   Textarea,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import axiosInstance from '../../src/config/api';
 
-function AddCategoryModal({addCategoryButton, setAddCategoryButton}) {
+function AddCategoryModal({ addCategoryButton, setAddCategoryButton }) {
   const [category, setCategory] = useState({ category: '', categoryImage: '' });
   const [categoryImage, setCategoryImage] = useState();
   const [newProductImage, setNewProductImage] = useState(
-      '/admin/TambahProduk.svg',
-      );
-      
-      const { isOpen, onOpen, onClose } = useDisclosure();
-//    console.log(categoryImage)
+    '/admin/TambahProduk.svg',
+  );
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  //    console.log(categoryImage)
 
   useEffect(() => {
     if (addCategoryButton) {
@@ -31,53 +34,68 @@ function AddCategoryModal({addCategoryButton, setAddCategoryButton}) {
     } else if (!addCategoryButton) {
       onClose();
     }
-    setCategory({ ...category});
-  }, [addCategoryButton])
-
+    setCategory({ ...category });
+  }, [addCategoryButton, loading]);
 
   const handleChange = (prop) => (event) => {
     setCategory({ ...category, [prop]: event.target.value });
   };
 
-
-function handleImageChange(event) {
-  setNewProductImage(URL.createObjectURL(event.target.files[0]));
-  setCategory({
-    ...category,
-    categoryImage: event.target.files[0].name,
-  });
-  setCategoryImage(event.target.files[0]);
-}
+  function handleImageChange(event) {
+    setNewProductImage(URL.createObjectURL(event.target.files[0]));
+    setCategory({
+      ...category,
+      categoryImage: event.target.files[0].name,
+    });
+    setCategoryImage(event.target.files[0]);
+  }
 
   const saveCategoryButtonClick = async () => {
     try {
+      setLoading(true);
+      if (Object.values(category).includes('')) {
+        toast({
+          description: 'Tolong Isi Semua',
+          position: 'top',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+        setLoading(false);
+        return;
+      }
       const body = new FormData();
 
       body.append('categoriesImage', categoryImage);
 
-    //   const config = {
-    //     headers: { 'Content-Type': 'multipart/form-data' },
-    //   };
+      //   const config = {
+      //     headers: { 'Content-Type': 'multipart/form-data' },
+      //   };
 
       const resAddCategory = await axiosInstance.post(
         '/categoriesLists',
         category,
       );
       const extName = category.categoryImage.split('.');
-      //   console.log(extName)
-      
-      // console.log(resAddCategory.data.data.newCategories.category_lists_id)
+      console.log(extName);
+
+      console.log(resAddCategory.data.data.newCategories.category_lists_id);
 
       const resAddCategoryImage = await axiosInstance.post(
-          `/categoriesLists/upload/${resAddCategory.data.data.newCategories.category_lists_id}.${extName[1]}`,
-          body,
-          );
-
-          console.log(resAddCategoryImage)
-          alert(resAddCategory.data.message)
-      
+        `/categoriesLists/upload/${resAddCategory.data.data.newCategories.category_lists_id}.${extName[1]}`,
+        body,
+      );
+      toast({
+        description: resAddCategory.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      setLoading(false);
     } catch (error) {
-      alert(error.message);
+      setAddCategoryButton(false);
+      setLoading(false);
     }
   };
 

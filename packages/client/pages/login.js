@@ -20,7 +20,8 @@ import axiosInstance from '../../client/src/config/api';
 function Login() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [isLogin, setIsLogin] = useState(false)
+  const [isLogin, setIsLogin] = useState(false);
+  const [login, setLogin] = useState(false);
   const router = useRouter();
 
   async function getSessionAsync() {
@@ -35,7 +36,7 @@ function Login() {
 
   useEffect(() => {
     getSessionAsync();
-  },[isLogin]);
+  }, [isLogin]);
 
   function PasswordInput() {
     const [show, setShow] = useState(false);
@@ -73,7 +74,7 @@ function Login() {
     });
     if (!res.error) {
       console.log('success login');
-      setLogin(true);
+      setIsLogin(true);
     } else {
       console.log(res.error);
       alert(res.error);
@@ -165,8 +166,6 @@ function Login() {
     </Flex>
   );
 }
-
-
 
 export default Login;
 

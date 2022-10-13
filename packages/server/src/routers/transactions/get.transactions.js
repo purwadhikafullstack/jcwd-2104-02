@@ -234,7 +234,7 @@ const getTransactions = async (req, res, next) => {
         `isDefault`,
       ],
     });
-    console.log(resFetchAddress)
+    console.log(resFetchAddress);
 
     res.send({
       status: 'success',
@@ -435,7 +435,6 @@ const getAllTransactions = async (req, res, next) => {
         },
         attributes: [
           'transaction_id',
-          'prescription_id',
           'user_id',
           'address_id',
           'totalPrice',
@@ -470,7 +469,6 @@ const getAllTransactions = async (req, res, next) => {
         },
         attributes: [
           'transaction_id',
-          'prescription_id',
           'user_id',
           'address_id',
           'totalPrice',
@@ -505,7 +503,6 @@ const getAllTransactions = async (req, res, next) => {
         },
         attributes: [
           'transaction_id',
-          'prescription_id',
           'user_id',
           'address_id',
           'totalPrice',
@@ -535,7 +532,6 @@ const getAllTransactions = async (req, res, next) => {
         where: { status: 'order_confirmed' },
         attributes: [
           'transaction_id',
-          'prescription_id',
           'user_id',
           'address_id',
           'totalPrice',

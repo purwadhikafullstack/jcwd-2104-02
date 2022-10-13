@@ -3,19 +3,17 @@ const router = express.Router();
 const { categories_list } = require('../../../models');
 const { Sequelize } = require('sequelize');
 
+const getCategoryLists = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
 
-const getCategoryLists = async (req,res,next)=>{
-    try {
+    const getCategory = await categories_list.findAll({
+      offset: (page - 1) * limit,
+      limit,
+    });
 
-      const {page} = req.body
-      const {limit} = req.body
-  
-      const getCategory = await categories_list.findAll({
-        offset:(page - 1) * limit,
-        limit,
-      });
-
-      const resGetNextPage = await categories_list.findAll({
+    const resGetNextPage = await categories_list.findAll({
       offset: page * limit,
       limit,
     });
@@ -26,19 +24,19 @@ const getCategoryLists = async (req,res,next)=>{
       hasMore = false;
     }
 
-      res.send({
-        hasMore,
-        status: 'Success',
-        message: 'Success get All Category',
-        data: {
-          getCategory,
-        },
-      });
-    } catch (error) {
-        next(error)
-    }
-}
+    res.send({
+      hasMore,
+      status: 'Success',
+      message: 'Success get All Category',
+      data: {
+        getCategory,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-router.post('/categoryList', getCategoryLists);
+router.get('/categoryList', getCategoryLists);
 
 module.exports = router;

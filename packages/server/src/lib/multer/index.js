@@ -16,8 +16,8 @@ const prescriptionImagePath = path.join(
   'server',
   'public',
   'prescriptionImage',
-  );
-  
+);
+
 const paymentPath = path.join(
   appRoot.path,
   'packages',
@@ -25,7 +25,6 @@ const paymentPath = path.join(
   'public',
   'paymentProof',
 );
-
 
 const productImagePath = path.join(
   appRoot.path,
