@@ -1,14 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Image } from '@chakra-ui/react';
+import Image from 'next/image';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  Text,
+  VStack,
+  HStack,
+  useToast,
+  Button,
+  Flex,
+  Box,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverCloseButton,
+  PopoverArrow,
+} from '@chakra-ui/react';
+import axiosInstance from '../../src/config/api';
 import Link from 'next/link';
 import { getSession, signOut } from 'next-auth/react';
 
 function Navbar(props) {
   const [session, setSession] = useState(props.session);
   const [userId, setUserId] = useState('');
+
+  const initialFocusRef = React.useRef();
+  const toast = useToast();
+
   useEffect(() => {
     getSessionAsync();
   }, []);
+
+  const resendVerificationHandler = async () => {
+    const body = {
+      email: session.user.user.email,
+      user_id: session.user.user.user_id,
+    };
+    const res = await axiosInstance.post('/users/resendVerif', body);
+    toast({
+      description: res.data.message,
+      position: 'top',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
+  };
 
   async function getSessionAsync() {
     const session = await getSession();
@@ -19,6 +60,14 @@ function Navbar(props) {
     }
 
     setSession(session);
+
+    async function onLogoutClick() {
+      try {
+        signOut();
+      } catch (error) {
+        console.log({ error });
+      }
+    }
   }
 
   return (
@@ -26,12 +75,16 @@ function Navbar(props) {
       <div className="flex w-[100%] h-[70px] desktop:h-[100%] items-center justify-between">
         <div className="flex ml-[7vw] h-[70%] items-center">
           <Link href="/">
-            <Image
-              className="hover:cursor-pointer"
-              src="/landingpage/Medbox.svg"
-              alt="medbox-logo"
-              width={'20vh'}
-            />
+            <div className="w-[20vh]">
+              <Image
+                className="hover:cursor-pointer"
+                src="/landingpage/Medbox.svg"
+                alt="medbox-logo"
+                layout="responsive"
+                width={20}
+                height={10}
+              />
+            </div>
           </Link>
           <div className="desktop:flex ml-[5vw] justify-between w-[20vw] hidden">
             <Link href="/">
@@ -52,23 +105,57 @@ function Navbar(props) {
           </div>
         </div>
         <div className="grow" />
-        <div className="flex mr-[7vw] h-[70%] items-center w-[25vw] desktop:w-[10vw]">
-          <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
-            <Image src="/landingpage/Bell.svg" alt="bell-logo" width={'2vw'} />
-          </div>
-          <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
-            <Link href={`/cart/${userId}`}>
-              <Image
-                src="/landingpage/Cart.svg"
-                alt="cart-logo"
-                width={'2vw'}
-              />
-            </Link>
-          </div>
-          <div className="desktop:hidden w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
-            <Image src="/landingpage/Menu.svg" alt="menu-logo" width={'2vw'} />
-          </div>
-          {session ? (
+        <div className="flex mr-[8vw] h-[70%] items-center justify-end w-[20vw]">
+          {!session?.user.user.isVerified && session ? (
+            <Popover
+              initialFocusRef={initialFocusRef}
+              placement="bottom"
+              closeOnBlur={false}
+            >
+              <PopoverTrigger>
+                <Button color={'red.400'} variant={'ghost'}>
+                  Unverified Account
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent w={'11vw'} h={'7.5vh'}>
+                <PopoverArrow />
+                <PopoverHeader
+                  pt={4}
+                  fontWeight="bold"
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  border="0"
+                >
+                  <Button
+                    colorScheme={'linkedin'}
+                    variant={'solid'}
+                    onClick={resendVerificationHandler}
+                  >
+                    Resend Verification
+                  </Button>
+                </PopoverHeader>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            ''
+          )}
+          {session && session.user.user.isVerified ? (
+            <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
+              <Link href={`/cart/${userId}`}>
+                <Image
+                  src="/landingpage/Cart.svg"
+                  alt="cart-logo"
+                  layout="responsive"
+                  width={19.2}
+                  height={20.4}
+                />
+              </Link>
+            </div>
+          ) : (
+            ''
+          )}
+          {session && session.user.user.isVerified ? (
             <div className="hidden desktop:inline w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer ml-[4.5vw] desktop:ml-[2vw]">
               <Link href="/profile">
                 <Image

@@ -1,5 +1,8 @@
-import { getSession } from 'next-auth/react';
+
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
+import { signIn, getSession } from 'next-auth/react';
+import axiosInstance from '../../../src/config/api';
 
 function Index() {
   const router = useRouter();
@@ -7,7 +10,6 @@ function Index() {
   return <div></div>;
 }
 
-export default Index;
 
 export async function getServerSideProps(context) {
   try {
@@ -23,3 +25,5 @@ export async function getServerSideProps(context) {
     return { props: { error: error.message } };
   }
 }
+
+  export default Index

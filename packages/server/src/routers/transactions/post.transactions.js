@@ -83,6 +83,7 @@ const postTransaction = async (req, res, next) => {
         }
       });
     });
+    
     resFindCarts.forEach(async (data) => {
       const updateProduct = await products.findOne({
         where: { product_id: data.dataValues.product_id },
@@ -300,6 +301,8 @@ const createUserPrescriptionImage = async (req, res, next) => {
     next(error);
   }
 };
+
+
 
 router.post('/createTransaction', auth, postTransaction);
 router.post('/getTransactionsByIndex/:user_id', getTransactionsByIndex);

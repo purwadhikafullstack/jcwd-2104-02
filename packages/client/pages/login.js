@@ -14,10 +14,13 @@ import { useState, useEffect } from 'react';
 import { Icon, ViewOffIcon, ViewIcon } from '@chakra-ui/icons';
 import { signIn, getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { redirect } from 'next/dist/server/api-utils';
+import axiosInstance from '../../client/src/config/api';
 
 function Login() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [isLogin, setIsLogin] = useState(false);
   const [login, setLogin] = useState(false);
   const router = useRouter();
 
@@ -33,7 +36,7 @@ function Login() {
 
   useEffect(() => {
     getSessionAsync();
-  });
+  }, [isLogin]);
 
   function PasswordInput() {
     const [show, setShow] = useState(false);
@@ -71,7 +74,7 @@ function Login() {
     });
     if (!res.error) {
       console.log('success login');
-      setLogin(true);
+      setIsLogin(true);
     } else {
       console.log(res.error);
       alert(res.error);

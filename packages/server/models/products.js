@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       products.hasMany(models.product_details, {
         foreignKey: 'product_id',
       });
-      products.hasMany(models.stock_opname, {
+      products.hasMany(models.stock_opnames, {
         foreignKey: 'product_id',
       });
       products.hasMany(models.transactions, {

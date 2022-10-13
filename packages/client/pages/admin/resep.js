@@ -77,7 +77,7 @@ function DaftarTransaksiRacikan(props) {
     <ChakraProvider theme={theme}>
       <div className="flex w-[100vw] h-[100vh]">
         <AdminNavbar path={path} />
-        <VStack align="start">
+        <VStack align="start" w={'85%'} h={'100%'}>
           <Box>
             <Text
               fontSize={21}
@@ -93,7 +93,7 @@ function DaftarTransaksiRacikan(props) {
           {transac.length ? (
             <div>{mappedTransactions()}</div>
           ) : (
-            <VStack paddingTop={100} alignSelf="center" width="180vH">
+            <VStack paddingTop={100} alignSelf="center">
               <Box align="center">
                 <Image
                   src="/admin/Empty-Transaction.png"

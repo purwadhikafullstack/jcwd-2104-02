@@ -10,9 +10,11 @@ const PORT = process.env.CUSTOM_PORT || 8000;
 const userRouter = require('./routers/users');
 const productsRouter = require('./routers/products');
 const categoriesRouter = require('./routers/categories');
+const categoriesListRouter = require('./routers/categoriesLists');
 const cartsRouter = require('./routers/carts');
 const addressesRouter = require('./routers/addresses');
 const transactionsRouter = require('./routers/transactions');
+const stockOpnameRouter = require('./routers/stockOpname')
 const rajaOngkirRouter = require('./routers/rajaongkir');
 
 
@@ -27,9 +29,11 @@ app.use('/public', express.static('public'));
 app.use('/users', userRouter);
 app.use('/products', productsRouter);
 app.use('/categories', categoriesRouter);
+app.use('/categoriesLists', categoriesListRouter);
 app.use('/carts', cartsRouter);
 app.use('/addresses', addressesRouter);
 app.use('/transactions', transactionsRouter);
+app.use('/stockOpname', stockOpnameRouter)
 app.use('/rajaongkir', rajaOngkirRouter);
 
 app.use(express.urlencoded({ extended: false }));

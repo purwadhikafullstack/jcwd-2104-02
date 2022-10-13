@@ -23,7 +23,7 @@ import theme from '../../components/theme';
 import { LockIcon, AddIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import AddAddress from '../../components/AddAddress';
 import EditAddress from '../../components/EditAddress';
-import DeleteAddress from '../../components/deleteAddress';
+import DeleteAddress from '../../components/DeleteAddress';
 
 function Profile(props) {
   const [user, setUser] = useState(props.user);

@@ -9,7 +9,7 @@ const {
   categories,
   categories_list,
   product_details,
-  stock_opname,
+  stock_opnames,
 } = require('../../../models');
 require('dotenv').config();
 
@@ -17,7 +17,7 @@ async function updateProductController(req, res, next) {
   try {
     const { productInputs, currentProduct } = req.body;
 
-    const {API_URL} =  process.env
+    const { API_URL } = process.env;
 
     const { product_id } = req.params;
 
@@ -29,7 +29,7 @@ async function updateProductController(req, res, next) {
     const resUpdateProduct = await resFindProduct.update({
       productName: productInputs.productName,
       productPrice: productInputs.productPrice,
-      productImage: `${API_URL}/public/productImages/${product_id}.${extName[1]}`,
+      productImage: `/public/productImages/${product_id}.${extName[1]}`,
       description: productInputs.description,
       defaultQuantity: productInputs.defaultQuantity,
       productStock: productInputs.productStock,
@@ -46,16 +46,6 @@ async function updateProductController(req, res, next) {
     const resDeleteProductDetails = await product_details.destroy({
       where: { product_id },
     });
-
-    // for (let i = 0; i < productInputs.productStock; i++) {
-    //   await product_details.create({
-    //     product_id: resUpdateProduct.dataValues.product_id,
-    //     quantity: productInputs.defaultQuantity,
-    //     current_quantity: productInputs.defaultQuantity,
-    //     isOpen: false,
-    //     isAvailable: true,
-    //   });
-    // }
 
     res.send({
       status: 'success',
@@ -90,8 +80,8 @@ const addProductStock = async (req, res, next) => {
       },
     );
 
-    const createHistoryProduct = await stock_opname.create(
-      { product_id, activity: 'tambah_stock', stock: productStock },
+    const createHistoryProduct = await stock_opnames.create(
+      { product_id, activity: 'tambah_stok', stock: productStock },
       {
         where: {
           product_id,
@@ -115,7 +105,7 @@ const updateAddedStock = async (req, res, next) => {
     const { product_id } = req.params;
     const { stock_opname_id } = req.params;
 
-    const getStockOpnameID = await stock_opname.findOne({
+    const getStockOpnameID = await stock_opnames.findOne({
       where: {
         stock_opname_id,
       },
@@ -148,7 +138,7 @@ const updateAddedStock = async (req, res, next) => {
       },
     );
 
-    const createHistoryProduct = await stock_opname.update(
+    const createHistoryProduct = await stock_opnames.update(
       { stock: productStock },
       {
         where: {

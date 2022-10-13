@@ -1,8 +1,16 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 
-const { CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, CLIENT_EMAIL,API_URL,
-    CLIENT_URL } = process.env;
+const {
+  CLIENT_ID,
+  CLIENT_SECRET,
+  REFRESH_TOKEN,
+  CLIENT_EMAIL,
+  API_URL,
+  CLIENT_URL,
+} = process.env;
+
+console.log({ API_URL });
 
 const courier = nodemailer.createTransport({
   service: 'gmail',

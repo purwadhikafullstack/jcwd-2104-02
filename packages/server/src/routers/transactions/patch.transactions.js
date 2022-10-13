@@ -5,6 +5,7 @@ const {
   carts,
   products,
   transaction_details,
+  stock_opnames
 } = require('../../../models');
 const moment = require('moment');
 const { auth } = require('../../helpers/auth');
@@ -51,7 +52,7 @@ const updatePaymentProof = async (req, res, next) => {
     const { filename } = req.file;
     const finalFileName = `/public/paymentProof/${filename}`;
 
-    console.log({ transaction_id });
+    // console.log({ transaction_id });
 
     const resUpdateAvatar = await transaction_details.update(
       {
@@ -139,12 +140,59 @@ const adminConfirmDeliver = async (req, res, next) => {
   try {
     const { transaction_id } = req.params;
 
+
+    const resFindTransaction = await transaction_details.findAll({
+      where: {transaction_id}, 
+      include: [
+        {
+          model: transactions,
+          attributes: [
+            'transaction_id',
+            'user_id',
+            'address_id',
+            'totalPrice',
+            'status',
+            'courier',
+            'deliveryCost',
+            'prescriptionImage'
+          ],
+        },
+        {
+          model: products,
+          attributes: [
+            'product_id',
+            'productName',
+            'productPrice',
+            'productImage',
+            'description',
+            'productStock',
+            'isPublic',
+            'packageType',
+            'servingType',
+          ],
+        },
+      ],
+    });
+
+
+    
+  resFindTransaction.map(async(data)=>{
+  await stock_opnames.create({
+        product_id: data.dataValues.product_id,
+        transaction_id: data.dataValues.transaction_id,
+        transaction_details_id: data.dataValues.transaction_details_id,
+        stock: data.dataValues.quantity,
+        activity: 'terjual',
+      });
+    })
+
     const resconfirmDeliver = await transactions.update(
       {
         status: 'delivering_order',
       },
       { where: { transaction_id } },
     );
+
     res.send({
       status: 'Success',
       message: 'Confirmation Success. Order is being delivered.',
@@ -179,6 +227,52 @@ const adminCancelOrder = async (req, res, next) => {
   }
 };
 
+const adminPaymentConfirm = async (req, res, next) => {
+  try {
+    const { transaction_id } = req.params;
+
+    const resconfirmDeliver = await transactions.update(
+      {
+        status: 'processing_order',
+      },
+      { where: { transaction_id } },
+    );
+    res.send({
+      status: 'Success',
+      message: 'Confirmation Success. Order is confirmed.',
+      data: {
+        resconfirmDeliver,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const adminCancelPayment = async (req, res, next) => {
+  try {
+    const { transaction_id } = req.params;
+
+    const resCancelOrder = await transactions.update(
+      {
+        status: 'awaiting_payment',
+      },
+      { where: { transaction_id } },
+    );
+    res.send({
+      status: 'Success',
+      message: 'Cancel Order Success.',
+      data: {
+        resCancelOrder,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
 router.patch('/patchTransaction', auth, patchTransaction);
 router.patch(
   '/paymentProof/:transaction_id',
@@ -190,5 +284,7 @@ router.patch('/cancelTransaction/:transaction_id', cancelTransaction);
 router.patch('/confirmTransaction/:transaction_id', confirmTransaction);
 router.patch('/adminConfirmDeliver/:transaction_id', adminConfirmDeliver);
 router.patch('/adminCancelOrder/:transaction_id', adminCancelOrder);
+router.patch('/adminPaymentConfirm/:transaction_id', adminPaymentConfirm);
+router.patch('/adminCancelPayment/:transaction_id', adminCancelPayment);
 
 module.exports = router;

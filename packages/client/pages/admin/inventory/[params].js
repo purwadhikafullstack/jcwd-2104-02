@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import AdminNavbar from '../../../components/AdminNavbar';
 import { useRouter } from 'next/router';
-import { Button, Input } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  HStack,
+  Text,
+  Input,
+  VStack,
+  useDisclosure,
+  useToast,
+} from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
@@ -10,6 +19,7 @@ import Link from 'next/link';
 import AddProductModal from '../../../components/AddProductModal';
 import AdminProductDetails from '../../../components/adminProductDetails';
 import EditProductModal from '../../../components/editProductModal';
+import AddCategoryModal from '../../../components/AddCategoryModal';
 import { getSession, useSession } from 'next-auth/react';
 import { api_origin } from '../../../constraint/index';
 
@@ -21,11 +31,12 @@ function Inventory(props) {
   const [showCategories, setShowCategories] = useState(false);
   const [productList, setProductList] = useState(props.products);
   const [currentPage, setCurrentPage] = useState(
-    splitParams[splitParams.length - 1],
+    parseInt(splitParams[splitParams.length - 1]),
   );
   const [searchKeyword, setSearchKeyword] = useState('');
   const [currentProduct, setCurrentProduct] = useState(props.products[0]);
   const [addProductButton, setAddProductButton] = useState(false);
+  const [addCategoryButton, setAddCategoryButton] = useState(false);
   const [openProductDetails, setOpenProductDetails] = useState(false);
   const [editProductButton, setEditProductButton] = useState(false);
 
@@ -114,6 +125,17 @@ function Inventory(props) {
               <p className="text-[1.1rem] font-[400]">
                 Stok {product.productStock}
               </p>
+              <Link href={`/admin/adminDetailProduct/${product.product_id}`}>
+                <Button
+                  width={125}
+                  bgColor="white"
+                  _hover="white"
+                  variant="solid"
+                  color="blue.400"
+                >
+                  Riwayat Produk
+                </Button>
+              </Link>
             </div>
 
             <div className="grow" />
@@ -180,6 +202,10 @@ function Inventory(props) {
           currentProduct={currentProduct}
           openProductDetails={openProductDetails}
           setOpenProductDetails={setOpenProductDetails}
+        />
+        <AddCategoryModal
+          addCategoryButton={addCategoryButton}
+          setAddCategoryButton={setAddCategoryButton}
         />
         <div className="h-[90%] w-[90%]">
           <div className="flex flex-col w-[100%] bg-[#F5F6F6] h-[100%]">
@@ -381,7 +407,9 @@ function Inventory(props) {
 
               <div className="flex">
                 <div
-                  onClick={() => {}}
+                  onClick={() => {
+                    setAddCategoryButton(true);
+                  }}
                   className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
                 >
                   + Tambah Kategori

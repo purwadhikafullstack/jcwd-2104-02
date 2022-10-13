@@ -12,8 +12,8 @@ import {
 } from '@chakra-ui/react';
 import { getSession } from 'next-auth/react';
 import axiosInstance from '../src/config/api';
-import { api_origin } from '../constraint/index';
 import { useRouter } from 'next/router';
+import { api_origin } from '../constraint/index';
 
 export default function Home(props) {
   const [hasMore, setHasMore] = useState();

@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       transaction_details.belongsTo(models.products, {
         foreignKey: 'product_id',
       });
+      transaction_details.hasMany(models.stock_opnames, {
+        foreignKey: 'transaction_details_id',
+      });
     }
   }
   transaction_details.init(

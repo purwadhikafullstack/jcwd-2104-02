@@ -8,9 +8,8 @@ export const TextField = ({ label, ...props }) => {
     <div className="mb-2">
       <label htmlFor={field.name}>{label}</label>
       <Input
-        className={`${
-          meta.touched && meta.error && 'is-invalid'
-        }`}
+        errorBorderColor="crimson"
+        className={`${meta.touched && meta.error && 'is-invalid'}`}
         {...field}
         {...props}
         autoComplete="off"

@@ -15,6 +15,10 @@ import {
   Link,
   Text,
   VStack,
+  InputGroup,
+  Spacer,
+  InputRightElement,
+  InputLeftAddon,
 } from '@chakra-ui/react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -22,10 +26,13 @@ import { TextField } from '../components/textfield';
 import '@fontsource/poppins';
 import theme from '../components/theme';
 import { useToast } from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 export default function Register() {
   const [disabled, setDisabled] = useState(false);
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const toast = useToast();
 
@@ -85,7 +92,16 @@ export default function Register() {
 
       // window.location.reload();
     } catch (error) {
-      if (error.response?.data) return alert(error.response.data.message);
+      if (error.response?.data) {
+        toast({
+          title: 'Error',
+          description: error.response.data.message,
+          position: 'top',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     }
   };
 
@@ -110,7 +126,7 @@ export default function Register() {
           setDisabled(true);
           setTimeout(() => {
             setDisabled(false);
-          }, 5000);
+          }, 3000);
         }}
       >
         {({ handleSubmit, errors, touched, values, setFieldValue }) => (
@@ -122,12 +138,20 @@ export default function Register() {
               }
               boxShadow={'2xl'}
             >
-              <Image
-                alt={'Register Image'}
-                objectFit={'cover'}
-                src={'login/orang.png'}
-                zIndex={'popover'}
-              />
+              <div className="w-[100%] flex items-center justify-center">
+                <Image
+                  alt={'Register Image'}
+                  objectFit="contain"
+                  src={'login/orang.svg'}
+                  zIndex={'popover'}
+                />
+                <Image
+                  className="absolute"
+                  alt={'Register Image'}
+                  objectFit="contain"
+                  src={'login/Buletan.svg'}
+                />
+              </div>
             </Flex>
             <Flex p={8} flex={1} align={'center'} justify={'center'}>
               <Stack spacing={4} w={'full'} maxW={'md'}>
@@ -158,29 +182,61 @@ export default function Register() {
                       {...field}
                       label="Phone Number"
                       name="phoneNumber"
-                      type="string"
+                      type="number"
                     />
                   )}
                 </Field>
                 <Field name="password">
                   {({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Password"
-                      name="password"
-                      type="password"
-                    />
+                    <InputGroup>
+                      <TextField
+                        {...field}
+                        label="Password"
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        w={'23.5vw'}
+                      />
+                      <InputRightElement>
+                        <Button
+                          alignSelf={'center'}
+                          variant={'ghost'}
+                          mt={'5vh'}
+                          onClick={() =>
+                            setShowPassword((showPassword) => !showPassword)
+                          }
+                        >
+                          {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
                   )}
                 </Field>
                 <br />
                 <Field name="confirmPassword">
                   {({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Confirm Password"
-                      name="confirmPassword"
-                      type="password"
-                    />
+                    <InputGroup>
+                      <TextField
+                        {...field}
+                        label="Confirm Password"
+                        name="confirmPassword"
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        w={'23.5vw'}
+                      />
+                      <InputRightElement>
+                        <Button
+                          alignSelf={'center'}
+                          variant={'ghost'}
+                          mt={'5vh'}
+                          onClick={() =>
+                            setShowConfirmPassword(
+                              (showConfirmPassword) => !showConfirmPassword,
+                            )
+                          }
+                        >
+                          {showConfirmPassword ? <ViewIcon /> : <ViewOffIcon />}
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
                   )}
                 </Field>
                 <Stack spacing={6}>

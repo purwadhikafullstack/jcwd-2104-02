@@ -9,7 +9,7 @@ const {
   categories,
   categories_list,
   product_details,
-  stock_opname,
+  stock_opnames,
 } = require('../../../models');
 
 async function deleteProductController(req, res, next) {
@@ -43,7 +43,7 @@ const deleteAddedStock = async (req, res, next) => {
     const { product_id } = req.params;
     const { stock_opname_id } = req.params;
 
-    const getStockOpnameID = await stock_opname.findOne({
+    const getStockOpnameID = await stock_opnames.findOne({
       where: {
         stock_opname_id,
       },
@@ -60,7 +60,7 @@ const deleteAddedStock = async (req, res, next) => {
     const remainingTotal =
       getProductStock['productStock'] - getStockOpnameID['stock'];
 
-    const createHistoryProduct = await stock_opname.destroy({
+    const createHistoryProduct = await stock_opnames.destroy({
       where: {
         stock_opname_id,
       },
@@ -74,7 +74,6 @@ const deleteAddedStock = async (req, res, next) => {
         },
       },
     );
-
     res.send({
       status: 'Success',
       message: 'Delete Added Product Stock Success',

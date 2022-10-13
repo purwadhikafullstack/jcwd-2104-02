@@ -70,13 +70,16 @@ function EditProductModal({
     setProductStock(currentProduct.productStock);
   }, [currentProduct]);
 
-  // console.log({ productInputs, currentProduct });
+  // console.log(productInputs);
 
   async function updateProductClick() {
     try {
       setLoading(true);
 
-      if (Object.values(productInputs).includes('' || undefined)) {
+      if (
+        Object.values(productInputs).includes('') ||
+        Object.values(productInputs).includes(undefined)
+      ) {
         alert('tolong isi semua');
         setLoading(false);
         return;
@@ -146,6 +149,8 @@ function EditProductModal({
     setProductInputs({ ...productInputs, [prop]: event.target.value });
   };
 
+  // console.log({ api_origin, newProductImage });
+
   return (
     <Modal
       isOpen={isOpen}
@@ -164,7 +169,7 @@ function EditProductModal({
                 unoptimized
                 style={{ borderRadius: '.3vw' }}
                 src={
-                  newProductImage.includes(api_origin)
+                  newProductImage.includes('localhost')
                     ? newProductImage
                     : api_origin + newProductImage
                 }

@@ -107,19 +107,20 @@ function Cart(props) {
     try {
       setCartsPrice(countTotalPrice());
       const session = await getSession();
-      const { user_token } = session.user;
+      const {user_id} = props;
+      const {user_token} = session.user;
       const config = {
-        headers: { Authorization: `Bearer ${user_token}` },
-      };
+        headers: {Authorization: `Bearer ${user_token}`}
+      }
       const deliveryCost = selectedDeliveryCost.split(',');
-      const getDeliveryCost = parseInt(deliveryCost[1]);
+  const getDeliveryCost = parseInt(deliveryCost[1])
+  console.log(getDeliveryCost);
       const body = {
         totalPrice: countTotalPrice(),
         address_id: selectAddress.address_id,
         courier: selectedCourier,
-        deliveryCost: getDeliveryCost,
+        deliveryCost: getDeliveryCost
       };
-
       const res = await axiosInstance.post(
         `/transactions/createTransaction/`,
         body,
@@ -144,7 +145,13 @@ function Cart(props) {
         isClosable: true,
       });
     }
-  };
+  }
+
+  // const total = countTotalPrice();
+  // const PPN = subTotal * 0.11;
+  // const total = subTotal + PPN;
+
+  // console.log(`TOTALNYAAAAAAAAAA BOSQQQQQ ${subTotal}`);
 
   function mappedProducts() {
     return carts.map((cart, index) => {
