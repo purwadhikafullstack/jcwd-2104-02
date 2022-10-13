@@ -119,6 +119,10 @@ const postNewConvertedProduct = async (req, res, next) => {
             { transaction: t },
           );
 
+          await resProduct.update({
+            productStock: resProduct.productStock - 1,
+          });
+
           if (
             kuantitas > newDetail.current_quantity ||
             kuantitas == newDetail.current_quantity

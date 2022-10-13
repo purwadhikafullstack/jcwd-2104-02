@@ -20,11 +20,13 @@ function notFound() {
         <p className="text-[3rem]">-whoops</p>
         <p className="text-[3rem]">it looks like you&apos;re lost</p>
         <Button
+          fontSize={'2xl'}
+          marginTop={20}
           onClick={() => {
             router.replace('/');
           }}
           variant={'link'}
-          colorScheme="whiteAlpha"
+          colorScheme="red"
         >
           Back to Home
         </Button>
