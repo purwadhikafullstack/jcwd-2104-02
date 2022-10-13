@@ -73,6 +73,7 @@ function handleImageChange(event) {
           body,
           );
 
+          console.log(resAddCategoryImage)
           alert(resAddCategory.data.message)
       
     } catch (error) {

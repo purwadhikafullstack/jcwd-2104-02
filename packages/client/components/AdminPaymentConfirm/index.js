@@ -5,12 +5,14 @@ import {
   Text,
   VStack,
   useDisclosure,
+  useToast
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import { api_origin } from '../../constraint';
 import TransactionDetails from '../AdminDetailTrans';
 import AdminPaymentDetails from '../AdminPaymentDetails';
 import { useState, useEffect } from 'react';
+import axiosInstance from '../../src/config/api';
 
 export default function AdminPaymentConfirm(props) {
   const {
@@ -23,13 +25,58 @@ export default function AdminPaymentConfirm(props) {
     courier,
     deliveryCost,
     createdAt,
-
+    fetchTransactions,
   } = props;
-  console.log(paymentProof)
+
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalDetails, setModalDetails] = useState(false)
 
   const rawStatus = status.split('_');
+
+
+
+  const confirmPayment = async () => {
+    try {
+      const res = await axiosInstance.patch(
+        `/transactions/adminPaymentConfirm/${trans_id}`,
+      );
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      fetchTransactions()
+    } catch (error) {
+      console.log({ Error });
+      alert(error.response?.data.message);
+    }
+  };
+
+  const cancelPayment = async () => {
+    try {
+      const res = await axiosInstance.patch(
+        `/transactions/adminCancelPayment/${trans_id}`,
+      );
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      fetchTransactions()
+    } catch (error) {
+      console.log({ Error });
+      alert(error.response?.data.message);
+    }
+  };
+
+
+
+
   return (
     <Box>
       <Text fontWeight={600} marginBottom={1} marginLeft={'81'}>
@@ -65,16 +112,16 @@ export default function AdminPaymentConfirm(props) {
             paddingRight={95}
             fontSize={13}
             fontWeight={500}
-            onClick={()=>{
-                setModalDetails(true)
+            onClick={() => {
+              setModalDetails(true);
             }}
           >
             Detail Transaksi
             <TransactionDetails
               isOpen={modalDetails}
-              onClose={()=>{
-                setModalDetails(false)
-            }}
+              onClose={() => {
+                setModalDetails(false);
+              }}
               key={trans_id}
               productName={productName}
               productImage={productImage}
@@ -124,10 +171,17 @@ export default function AdminPaymentConfirm(props) {
             colorScheme="green"
             width={180}
             fontSize={14}
-          >
+            onClick={confirmPayment}
+            >
             Konfirmasi Pesanan
           </Button>
-          <Button variant="outline" colorScheme="red" width={180} fontSize={14}>
+          <Button
+            variant="outline"
+            colorScheme="red"
+            width={180}
+            fontSize={14}
+            onClick={cancelPayment}
+          >
             Batalkan Pesanan
           </Button>
         </VStack>

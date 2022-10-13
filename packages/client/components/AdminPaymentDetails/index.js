@@ -31,16 +31,16 @@ function AdminPaymentDetails(props) {
         maxWidth={480}
       >
         <ModalHeader fontWeight={600} fontSize={20}>
-          Detail Transaksi
+          Bukti Pembayaran
         </ModalHeader>
         <ModalCloseButton margin={5} />
         <ModalBody>
-          <VStack align="start" fontWeight={400} fontSize={15}>
+          <VStack fontWeight={400} fontSize={15} paddingY={5}>
             <Image
               unoptimized
               alt="resep-logo"
-              width={100}
-              height={100}
+              width={300}
+              height={400}
               src={paymentProof}
             />
           </VStack>

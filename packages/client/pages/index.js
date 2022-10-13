@@ -12,6 +12,7 @@ import {
 import { getSession } from 'next-auth/react';
 
 export default function Home(props) {
+  console.log(props)
   const [session, setSession] = useState(props.session);
   const categoriesTestArray = [
     {
@@ -198,6 +199,7 @@ export default function Home(props) {
       );
     });
   }
+
 
   return (
     <div className="bg-white w-[100%] h-[100vh] relative z-[1] desktop:scrollbar">

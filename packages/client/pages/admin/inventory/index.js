@@ -11,7 +11,6 @@ function Index() {
 }
 
 
-
 export async function getServerSideProps(context) {
   try {
     const session = await getSession({ req: context.req });
@@ -26,3 +25,5 @@ export async function getServerSideProps(context) {
     return { props: { error: error.message } };
   }
 }
+
+  export default Index

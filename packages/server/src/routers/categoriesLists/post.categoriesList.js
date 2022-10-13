@@ -23,7 +23,7 @@ const postNewCategories = async (req,res,next) => {
         })
         
         const test = await newCategories.update({
-          categoryImage: `public/categoriesImage/${
+          categoryImage: `http://localhost:8000/public/categoriesImage/${
             newCategories.dataValues.category_lists_id
           }.${imageExtNameSplit[imageExtNameSplit.length - 1]}`,
         });

@@ -33,6 +33,8 @@ function Transaksi(props) {
   const [formState, setFormState] = useState({ InvoiceID: '' });
 
   const router = useRouter();
+  const session = useSession()
+
 
   if (session.data) {
     if (!session.data.user.user.isAdmin) {
@@ -154,6 +156,7 @@ function Transaksi(props) {
            deliveryCost={transaction.deliveryCost}
            createdAt={transaction.createdAt}
            transac={transac}
+           fetchTransactions={fetchTransactions}
            props={props}
          />
        );

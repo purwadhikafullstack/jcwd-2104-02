@@ -7,6 +7,7 @@ const { createToken, verifyToken } = require('../../lib/token');
 const { users } = require('../../../models');
 const { sendMail, sendResetPasswordMail } = require('../../lib/nodemailer');
 const { Op } = require('sequelize');
+const { NUMBER } = require('sequelize');
 
 const registerUserController = async (req, res, next) => {
   try {
@@ -39,6 +40,7 @@ const registerUserController = async (req, res, next) => {
     const checkedUser = await users.findOne({ where: { phoneNumber } });
     if (checkedUser) {
       if (checkedUser.phoneNumber == phoneNumber) {
+        console.log(checkedUser.phoneNumber[0]);
         throw {
           code: 400,
           message: 'Phone Number already exist',
@@ -57,9 +59,9 @@ const registerUserController = async (req, res, next) => {
       password: encryptedPassword,
       phoneNumber: `${phoneNumber}`,
     });
-    
+
     const userId = newUser.dataValues.user_id;
-    
+
     const token = createToken({ user_id: newUser.dataValues.user_id });
 
     await users.update({ user_token: token }, { where: { user_id: userId } });
@@ -81,11 +83,11 @@ const registerUserController = async (req, res, next) => {
 async function sendResetPasswordMailController(req, res, next) {
   try {
     const { email } = req.body;
-    
+
     const token = createToken({ email });
 
     sendResetPasswordMail({ email, token });
-    
+
     res.send({
       status: 'success',
       token,
@@ -95,36 +97,12 @@ async function sendResetPasswordMailController(req, res, next) {
   }
 }
 
-// const resendEmailVerification = async (req, res, next) => {
-  //   try {
-    //     const { email, userId } = req.body;
-    
-    //     const token = createToken({ userId, email });
-    
-    //     await users.update({ user_token: token }, { where: { user_id: userId } });
-    
-    //   await sendMail({ email, token });
-    
-    //   res.send({
-//     status: 'success',
-//     message: 'success resend verification',
-//     data: {
-//       result: updateToken,
-//     },
-//   });
+async function resetPassword(req, res, next) {
+  try {
+    const { token } = req.params;
+    const verifiedToken = verifyToken(token);
 
-
-// } catch (error) {
-  //   next(error)
-  // }
-  // }
-  
-  async function resetPassword(req, res, next) {
-    try {
-      const { token } = req.params;
-      const verifiedToken = verifyToken(token);
-      
-const { email } = verifiedToken;
+    const { email } = verifiedToken;
 
     const hashedPassword = hash(req.body.newPassword);
 
@@ -150,7 +128,7 @@ const loginUser = async (req, res, next) => {
     const resFindUser = await users.findOne({
       where: { email },
     });
-    
+
     if (resFindUser.dataValues.isAdmin) {
       const { email, password } = req.body;
 
@@ -190,7 +168,7 @@ const loginUser = async (req, res, next) => {
         },
       });
     }
-    
+
     if (resFindUser) {
       const user = resFindUser.dataValues;
 
@@ -206,7 +184,7 @@ const loginUser = async (req, res, next) => {
         user_id: user.user_id,
         name: user.name,
       });
-      
+
       res.send({
         status: 'success',
         message: 'login success',
@@ -224,17 +202,39 @@ const loginUser = async (req, res, next) => {
         errorType: 'Incorrect Login',
       };
     }
-    
-  
   } catch (error) {
     next(error);
   }
 };
 
+const resendEmailVerification = async (req, res, next) => {
+  try {
+    const { email, user_id } = req.body;
+
+    const token = createToken({ user_id });
+
+    const updateToken = await users.update(
+      { user_token: token },
+      { where: { user_id } },
+    );
+
+    await sendMail({ email, token });
+
+    res.send({
+      status: 'success',
+      message: 'success resend verification',
+      data: {
+        result: updateToken,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 router.post('/sendResetPasswordMail', sendResetPasswordMailController);
 router.post('/resetPassword/:token', resetPassword);
-// router.post('/resendVerif', resendEmailVerification);
+router.post('/resendVerif', resendEmailVerification);
 router.post('/register', registerUserController);
 router.post('/login', loginUser);
 

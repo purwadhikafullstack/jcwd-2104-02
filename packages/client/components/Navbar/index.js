@@ -1,42 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Button } from '@chakra-ui/react';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  Text,
+  VStack,
+  HStack,
+  useToast,
+  Button,
+  Flex,
+  Box,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverCloseButton,
+  PopoverArrow,
+} from '@chakra-ui/react';
+import axiosInstance from '../../src/config/api';
 import Link from 'next/link';
 import { getSession, signOut } from 'next-auth/react';
 
 function Navbar() {
   const [session, setSession] = useState();
   const [userId, setUserId] = useState('');
+
+  const initialFocusRef = React.useRef();
+
   useEffect(() => {
     getSessionAsync();
   }, []);
 
-  // console.log({ session });
+  const resendVerificationHandler = async () => {
+    const body = {
+      email: session.user.user.email,
+      user_id: session.user.user.user_id,
+    };
+    console.log(body);
+    await axiosInstance.post('/users/resendVerif', body);
+    alert('Success sending email');
+  };
 
   async function getSessionAsync() {
     const session = await getSession();
 
     if (session) {
       const { user_id } = session.user.user;
-      // console.log(first);
       setUserId(user_id);
     }
 
     setSession(session);
-    // const { user_id } = session.user;
-    // setUserId(user_id);
-  }
-  // console.log({ session });
 
-  async function onLogoutClick() {
-    try {
-      signOut();
-    } catch (error) {
-      console.log({ error });
+    async function onLogoutClick() {
+      try {
+        signOut();
+      } catch (error) {
+        console.log({ error });
+      }
     }
   }
 
-  // console.log(`user id = ${userId}`);
+  // console.log(session.user.user.isVerified);
 
   return (
     <div className="h-[100px] flex items-end desktop:h-[72px] shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]">
@@ -61,7 +89,7 @@ function Navbar() {
                 Toko Obat
               </p>
             </Link>
-            <Link href={`/transaction/${userId}`}> 
+            <Link href={`/transaction/${userId}`}>
               <p className="duration-300 ease-in-out bg-white text-[1vw] font-[500] hover:cursor-pointer hover:shadow-[0px_5px_0px_-2px_rgba(0,141,235,1)]">
                 Riwayat
               </p>
@@ -69,37 +97,58 @@ function Navbar() {
           </div>
         </div>
         <div className="grow" />
-        <div className="flex mr-[7vw] h-[70%] items-center w-[25vw] desktop:w-[10vw]">
-          <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
-            <Image
-              src="/landingpage/Bell.svg"
-              alt="bell-logo"
-              layout="responsive"
-              width={16.8}
-              height={19.2}
-            />
-          </div>
-          <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
-            <Link href={`/cart/${userId}`}>
-              <Image
-                src="/landingpage/Cart.svg"
-                alt="cart-logo"
-                layout="responsive"
-                width={19.2}
-                height={20.4}
-              />
-            </Link>
-          </div>
-          <div className="desktop:hidden w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
-            <Image
-              src="/landingpage/Menu.svg"
-              alt="menu-logo"
-              layout="responsive"
-              width={18}
-              height={12}
-            />
-          </div>
-          {session ? (
+        <div className="flex mr-[8vw] h-[70%] items-center justify-end w-[20vw]">
+          {!session?.user.user.isVerified && session ? (
+            <Popover
+              initialFocusRef={initialFocusRef}
+              placement="bottom"
+              closeOnBlur={false}
+            >
+              <PopoverTrigger>
+                <Button color={'red.400'} variant={'ghost'}>
+                  Unverified Account
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent w={'11vw'} h={'7.5vh'}>
+                <PopoverCloseButton />
+                <PopoverArrow />
+                <PopoverHeader
+                  pt={4}
+                  fontWeight="bold"
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  border="0"
+                >
+                  <Button
+                    colorScheme={'linkedin'}
+                    variant={'solid'}
+                    onClick={resendVerificationHandler}
+                  >
+                    Resend Verification
+                  </Button>
+                </PopoverHeader>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            ''
+          )}
+          {session && session.user.user.isVerified ? (
+            <div className="w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer  ml-[4.5vw] desktop:ml-[2vw]">
+              <Link href={`/cart/${userId}`}>
+                <Image
+                  src="/landingpage/Cart.svg"
+                  alt="cart-logo"
+                  layout="responsive"
+                  width={19.2}
+                  height={20.4}
+                />
+              </Link>
+            </div>
+          ) : (
+            ''
+          )}
+          {session && session.user.user.isVerified ? (
             <div className="hidden desktop:inline w-[3.5vw] desktop:w-[1.2vw] hover:cursor-pointer ml-[4.5vw] desktop:ml-[2vw]">
               <Link href="/profile">
                 <Image

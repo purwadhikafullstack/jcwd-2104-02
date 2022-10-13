@@ -2,7 +2,16 @@ import React, { useEffect, useState } from 'react';
 import AdminNavbar from '../../../components/AdminNavbar';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Button, Input, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  HStack,
+  Text,
+  Input,
+  VStack,
+  useDisclosure,
+  useToast,
+} from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
@@ -14,6 +23,7 @@ import EditProductModal from '../../../components/editProductModal';
 import AddCategoryModal from '../../../components/AddCategoryModal';
 
 function Inventory(props) {
+  
   const router = useRouter();
   const [selected, setSelected] = useState('');
   const [showCategories, setShowCategories] = useState(false);
@@ -39,6 +49,7 @@ function Inventory(props) {
       router.replace('/');
     } 
   }
+
 
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);
@@ -112,10 +123,16 @@ function Inventory(props) {
               <p className="text-[1.1rem] font-[400]">
                 Stok {product.productStock}
               </p>
-              <Link href={`/`}>
-                <p className="text-[0.9rem] font-[500] text-cyan-500">
+              <Link href={`/admin/adminDetailProduct/${product.product_id}`}>
+                <Button
+                width={125}
+                  bgColor="white"
+                  _hover="white"
+                  variant="solid"
+                  color="blue.400"
+                >
                   Riwayat Produk
-                </p>
+                </Button>
               </Link>
             </div>
 
@@ -444,9 +461,6 @@ export async function getServerSideProps(context) {
       );
     }
 
-
-    // console.log(context.params);
-    // console.log({ resGetProducts });
 
     return {
       props: {

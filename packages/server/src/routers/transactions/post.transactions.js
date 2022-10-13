@@ -91,6 +91,7 @@ const postTransaction = async (req, res, next) => {
         }
       });
     });
+    
     resFindCarts.forEach(async (data) => {
       const updateProduct = await products.findOne({
         where: { product_id: data.dataValues.product_id },

@@ -39,8 +39,9 @@ useEffect(() => {
   setSelected(params);
 });
 
-    function categoryMap() {
+  function categoryMap() {
       return categoryList?.map((category, index) => {
+        console.log(category)
         return (
           <div
             key={category.category_lists_id}
