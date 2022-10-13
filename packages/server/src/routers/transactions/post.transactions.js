@@ -32,8 +32,8 @@ const postTransaction = async (req, res, next) => {
     });
 
     const dueDate = moment(resCreateTransaction.dataValues.createdAt).add(
-      10,
-      'minutes',
+      1,
+      'days',
     );
 
     const productExist = await Promise.all(
@@ -83,7 +83,7 @@ const postTransaction = async (req, res, next) => {
         }
       });
     });
-    
+
     resFindCarts.forEach(async (data) => {
       const updateProduct = await products.findOne({
         where: { product_id: data.dataValues.product_id },
@@ -173,22 +173,6 @@ const getTransactionsByIndex = async (req, res, next) => {
             },
           ],
         });
-        // console.log("bangggg")
-        // const resFetchAddress = await addresses.findAll({
-        //   where: { address_id: resFetchTransactions[0].address_id },
-        //   attributes: [
-        //     `address_id`,
-        //     `user_id`,
-        //     `addressDetail`,
-        //     `recipient`,
-        //     `postalCode`,
-        //     `province_id`,
-        //     `province`,
-        //     `city_id`,
-        //     `city_name`,
-        //     `isDefault`,
-        //   ],
-        // });
 
         res.send({
           status: 'success',
@@ -225,23 +209,6 @@ const getTransactionsByIndex = async (req, res, next) => {
         },
       ],
     });
-    // console.log("bangggg")
-    // const resFetchAddress = await addresses.findAll({
-    //   where: { address_id: resFetchTransactions[0]?.address_id },
-    //   attributes: [
-    //     `address_id`,
-    //     `user_id`,
-    //     `addressDetail`,
-    //     `recipient`,
-    //     `postalCode`,
-    //     `province_id`,
-    //     `province`,
-    //     `city_id`,
-    //     `city_name`,
-    //     `isDefault`,
-    //   ],
-    // });
-
     res.send({
       status: 'success',
       message: 'Fetch Transaction Success',
@@ -301,8 +268,6 @@ const createUserPrescriptionImage = async (req, res, next) => {
     next(error);
   }
 };
-
-
 
 router.post('/createTransaction', auth, postTransaction);
 router.post('/getTransactionsByIndex/:user_id', getTransactionsByIndex);

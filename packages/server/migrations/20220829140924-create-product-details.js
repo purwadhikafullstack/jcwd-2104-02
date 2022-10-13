@@ -20,6 +20,9 @@ module.exports = {
       current_quantity: {
         type: Sequelize.INTEGER,
       },
+      default_quantity: {
+        type: Sequelize.INTEGER,
+      },
       isOpen: {
         type: Sequelize.BOOLEAN,
       },

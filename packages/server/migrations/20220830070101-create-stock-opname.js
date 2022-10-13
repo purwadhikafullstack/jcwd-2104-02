@@ -20,8 +20,8 @@ module.exports = {
       transaction_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'transactions',
-          key: 'transaction_id',
+          model: 'products',
+          key: 'product_id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
@@ -29,8 +29,8 @@ module.exports = {
       transaction_details_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'transaction_details',
-          key: 'transaction_details_id',
+          model: 'products',
+          key: 'product_id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',

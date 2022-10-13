@@ -11,6 +11,9 @@ module.exports = {
       prescriptionImage: {
         type: Sequelize.STRING(255),
       },
+      prescriptionImage: {
+        type: Sequelize.STRING,
+      },
       user_id: {
         type: Sequelize.INTEGER,
         references: {

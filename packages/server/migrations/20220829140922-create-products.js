@@ -30,11 +30,17 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: true,
       },
+      defaultQuantity: {
+        type: Sequelize.INTEGER,
+      },
       packageType: {
         type: Sequelize.STRING,
       },
       servingType: {
         type: Sequelize.STRING,
+      },
+      formula: {
+        type: Sequelize.JSON,
       },
       createdAt: {
         allowNull: false,

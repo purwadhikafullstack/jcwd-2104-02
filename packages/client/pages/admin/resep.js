@@ -20,6 +20,7 @@ function DaftarTransaksiRacikan(props) {
   const [selected, setSelected] = useState(0);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(3);
+  const [prods, setProds] = useState([]);
 
   const router = useRouter();
 
@@ -27,6 +28,7 @@ function DaftarTransaksiRacikan(props) {
 
   useEffect(() => {
     fetchTransactions();
+    fetchProducts();
   }, [selected, page]);
 
   const onPrevClick = () => {
@@ -35,6 +37,15 @@ function DaftarTransaksiRacikan(props) {
 
   const onNextClick = () => {
     setPage(page + 1);
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const res = await axiosInstance.get('products');
+      setProds(res.data.data.resGetAllProducts);
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   const fetchTransactions = async () => {
@@ -64,10 +75,12 @@ function DaftarTransaksiRacikan(props) {
           key={transaction.transaction_id}
           prescriptionImage={transaction.prescriptionImage}
           trans_id={transaction.transaction_id}
+          userId={transaction.user_id}
           deliveryCost={transaction.deliveryCost}
           createdAt={transaction.createdAt}
           transac={transac}
           props={props}
+          products={prods}
         />
       );
     });

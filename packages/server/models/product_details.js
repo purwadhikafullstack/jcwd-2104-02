@@ -33,6 +33,9 @@ module.exports = (sequelize, DataTypes) => {
       current_quantity: {
         type: DataTypes.INTEGER,
       },
+      default_quantity: {
+        type: DataTypes.INTEGER,
+      },
       isOpen: {
         type: DataTypes.BOOLEAN,
       },

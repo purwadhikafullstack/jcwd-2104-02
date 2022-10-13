@@ -9,6 +9,7 @@ const {
   categories,
   categories_list,
   product_details,
+  stock_opnames,
 } = require('../../../models');
 
 async function postNewProductController(req, res, next) {
@@ -75,11 +76,223 @@ async function postNewProductImageController(req, res, next) {
   }
 }
 
+const postNewConvertedProduct = async (req, res, next) => {
+  const t = await sequelize.transaction();
+  try {
+    const { productName, formula, amount } = req.body;
+    const checkProduct = await products.findOne({
+      where: { productName },
+    });
+
+    if (checkProduct)
+      throw {
+        code: 400,
+        message: 'Product Name exists',
+      };
+
+    let price = 0;
+
+    const getInitialStock = await Promise.all(
+      formula.map(async (data) => {
+        const resProduct = await products.findOne({
+          where: { productName: data.productName },
+        });
+
+        const kuantitas = data.quantity * amount;
+        console.log(
+          resProduct.productPrice,
+          resProduct.defaultQuantity,
+          data.default_quantity,
+        );
+        price +=
+          (resProduct.productPrice / resProduct.defaultQuantity) *
+          data.quantity;
+
+        const resDetail = await product_details.findOne({
+          where: { product_id: resProduct.product_id },
+        });
+
+        if (!resDetail) {
+          const newDetail = await product_details.create(
+            {
+              product_id: resProduct.product_id,
+              current_quantity: resProduct.defaultQuantity,
+              default_quantity: resProduct.defaultQuantity,
+            },
+            { transaction: t },
+          );
+
+          await resProduct.update(
+            {
+              productStock: resProduct.productStock - 1,
+            },
+            { transaction: t },
+          );
+
+          console.log({ newDetail, kuantitas });
+
+          if (
+            kuantitas > newDetail.current_quantity ||
+            kuantitas == newDetail.current_quantity
+          ) {
+            const sisa = kuantitas % newDetail.default_quantity;
+            const buka = Math.floor(kuantitas / newDetail.default_quantity);
+            const newQuantity = newDetail.default_quantity - sisa;
+
+            if (sisa == 0) {
+              const defaultUpdate = await newDetail.update(
+                {
+                  current_quantity: resProduct.defaultQuantity,
+                },
+                { transaction: t },
+              );
+            } else {
+              const updateQuantity = await newDetail.update(
+                {
+                  current_quantity: newQuantity,
+                },
+                { transaction: t },
+              );
+
+              console.log({ updateQuantity });
+            }
+
+            const newStock = resProduct.productStock - buka;
+
+            console.log('dwwadwd');
+
+            if (newStock < 0) {
+              console.log({ message: 'kurang' });
+              throw Error;
+            }
+
+            const updateStock = await resProduct.update(
+              {
+                productStock: newStock,
+              },
+              { transaction: t },
+            );
+            const createStockOpname = await stock_opnames.create(
+              {
+                stock: buka,
+                product_id: resProduct.product_id,
+                activity: 'unit_conversion',
+              },
+              {
+                transaction: t,
+              },
+            );
+          } else if (kuantitas < newDetail.current_quantity) {
+            const newQuantity = newDetail.current_quantity - kuantitas;
+            const updateQuantity = await newDetail.update(
+              {
+                current_quantity: newQuantity,
+              },
+              { transaction: t },
+            );
+          }
+          return newDetail;
+        } else {
+          if (
+            kuantitas > resDetail.current_quantity ||
+            kuantitas == resDetail.current_quantity
+          ) {
+            const sisaKurangCurrent = kuantitas - resDetail.current_quantity;
+            const sisa = sisaKurangCurrent % resDetail.default_quantity;
+            const buka = Math.floor(kuantitas / resDetail.default_quantity);
+            const newQuantity = resDetail.default_quantity - sisa;
+            if (sisa == 0) {
+              const updateQuantity = await resDetail.update(
+                {
+                  current_quantity: resDetail.default_quantity,
+                },
+                { transaction: t },
+              );
+            } else {
+              const updateQuantity = await resDetail.update(
+                {
+                  current_quantity: newQuantity,
+                },
+                { transaction: t },
+              );
+            }
+
+            const newStock = resProduct.productStock - buka;
+
+            console.log({ newStock, stock: resProduct.productStock, buka });
+
+            if (newStock < 0) {
+              console.log({ message: 'kurang' });
+              throw Error;
+            }
+
+            const updateStock = await resProduct.update(
+              {
+                productStock: newStock,
+              },
+              { transaction: t },
+            );
+            const createStockOpname = await stock_opnames.create(
+              {
+                stock: buka,
+                product_id: resProduct.product_id,
+                activity: 'unit_conversion',
+              },
+              {
+                transaction: t,
+              },
+            );
+          } else if (kuantitas < resDetail.current_quantity) {
+            const newQuantity = resDetail.current_quantity - kuantitas;
+            const updateQuantity = await resDetail.update(
+              {
+                current_quantity: newQuantity,
+              },
+              { transaction: t },
+            );
+          }
+          return data, resDetail;
+        }
+      }),
+    );
+    // console.log(price);
+
+    const newConcoction = await products.create({
+      productName: productName,
+      formula: formula,
+      productStock: amount,
+      defaultQuantity: 1,
+      isPublic: 0,
+      packageType: 'concoction',
+      servingType: 'concoction',
+      description: 'this is a concoction',
+      productImage: '/public/productImages/default-concoction.png',
+      productPrice: price * amount,
+    });
+
+    await t.commit();
+
+    console.log({ getInitialStock });
+
+    res.send({
+      status: 'success',
+      message: 'new concoction created',
+      data: {
+        newConcoction,
+      },
+    });
+  } catch (error) {
+    await t.rollback();
+    next(error);
+  }
+};
+
 router.post('/newProduct', postNewProductController);
 router.post(
   '/newProductImage/:product_filename',
   uploadProductImage.single('productImageFile'),
   postNewProductImageController,
 );
+router.post('/concoction', postNewConvertedProduct);
 
 module.exports = router;

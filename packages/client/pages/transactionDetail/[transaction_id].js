@@ -1,4 +1,14 @@
-import { Button, VStack, Link } from '@chakra-ui/react';
+import {
+  AddIcon,
+  Flex,
+  Box,
+  HStack,
+  Button,
+  ButtonGroup,
+  IconButton,
+  Input,
+  VStack,
+} from '@chakra-ui/react';
 import Navbar from '../../components/Navbar';
 import axiosInstance from '../../src/config/api';
 import React, { useState } from 'react';
@@ -144,6 +154,7 @@ function TransactionDetails(props) {
   const grandTotal = trans.totalPrice + trans.deliveryCost;
 
   const rawStatus = trans.status.split('_');
+  const rawStatusJoin = rawStatus.join(' ');
 
   return (
     <div className="w-[100vw] h-[100vh]">
@@ -183,41 +194,72 @@ function TransactionDetails(props) {
           <p className="mt-[5vh] ml-[10%] text-[1rem] font-[500]">
             Metode Pembayaran: Transfer Bank BCA
           </p>
-          <VStack align="start" marginTop={6} marginBottom={6} marginLeft={16}>
-            <Image src="/profile/line.png" width={430} height={2} />
-          </VStack>
-          <p className=" ml-[10%] text-[1rem] font-[500]">
-            Status Pembayaran: {rawStatus.join(' ')}
+          <p className="mt-[5vh] ml-[10%] text-[1rem] font-[500]">
+            Status Pembayaran: {rawStatusJoin}
           </p>
-          {trans.status == 'awaiting_payment' ? (
-            <VStack align="start">
-              <VStack marginBottom={3} marginTop={8} marginLeft={32}>
-                <input type={'file'} onChange={onFileChange} />
-              </VStack>
-              <VStack paddingLeft={28}>
-                <Button onClick={onSavePayment} colorScheme={'linkedin'}>
-                  Unggah Bukti Pembayaran
-                </Button>
-              </VStack>
-            </VStack>
-          ) : null}
-          <VStack align="start">
-            <VStack marginBottom={3} marginTop={8} marginLeft={32}>
+          {rawStatusJoin === 'awaiting payment' ? (
+            <div className="mt-[5vh] ml-[10%]">
+              {' '}
+              <input type={'file'} onChange={onFileChange} />
+            </div>
+          ) : (
+            <></>
+          )}
+          {rawStatusJoin === 'awaiting payment' ? (
+            <Button
+              variant={'outline'}
+              onClick={onSavePayment}
+              colorScheme={'linkedin'}
+              className="mt-[5vh] ml-[10%]"
+            >
+              Unggah Bukti Pembayaran
+            </Button>
+          ) : (
+            <></>
+          )}
+
+          <VStack className="mt-[5vh] mr-[50%]">
+            {rawStatusJoin === 'awaiting payment confirmation' ||
+            rawStatusJoin != 'delivering order' ? (
               <Button
-                variant={'outline'}
+                variant={'ghost'}
+                colorScheme={'green'}
+                onClick={onConfirmClick}
+                isDisabled
+              >
+                Konfirmasi Penerimaan
+              </Button>
+            ) : (
+              <Button
+                variant={'ghost'}
                 colorScheme={'green'}
                 onClick={onConfirmClick}
               >
                 Konfirmasi Penerimaan
               </Button>
+            )}
+            {rawStatusJoin === 'awaiting payment confirmation' ||
+            rawStatusJoin === 'delivering order' ||
+            rawStatusJoin === 'processing order' ||
+            rawStatusJoin === 'order confirmed' ||
+            rawStatusJoin === 'order cancelled' ? (
               <Button
-                variant={'outline'}
+                variant={'ghost'}
+                colorScheme={'red'}
+                onClick={onCancelClick}
+                isDisabled
+              >
+                Batalkan Pesanan
+              </Button>
+            ) : (
+              <Button
+                variant={'ghost'}
                 colorScheme={'red'}
                 onClick={onCancelClick}
               >
                 Batalkan Pesanan
               </Button>
-            </VStack>
+            )}
           </VStack>
         </div>
       </div>
