@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
+     * The models/index file will call this method automatically.
      */
     static associate(models) {
       stock_opnames.belongsTo(models.products, {
@@ -36,17 +36,23 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
-      stock: {
+      transaction_id: {
         type: DataTypes.INTEGER,
+        references: {
+          model: 'transactions',
+          key: 'transaction_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
-      activity: {
-        type: DataTypes.ENUM('terjual', 'tambah_stock', 'unit_conversion'),
-      },
-      stock: {
+      transaction_details_id: {
         type: DataTypes.INTEGER,
-      },
-      activity: {
-        type: DataTypes.ENUM('terjual', 'tambah_stok', 'unit_conversion'),
+        references: {
+          model: 'transaction_details',
+          key: 'transaction_details_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       stock: {
         type: DataTypes.INTEGER,

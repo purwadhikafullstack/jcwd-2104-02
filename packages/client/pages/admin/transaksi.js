@@ -148,6 +148,7 @@ function Transaksi(props) {
           key={transaction.transaction_id}
           productName={transaction.transaction_details[0].product.productName}
           productImage={transaction.transaction_details[0].product.productImage}
+          transaction_details={transaction.transaction_details}
           paymentProof={transaction.transaction_details[0].paymentProof}
           status={transaction.status}
           totalPrice={transaction.totalPrice}

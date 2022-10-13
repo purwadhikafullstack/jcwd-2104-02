@@ -358,7 +358,7 @@ export async function getServerSideProps(context) {
 
       const page = splitParams[1];
 
-      resGetProducts = await axiosInstance.get('products/', {
+      resGetProducts = await axiosInstance.get('products/all', {
         params: { page, limit: 10 },
       });
     } else if (context.params.params.includes('sort')) {

@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
       transactions.belongsTo(models.users, {
         foreignKey: 'user_id',
       });
-
       transactions.hasOne(models.addresses, {
         foreignKey: 'address_id',
       });
@@ -34,9 +33,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       prescriptionImage: {
         type: DataTypes.STRING(255),
-      },
-      prescriptionImage: {
-        type: DataTypes.STRING,
       },
       user_id: {
         type: DataTypes.INTEGER,

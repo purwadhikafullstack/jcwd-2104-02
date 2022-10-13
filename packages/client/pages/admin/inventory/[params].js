@@ -25,6 +25,7 @@ import { getSession, useSession } from 'next-auth/react';
 import { api_origin } from '../../../constraint/index';
 
 function Inventory(props) {
+  console.log({ props });
   const router = useRouter();
   const { params } = router.query;
   const splitParams = params.split('=');
@@ -479,7 +480,7 @@ export async function getServerSideProps(context) {
     if (context.params.params.includes('byId')) {
       const splitParams = context.params.params.split('=');
       const page = splitParams[1];
-      resGetProducts = await axiosInstance.get('products/', {
+      resGetProducts = await axiosInstance.get('products/all', {
         params: { page, limit: 3 },
       });
     } else if (context.params.params.includes('sort')) {

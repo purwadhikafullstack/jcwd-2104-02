@@ -93,6 +93,7 @@ function AddCategoryModal({ addCategoryButton, setAddCategoryButton }) {
         isClosable: true,
       });
       setLoading(false);
+      setAddCategoryButton(false);
     } catch (error) {
       setAddCategoryButton(false);
       setLoading(false);

@@ -16,6 +16,7 @@ import axiosInstance from '../../src/config/api';
 
 export default function AdminPaymentConfirm(props) {
   const {
+    key,
     trans_id,
     productName,
     totalPrice,
@@ -26,7 +27,9 @@ export default function AdminPaymentConfirm(props) {
     deliveryCost,
     createdAt,
     fetchTransactions,
+    transaction_details,
   } = props;
+  console.log(productImage);
 
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -117,7 +120,8 @@ export default function AdminPaymentConfirm(props) {
               onClose={() => {
                 setModalDetails(false);
               }}
-              key={trans_id}
+              key={key}
+              transaction_details={transaction_details}
               productName={productName}
               productImage={productImage}
               status={status}

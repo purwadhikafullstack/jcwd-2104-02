@@ -19,7 +19,6 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import ReactPaginate from 'react-paginate';
 import { api_origin } from '../../../constraint/index';
 
 function Category(props) {

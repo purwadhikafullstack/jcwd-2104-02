@@ -9,7 +9,7 @@ const {
   categories,
   categories_list,
   product_details,
-  stock_opname,
+  stock_opnames,
 } = require('../../../models');
 
 async function postNewProductController(req, res, next) {
@@ -76,7 +76,6 @@ async function postNewProductImageController(req, res, next) {
   }
 }
 
-
 const postNewConvertedProduct = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
@@ -100,7 +99,11 @@ const postNewConvertedProduct = async (req, res, next) => {
         });
 
         const kuantitas = data.quantity * amount;
-
+        console.log(
+          resProduct.productPrice,
+          resProduct.defaultQuantity,
+          data.default_quantity,
+        );
         price +=
           (resProduct.productPrice / resProduct.defaultQuantity) *
           data.quantity;
@@ -113,23 +116,28 @@ const postNewConvertedProduct = async (req, res, next) => {
           const newDetail = await product_details.create(
             {
               product_id: resProduct.product_id,
-              quantity: resProduct.defaultQuantity,
               current_quantity: resProduct.defaultQuantity,
+              default_quantity: resProduct.defaultQuantity,
             },
             { transaction: t },
           );
 
-          await resProduct.update({
-            productStock: resProduct.productStock - 1,
-          });
+          await resProduct.update(
+            {
+              productStock: resProduct.productStock - 1,
+            },
+            { transaction: t },
+          );
+
+          console.log({ newDetail, kuantitas });
 
           if (
             kuantitas > newDetail.current_quantity ||
             kuantitas == newDetail.current_quantity
           ) {
-            const sisa = kuantitas % newDetail.quantity;
-            const buka = Math.floor(kuantitas / newDetail.quantity);
-            const newQuantity = newDetail.quantity - sisa;
+            const sisa = kuantitas % newDetail.default_quantity;
+            const buka = Math.floor(kuantitas / newDetail.default_quantity);
+            const newQuantity = newDetail.default_quantity - sisa;
 
             if (sisa == 0) {
               const defaultUpdate = await newDetail.update(
@@ -145,11 +153,13 @@ const postNewConvertedProduct = async (req, res, next) => {
                 },
                 { transaction: t },
               );
+
+              console.log({ updateQuantity });
             }
 
             const newStock = resProduct.productStock - buka;
 
-            // console.log({ newStock, stock: resProduct.productStock, buka });
+            console.log('dwwadwd');
 
             if (newStock < 0) {
               console.log({ message: 'kurang' });
@@ -162,7 +172,7 @@ const postNewConvertedProduct = async (req, res, next) => {
               },
               { transaction: t },
             );
-            const createStockOpname = await stock_opname.create(
+            const createStockOpname = await stock_opnames.create(
               {
                 stock: buka,
                 product_id: resProduct.product_id,
@@ -188,13 +198,13 @@ const postNewConvertedProduct = async (req, res, next) => {
             kuantitas == resDetail.current_quantity
           ) {
             const sisaKurangCurrent = kuantitas - resDetail.current_quantity;
-            const sisa = sisaKurangCurrent % resDetail.quantity;
-            const buka = Math.floor(kuantitas / resDetail.quantity);
-            const newQuantity = resDetail.quantity - sisa;
+            const sisa = sisaKurangCurrent % resDetail.default_quantity;
+            const buka = Math.floor(kuantitas / resDetail.default_quantity);
+            const newQuantity = resDetail.default_quantity - sisa;
             if (sisa == 0) {
               const updateQuantity = await resDetail.update(
                 {
-                  current_quantity: resDetail.quantity,
+                  current_quantity: resDetail.default_quantity,
                 },
                 { transaction: t },
               );
@@ -222,7 +232,7 @@ const postNewConvertedProduct = async (req, res, next) => {
               },
               { transaction: t },
             );
-            const createStockOpname = await stock_opname.create(
+            const createStockOpname = await stock_opnames.create(
               {
                 stock: buka,
                 product_id: resProduct.product_id,
@@ -245,6 +255,7 @@ const postNewConvertedProduct = async (req, res, next) => {
         }
       }),
     );
+    // console.log(price);
 
     const newConcoction = await products.create({
       productName: productName,
@@ -276,8 +287,6 @@ const postNewConvertedProduct = async (req, res, next) => {
   }
 };
 
-router.post('/specifics/:specifics', getSpecificProductsController);
-router.post('/sort/:sortOrder', getAllProductsSortedController);
 router.post('/newProduct', postNewProductController);
 router.post(
   '/newProductImage/:product_filename',
