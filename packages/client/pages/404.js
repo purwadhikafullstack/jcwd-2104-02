@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-function notFound() {
+function NotFound() {
   const router = useRouter();
   return (
     <div className="flex flex-col w-[100vw] h-[100vh] items-center justify-center relative">
@@ -35,4 +35,4 @@ function notFound() {
   );
 }
 
-export default notFound;
+export default NotFound;
