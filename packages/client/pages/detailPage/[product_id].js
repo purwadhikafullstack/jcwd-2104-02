@@ -177,23 +177,19 @@ export async function getServerSideProps(context) {
     if (!session) return { redirect: { destination: '/login' } };
     const { user_token } = session.user;
     const { user_id } = session.user.user;
-    // console.log(session.user.user.user_id);
 
     const config = {
       headers: { Authorization: `Bearer ${user_token}` },
     };
     const { product_id } = context.params;
-    // console.log(product_id);
 
     const resGetProduct = await axiosInstance.get(
       `/products/byId/${product_id}`,
       config,
     );
-    // console.log(resGetProduct);
 
     if (!resGetProduct) return { redirect: { destination: '/' } };
 
-    // console.log(productDetail);
     return {
       props: {
         products: resGetProduct.data.data,

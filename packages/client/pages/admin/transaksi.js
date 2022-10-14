@@ -141,6 +141,7 @@ function Transaksi(props) {
       );
     });
   }
+
   function mappedTransactionsPayment() {
     return filteredTransactions?.map((transaction) => {
       return (
@@ -284,6 +285,7 @@ function Transaksi(props) {
                   src="/admin/Empty-Transaction.png"
                   width={250}
                   height={250}
+                  alt={''}
                 />
                 <Text paddingTop={6} fontSize={18}>
                   Tidak Ada Transaksi

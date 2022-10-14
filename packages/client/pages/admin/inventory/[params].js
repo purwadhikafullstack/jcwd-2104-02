@@ -25,7 +25,6 @@ import { getSession, useSession } from 'next-auth/react';
 import { api_origin } from '../../../constraint/index';
 
 function Inventory(props) {
-  console.log({ props });
   const router = useRouter();
   const { params } = router.query;
   const splitParams = params.split('=');
@@ -38,7 +37,6 @@ function Inventory(props) {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [currentProduct, setCurrentProduct] = useState(props.products[0]);
   const [addProductButton, setAddProductButton] = useState(false);
-  const [addCategoryButton, setAddCategoryButton] = useState(false);
   const [openProductDetails, setOpenProductDetails] = useState(false);
   const [editProductButton, setEditProductButton] = useState(false);
   const [productsAll, setProductsAll] = useState(props.productsAll);
@@ -49,8 +47,6 @@ function Inventory(props) {
     setProductsAll(props.productsAll);
     setSelected(params);
   });
-  // console.log(productsAll);
-  // console.log(addFormulaButton, addProductButton);
 
   const session = useSession();
 
@@ -59,17 +55,6 @@ function Inventory(props) {
       router.replace('/');
     }
   }
-
-  // const fetchProducts = async () => {
-  //   try {
-  //     console.log('jalan fetch product');
-  //     const res = await axiosInstance.get(`/products`);
-  //     console.log(res.data.data.resGetAllProducts);
-  //     // setProductsAll(res.data.data.resGetAllProducts);
-  //   } catch (error) {
-  //     alert(error.message);
-  //   }
-  // };
 
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);
@@ -225,10 +210,6 @@ function Inventory(props) {
           currentProduct={currentProduct}
           openProductDetails={openProductDetails}
           setOpenProductDetails={setOpenProductDetails}
-        />
-        <AddCategoryModal
-          addCategoryButton={addCategoryButton}
-          setAddCategoryButton={setAddCategoryButton}
         />
         <div className="h-[90%] w-[90%]">
           <div className="flex flex-col w-[100%] bg-[#F5F6F6] h-[100%]">
@@ -436,14 +417,6 @@ function Inventory(props) {
                   className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
                 >
                   + Tambah Obat Racikan
-                </div>
-                <div
-                  onClick={() => {
-                    setAddCategoryButton(true);
-                  }}
-                  className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
-                >
-                  + Tambah Kategori
                 </div>
 
                 <div

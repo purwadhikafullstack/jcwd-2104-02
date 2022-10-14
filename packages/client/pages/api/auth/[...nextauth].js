@@ -9,14 +9,11 @@ const credentialInstance = CredentialsProvider({
 
       const res = await axiosInstance.post('/users/login', { email, password });
 
-      // console.log({ res: res.data.data });
       const user = res.data.data.result;
-
-      // console.log({ user });
 
       return user;
     } catch (error) {
-      console.log(`yang ini boy ${error.response.data.message}`);
+      console.log(error.response.data.message);
       throw error.response.data;
     }
   },
@@ -31,7 +28,6 @@ export default NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.user = user;
-        // console.log(user);
       }
 
       return token;

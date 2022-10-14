@@ -349,8 +349,6 @@ export async function getServerSideProps(context) {
     const session = await getSession({ req: context.req });
     const resGetCategoriesLists = await axiosInstance.get('categories/getAll');
 
-    // console.log({session});
-
     let resGetProducts = '';
 
     if (context.params.params.includes('semuaObat')) {
@@ -385,9 +383,6 @@ export async function getServerSideProps(context) {
     const { user_id } = context.params;
 
     const res = await axiosInstance.get(`/users/${user_id}`);
-
-    // console.log(context.params);
-    // console.log({ resGetProducts });
 
     return {
       props: {

@@ -30,15 +30,16 @@ function DetailProduct(props) {
   const [modalEdit, setModalEdit] = useState(false);
   const [modalDelete, setModalDelete] = useState(false);
   const [selectedOpname, setSelectedOpname] = useState();
-  const [stockOpname, setStockOpname] = useState(props.stockOpname?.resGetStockOpname);
+  const [stockOpname, setStockOpname] = useState(
+    props.stockOpname?.resGetStockOpname,
+  );
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
 
-   useEffect(() => {
-     fetchStockOpname();
-   }, [startDate, endDate]);
-  
-  
+  useEffect(() => {
+    fetchStockOpname();
+  }, [startDate, endDate]);
+
   async function fetchStockOpname() {
     try {
       let paramsStartDate;
@@ -53,8 +54,6 @@ function DetailProduct(props) {
         paramsEndDate.setHours(endDate.getHours() + 7);
       }
 
-      console.log({ paramsStartDate, paramsEndDate });
-
       const resGetStockOpname = await axiosInstance.get(
         `/stockOpname/${product_id}`,
         {
@@ -65,11 +64,11 @@ function DetailProduct(props) {
     } catch (error) {
       console.log({ error });
     }
-  };
+  }
 
   function renderStockOpname() {
     let stockOpnames = [];
-if (stockOpname.length) {
+    if (stockOpname.length) {
       stockOpname.forEach((stockOp) => {
         stockOpnames.push({
           createdAt: stockOp.createdAt.slice(0, 10),
@@ -80,17 +79,17 @@ if (stockOpname.length) {
         });
       });
     }
-      stockOpnames.sort((a, b) => {
-        let x = a.createdAt;
-        let y = b.createdAt;
-        if (x < y) {
-          return asc ? -1 : 1;
-        } else if (x > y) {
-          return asc ? 1 : -1;
-        }
-      });
-      
-      return stockOpnames.map((data, index) => {
+    stockOpnames.sort((a, b) => {
+      let x = a.createdAt;
+      let y = b.createdAt;
+      if (x < y) {
+        return asc ? -1 : 1;
+      } else if (x > y) {
+        return asc ? 1 : -1;
+      }
+    });
+
+    return stockOpnames.map((data, index) => {
       let date = new Date().toJSON();
       return (
         <Tr key={data.product_id}>
@@ -221,7 +220,7 @@ if (stockOpname.length) {
             </HStack>
           </HStack>
         </Box>
-        <VStack className="overflow-auto scrollbar" paddingLeft={155} >
+        <VStack className="overflow-auto scrollbar" paddingLeft={155}>
           <Table
             size="lg"
             height={'10vh'}
@@ -267,7 +266,7 @@ export async function getServerSideProps(context) {
     const resGetStockOpname = await axiosInstance.get(
       `/stockOpname/${product_id}`,
     );
-    
+
     return {
       props: {
         product_id: product_id,

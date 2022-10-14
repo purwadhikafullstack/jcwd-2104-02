@@ -65,7 +65,6 @@ function TransactionDetails(props) {
         transStatus: 'awaiting_payment_confirmation',
         trans,
       };
-      console.log(bods);
 
       const config = {
         headers: { Authorization: `Bearer ${user_token}` },

@@ -27,7 +27,6 @@ function ResetPassword(props) {
         inputs,
       );
 
-      console.log({ resUpdatePassword });
       alert('Success');
       router.replace('/');
     } catch (error) {

@@ -39,14 +39,8 @@ function Transaction(props) {
   const fetchTransactions = async () => {
     try {
       const session = await getSession();
-      // const { user_id } = props;
-      // console.log(user_id)
-      // console.log(session.user.user.user_id)
       const { user_id } = session.user.user;
       const { user_token } = session.user;
-      // console.log(user_id)
-
-      // console.log({ user_token });
 
       const config = {
         params: { page, pageSize },
@@ -57,14 +51,11 @@ function Transaction(props) {
         `/transactions/getTransactionsByIndex/${user_id}/${selected}`,
         config,
       );
-      // console.log(res.data.data.resFetchTransactions);
       setTransac(res.data.data.resFetchTransactions);
-      // setProds(res.data.data.resFetchTransactions);
     } catch (error) {
       alert(error.message);
     }
   };
-  // console.log(prods)
 
   function mappedTransactions() {
     return transac?.map((transaction, index) => {
@@ -84,7 +75,6 @@ function Transaction(props) {
       );
     });
   }
-  // console.log(mappedTransactions())
 
   return (
     <div>
@@ -186,22 +176,15 @@ export async function getServerSideProps(context) {
     const session = await getSession({ req: context.req });
 
     if (!session) return { redirect: { destination: '/login' } };
-    // console.log(session.user)
     const { user_token } = session.user;
-
-    // console.log(user_id)
 
     const config = {
       headers: { Authorization: `Bearer ${user_token}` },
     };
     const { user_id } = context.params;
 
-    // const res = await axiosInstance.get(`/transactions/${user_id}`, config);
-    // console.log(res.data.data)
-
     return {
       props: {
-        // transactions: res.data.data,
         user_id,
         user_token,
       },
