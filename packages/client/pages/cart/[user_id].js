@@ -185,7 +185,7 @@ function Cart(props) {
         fontWeight={500}
         fontSize={15}
         justify="space-between"
-        minWidth={354}
+        minWidth={'219%'}
       >
         <HStack color="gray.600">
           <Text>Biaya Pengiriman :</Text>;
@@ -331,7 +331,7 @@ function Cart(props) {
                 <Text fontWeight={500} fontSize={15} color="gray.600">
                   Sub Total
                 </Text>
-                <HStack fontWeight={550} fontSize={15} paddingRight={'37%'}>
+                <HStack fontWeight={550} fontSize={15} paddingRight={''}>
                   <Text>Rp {countTotalPrice().toLocaleString('id')}</Text>
                 </HStack>
               </HStack>
@@ -339,26 +339,18 @@ function Cart(props) {
                 justifyContent="space-between"
                 marginTop={4}
                 marginBottom={2}
+                w={'100%'}
               >
-                <HStack>
+                <HStack w={'100%'}>
                   <Text>{selectedDeliveryCost && renderDeliveryCost()}</Text>
                 </HStack>
               </HStack>
               <Image src="/profile/line.png" width={400} height={1.5} />
-              <HStack
-                justifyContent="space-between"
-                marginTop={4}
-                paddingRight={'35%'}
-              >
+              <HStack justifyContent="space-between" marginTop={4}>
                 <Text fontWeight={600} fontSize={15} color="gray.600">
                   Total
                 </Text>
-                <Text
-                  fontWeight={550}
-                  fontSize={15}
-                  color="#004776"
-                  paddingRight={3}
-                >
+                <Text fontWeight={550} fontSize={15} color="#004776">
                   {selectedDeliveryCost && renderTotalPrice()}
                 </Text>
               </HStack>
