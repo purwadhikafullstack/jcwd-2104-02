@@ -65,7 +65,6 @@ function AddFormulaModal({
 
   function checkSameProduct() {
     tempFormula.forEach((product) => {
-      console.log(option == product.productName);
       if (option == product.productName) {
         setDisabled(true);
       } else {
@@ -91,9 +90,7 @@ function AddFormulaModal({
   async function onSaveClick() {
     try {
       setLoading(true);
-      console.log(name, tempFormula);
       const body = { productName: name, formula: tempFormula, amount: amount };
-      console.log(body);
       const res = await axiosInstance.post('/products/concoction', body);
       if (res) {
         toast({
@@ -154,8 +151,6 @@ function AddFormulaModal({
       );
     });
   }
-  // console.log( name, option, quantity);
-  console.log(tempFormula, name);
 
   function productNameMap() {
     return allProducts.map((product) => {

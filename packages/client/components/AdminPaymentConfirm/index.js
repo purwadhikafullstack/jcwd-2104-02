@@ -29,7 +29,6 @@ export default function AdminPaymentConfirm(props) {
     fetchTransactions,
     transaction_details,
   } = props;
-  console.log(productImage);
 
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();

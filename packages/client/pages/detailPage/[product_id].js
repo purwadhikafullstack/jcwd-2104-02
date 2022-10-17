@@ -25,7 +25,6 @@ function DetailPage(props) {
   const [quantity, setQuantity] = useState(1);
 
   const toast = useToast();
-  // console.log(quantity);
 
   const onAddClick = async () => {
     setLoading(true);

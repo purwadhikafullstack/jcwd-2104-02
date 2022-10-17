@@ -436,7 +436,8 @@ function UploadPrescriptionImage(props) {
           />
           <VStack>
             <Text marginTop={2} fontSize={17} fontWeight={500}>
-              Resep sedang divalidasi
+              Resep sedang divalidasi. Resep yang berhasil divalidasi akan masuk
+              ke riwayat pesanan.
             </Text>
           </VStack>
         </VStack>

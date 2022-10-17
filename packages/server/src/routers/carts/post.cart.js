@@ -8,8 +8,6 @@ const addToCartController = async (req, res, next) => {
   try {
     const { quantity, product_id, user_id } = req.body;
 
-    // console.log({ quantity });
-
     const resFindProduct = await carts.findAll({
       where: {
         [Op.and]: [{ product_id }, { user_id }],
@@ -41,7 +39,6 @@ const addToCartController = async (req, res, next) => {
 
       const resUpdateQuantity = await resFindProduct[0].save();
 
-      // console.log({ resUpdateQuantity });
       res.send({
         status: 'success',
         message: 'cart updated!',

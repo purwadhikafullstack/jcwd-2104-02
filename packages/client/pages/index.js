@@ -173,7 +173,7 @@ export default function Home(props) {
           />
           <div
             onClick={() => {
-              router.replace(`/productCatalog/${searchQuery}=1`);
+              router.replace(`/productCatalog/${searchQuery}=key=1`);
             }}
             className="bg-[#008DEB] flex items-center justify-center w-[20%] hover:cursor-pointer"
           >

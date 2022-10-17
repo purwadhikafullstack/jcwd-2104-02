@@ -44,7 +44,7 @@ export default function Register() {
 
   const validate = Yup.object({
     fullName: Yup.string()
-      .max(15, 'Must be 15 characters or less')
+      .max(30, 'Must be 30 characters or less')
       .required('Full Name is Required')
       .matches(/^[A-Za-z ]*$/, 'Please enter valid name'),
     email: Yup.string().email('Email is invalid').required('Email is Required'),
@@ -200,7 +200,8 @@ export default function Register() {
                         <Button
                           alignSelf={'center'}
                           variant={'ghost'}
-                          mt={'5vh'}
+                          mt={'120%'}
+                          mr={'-10%'}
                           onClick={() =>
                             setShowPassword((showPassword) => !showPassword)
                           }
@@ -226,7 +227,8 @@ export default function Register() {
                         <Button
                           alignSelf={'center'}
                           variant={'ghost'}
-                          mt={'5vh'}
+                          mt={'120%'}
+                          mr={'-10%'}
                           onClick={() =>
                             setShowConfirmPassword(
                               (showConfirmPassword) => !showConfirmPassword,

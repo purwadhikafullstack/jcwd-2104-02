@@ -39,7 +39,7 @@ function AddProductModal({
     defaultQuantity: '',
     servingType: '',
   });
-  
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -97,7 +97,6 @@ function AddProductModal({
       );
 
       if (resAddProduct) {
-        console.log({ resAddProduct, resAddProductImage });
         setLoading(false);
         setAddProductButton(false);
       }

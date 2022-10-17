@@ -64,13 +64,9 @@ function EditProductModal({
     setNewProductImage(currentProduct.productImage);
   }, [editProductButton, productStock]);
 
-  // console.log({ currentProduct });
-
   useEffect(() => {
     setProductStock(currentProduct.productStock);
   }, [currentProduct]);
-
-  // console.log(productInputs);
 
   async function updateProductClick() {
     try {
@@ -101,8 +97,6 @@ function EditProductModal({
         },
       );
 
-      // console.log({ resAddProduct });
-
       const extName = productInputs.productImage.split('.');
 
       const resAddProductImage = await axiosInstance.post(
@@ -112,7 +106,6 @@ function EditProductModal({
       );
 
       if (resAddProduct) {
-        console.log({ resAddProduct, extName, resAddProductImage });
         setLoading(false);
         setEditProductButton(false);
       }
@@ -148,8 +141,6 @@ function EditProductModal({
   const handleChange = (prop) => (event) => {
     setProductInputs({ ...productInputs, [prop]: event.target.value });
   };
-
-  // console.log({ api_origin, newProductImage });
 
   return (
     <Modal

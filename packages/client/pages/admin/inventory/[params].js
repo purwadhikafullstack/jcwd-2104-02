@@ -62,16 +62,20 @@ function Inventory(props) {
 
   function categoriesMap() {
     return props.categoriesLists.categories.map((category) => {
+      const selectedCategoryListsId = selected.split('=')[0];
+
       return (
         <div
           key={category.category_lists_id}
           onClick={() => {
-            router.replace(`/admin/inventory/${category.category}=1`);
+            router.replace(
+              `/admin/inventory/${category.category_lists_id}=category=1`,
+            );
             setCurrentPage(1);
             setSearchKeyword('');
           }}
           className={
-            selected.includes(category.category)
+            selectedCategoryListsId == category.category_lists_id
               ? 'h-[7vh] pl-[1vw] flex items-center font-[400] text-[1.1rem] text-white cursor-pointer bg-[#008DEB]'
               : 'h-[7vh] pl-[1vw] flex items-center font-[400] text-[1.1rem] border-transparent hover:text-white hover:cursor-pointer hover:bg-[#008DEB] bg-white'
           }
@@ -175,9 +179,7 @@ function Inventory(props) {
 
   async function deleteProduct(product_id) {
     try {
-      const resDeleteProduct = await axiosInstance.delete(
-        `/products/${product_id}`,
-      );
+      await axiosInstance.delete(`/products/${product_id}`);
     } catch (error) {
       console.log({ error });
     }
@@ -302,7 +304,7 @@ function Inventory(props) {
                 />
                 <div
                   onClick={() => {
-                    router.replace(`/admin/inventory/${searchKeyword}=1`);
+                    router.replace(`/admin/inventory/${searchKeyword}=key=1`);
                     setCurrentPage(1);
                   }}
                   className="bg-[#008DEB] flex items-center justify-center w-[20%] hover:cursor-pointer"
@@ -452,25 +454,43 @@ export async function getServerSideProps(context) {
 
     if (context.params.params.includes('byId')) {
       const splitParams = context.params.params.split('=');
+
       const page = splitParams[1];
+
       resGetProducts = await axiosInstance.get('products/all', {
         params: { page, limit: 3 },
       });
     } else if (context.params.params.includes('sort')) {
       const splitParams = context.params.params.split('=');
+
       const page = splitParams[splitParams.length - 1];
+
       resGetProducts = await axiosInstance.get(
         `products/sort/${context.params.params}`,
         { params: { page, limit: 3 } },
       );
-    } else {
+    } else if (context.params.params.includes('category')) {
       const splitParams = context.params.params.split('=');
+
       const page = splitParams[splitParams.length - 1];
+
       resGetProducts = await axiosInstance.get(
-        `products/specifics/${splitParams[0]}`,
+        `products/byCategory/${context.params.params}`,
         { params: { page, limit: 3 } },
       );
+    } else if (context.params.params.includes('key')) {
+      const splitParams = context.params.params.split('=');
+
+      const page = splitParams[splitParams.length - 1];
+
+      resGetProducts = await axiosInstance.get(
+        `products/specifics/${splitParams[0]}`,
+        {
+          params: { page, limit: 3 },
+        },
+      );
     }
+
     const resGetAllProductsAll = await axiosInstance.get('products');
 
     return {

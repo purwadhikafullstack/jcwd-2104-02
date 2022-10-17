@@ -21,7 +21,6 @@ function ForgotPassword() {
         { email },
       );
 
-      console.log({ resSendRecoveryMail });
       alert('success');
 
       router.replace('/');

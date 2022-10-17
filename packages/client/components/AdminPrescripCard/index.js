@@ -51,8 +51,6 @@ export default function AdminPrescripCard(props) {
   };
 
   async function onCheckClick() {
-    console.log(parseInt(option), trans_id, userId);
-
     try {
       setLoading(true);
       const parsedProduct_id = parseInt(option);

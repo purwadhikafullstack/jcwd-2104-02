@@ -93,7 +93,6 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
         });
     }
 
-    console.log({ statusFind, selected });
     const resFetchTransactions = await transactions.findAll({
       where: { status: statusFind, prescriptionImage: null },
       attributes: [
@@ -232,7 +231,6 @@ const getTransactions = async (req, res, next) => {
         `isDefault`,
       ],
     });
-    console.log(resFetchAddress);
 
     res.send({
       status: 'success',
@@ -418,16 +416,9 @@ const getAllTransactions = async (req, res, next) => {
   try {
     let { paramsStartDate, paramsEndDate } = req.query;
 
-    // paramsStartDate?.setDate(paramsStartDate.getDate() + 1);
-    // paramsEndDate?.setDate(paramsEndDate.getDate() + 1);
-
-    // console.log({ paramsEndDate, paramsStartDate });
-
     let allTransaction;
 
     if (paramsStartDate && paramsEndDate) {
-      console.log('jalan1');
-      console.log({ paramsStartDate, paramsEndDate });
       allTransaction = await transactions.findAll({
         where: {
           status: 'order_confirmed',
@@ -460,8 +451,6 @@ const getAllTransactions = async (req, res, next) => {
       });
     } else if (paramsStartDate) {
       paramsEndDate = new Date('July 21, 3000 01:15:00');
-      console.log('jalan2');
-      console.log({ paramsStartDate, paramsEndDate });
       allTransaction = await transactions.findAll({
         where: {
           status: 'order_confirmed',
@@ -494,8 +483,6 @@ const getAllTransactions = async (req, res, next) => {
       });
     } else if (paramsEndDate) {
       paramsStartDate = new Date(1970);
-      console.log('jalan3');
-      console.log({ paramsStartDate, paramsEndDate });
       allTransaction = await transactions.findAll({
         where: {
           status: 'order_confirmed',
@@ -527,7 +514,6 @@ const getAllTransactions = async (req, res, next) => {
         ],
       });
     } else {
-      console.log({ paramsStartDate, paramsEndDate });
       allTransaction = await transactions.findAll({
         where: { status: 'order_confirmed' },
         attributes: [
@@ -556,8 +542,6 @@ const getAllTransactions = async (req, res, next) => {
         ],
       });
     }
-
-    console.log({ length: allTransaction.length });
 
     res.send({
       status: 'Success',

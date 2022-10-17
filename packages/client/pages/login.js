@@ -54,7 +54,7 @@ function Login() {
           mb={6}
         />
         <InputRightElement>
-          <Button rounded="50%" size="lg" onClick={handleClick}>
+          <Button rounded="10%" size="lg" onClick={handleClick}>
             {show ? (
               <ViewOffIcon onClick={handleClick} />
             ) : (
@@ -72,9 +72,9 @@ function Login() {
       email,
       password,
     });
+
     if (!res.error) {
-      console.log('success login');
-      setIsLogin(true);
+      getSessionAsync();
     } else {
       console.log(res.error);
       alert(res.error);

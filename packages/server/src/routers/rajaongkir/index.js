@@ -16,7 +16,6 @@ router.get('/provinsi', (req, res) => {
   axios
     .get('/province')
     .then((response) => {
-      // console.log({ response: response.data });
       res.json(response.data);
     })
     .catch((err) => {

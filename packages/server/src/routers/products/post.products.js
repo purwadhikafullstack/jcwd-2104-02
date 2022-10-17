@@ -14,7 +14,6 @@ const {
 
 async function postNewProductController(req, res, next) {
   try {
-    // console.log({ body: req.body });
     const {
       categoryInfo,
       description,
@@ -99,11 +98,7 @@ const postNewConvertedProduct = async (req, res, next) => {
         });
 
         const kuantitas = data.quantity * amount;
-        console.log(
-          resProduct.productPrice,
-          resProduct.defaultQuantity,
-          data.default_quantity,
-        );
+
         price +=
           (resProduct.productPrice / resProduct.defaultQuantity) *
           data.quantity;
@@ -129,8 +124,6 @@ const postNewConvertedProduct = async (req, res, next) => {
             { transaction: t },
           );
 
-          console.log({ newDetail, kuantitas });
-
           if (
             kuantitas > newDetail.current_quantity ||
             kuantitas == newDetail.current_quantity
@@ -153,16 +146,11 @@ const postNewConvertedProduct = async (req, res, next) => {
                 },
                 { transaction: t },
               );
-
-              console.log({ updateQuantity });
             }
 
             const newStock = resProduct.productStock - buka;
 
-            console.log('dwwadwd');
-
             if (newStock < 0) {
-              console.log({ message: 'kurang' });
               throw Error;
             }
 
@@ -219,10 +207,7 @@ const postNewConvertedProduct = async (req, res, next) => {
 
             const newStock = resProduct.productStock - buka;
 
-            console.log({ newStock, stock: resProduct.productStock, buka });
-
             if (newStock < 0) {
-              console.log({ message: 'kurang' });
               throw Error;
             }
 
@@ -255,7 +240,6 @@ const postNewConvertedProduct = async (req, res, next) => {
         }
       }),
     );
-    // console.log(price);
 
     const newConcoction = await products.create({
       productName: productName,
@@ -271,8 +255,6 @@ const postNewConvertedProduct = async (req, res, next) => {
     });
 
     await t.commit();
-
-    console.log({ getInitialStock });
 
     res.send({
       status: 'success',

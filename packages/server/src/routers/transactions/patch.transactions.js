@@ -5,7 +5,7 @@ const {
   carts,
   products,
   transaction_details,
-  stock_opnames
+  stock_opnames,
 } = require('../../../models');
 const moment = require('moment');
 const { auth } = require('../../helpers/auth');
@@ -22,7 +22,6 @@ const patchTransaction = async (req, res, next) => {
       where: { transaction_id, status: 'awaiting_payment' },
       attributes: ['transaction_id', 'user_id', 'address_id'],
     });
-    console.log(resFindTransaction);
 
     if (resFindTransaction.dataValues) {
       const resPaymentSuccess = await transactions.update(
@@ -176,9 +175,8 @@ const adminConfirmDeliver = async (req, res, next) => {
   try {
     const { transaction_id } = req.params;
 
-
     const resFindTransaction = await transaction_details.findAll({
-      where: {transaction_id}, 
+      where: { transaction_id },
       include: [
         {
           model: transactions,
@@ -190,7 +188,7 @@ const adminConfirmDeliver = async (req, res, next) => {
             'status',
             'courier',
             'deliveryCost',
-            'prescriptionImage'
+            'prescriptionImage',
           ],
         },
         {
@@ -210,17 +208,15 @@ const adminConfirmDeliver = async (req, res, next) => {
       ],
     });
 
-
-    
-  resFindTransaction.map(async(data)=>{
-  await stock_opnames.create({
+    resFindTransaction.map(async (data) => {
+      await stock_opnames.create({
         product_id: data.dataValues.product_id,
         transaction_id: data.dataValues.transaction_id,
         transaction_details_id: data.dataValues.transaction_details_id,
         stock: data.dataValues.quantity,
         activity: 'terjual',
       });
-    })
+    });
 
     const resconfirmDeliver = await transactions.update(
       {
@@ -265,7 +261,6 @@ const adminCancelOrder = async (req, res, next) => {
 
 const adminPaymentConfirm = async (req, res, next) => {
   try {
-    
     const { transaction_id } = req.params;
 
     const resconfirmDeliver = await transactions.update(
@@ -282,9 +277,9 @@ const adminPaymentConfirm = async (req, res, next) => {
       },
     });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 const adminConfirmPrescription = async (req, res, next) => {
   try {
@@ -343,8 +338,6 @@ const adminCancelPayment = async (req, res, next) => {
     next(error);
   }
 };
-
-
 
 router.patch('/patchTransaction', auth, patchTransaction);
 router.patch(

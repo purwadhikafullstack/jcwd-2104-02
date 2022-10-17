@@ -55,20 +55,6 @@ const getCartsController = async (req, res, next) => {
       where: { user_id },
       include: [products],
     });
-    console.log(cart);
-    // for (let i of resGetCarts) {
-    //   const cart = await carts.findOne({
-    //     where: { product_id: i.product_id },
-    //   });
-    //   cartMap.push(cart.dataValues);
-    // }
-
-    // for (let i of resGetCarts) {
-    //   const product = await products.findOne({
-    //     where: { product_id: i.product_id },
-    //   });
-    //   productMap.push(product.dataValues);
-    // }
 
     res.send({
       status: 'Success',
