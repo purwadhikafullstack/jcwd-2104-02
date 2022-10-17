@@ -91,7 +91,16 @@ function Cart(props) {
         setEmpty(true);
       }
     } catch (error) {
-      alert(error.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -322,7 +331,7 @@ function Cart(props) {
                 <Text fontWeight={500} fontSize={15} color="gray.600">
                   Sub Total
                 </Text>
-                <HStack fontWeight={550} fontSize={15} paddingRight={2}>
+                <HStack fontWeight={550} fontSize={15} paddingRight={'37%'}>
                   <Text>Rp {countTotalPrice().toLocaleString('id')}</Text>
                 </HStack>
               </HStack>
@@ -336,7 +345,11 @@ function Cart(props) {
                 </HStack>
               </HStack>
               <Image src="/profile/line.png" width={400} height={1.5} />
-              <HStack justifyContent="space-between" marginTop={4}>
+              <HStack
+                justifyContent="space-between"
+                marginTop={4}
+                paddingRight={'35%'}
+              >
                 <Text fontWeight={600} fontSize={15} color="gray.600">
                   Total
                 </Text>

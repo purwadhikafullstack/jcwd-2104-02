@@ -1,4 +1,4 @@
-import { Button, Input } from '@chakra-ui/react';
+import { Button, Input, useToast } from '@chakra-ui/react';
 import axiosInstance from '../src/config/api';
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
@@ -7,6 +7,7 @@ import Image from 'next/image';
 function ForgotPassword() {
   const [email, setEmail] = useState('');
   const router = useRouter();
+  const toast = useToast();
 
   function emailChangeHandler(event) {
     setEmail(event.target.value);
@@ -14,18 +15,40 @@ function ForgotPassword() {
 
   async function sendResetPasswordMail() {
     try {
-      if (!email) return alert('Isi dong');
+      if (!email)
+        return toast({
+          title: 'Empty Field!',
+          description: 'Please Fill',
+          position: 'top',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
 
-      const resSendRecoveryMail = await axiosInstance.post(
-        `/users/sendResetPasswordMail`,
-        { email },
-      );
+      await axiosInstance.post(`/users/sendResetPasswordMail`, { email });
 
-      alert('success');
+      toast({
+        title: 'Success!',
+        description: 'Success send reset password mail.',
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
 
       router.replace('/');
     } catch (error) {
       console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   }
 

@@ -1,4 +1,4 @@
-import { Button, Icon, Input } from '@chakra-ui/react';
+import { Button, Icon, Input, useToast } from '@chakra-ui/react';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { getSession } from 'next-auth/react';
@@ -7,16 +7,9 @@ import { DeleteIcon, AddIcon, WarningIcon } from '@chakra-ui/icons';
 import { api_origin } from '../../constraint';
 
 export default function CartCards(props) {
-  //, totalPrice, fetchCarts
   const { product, quantity, totalPrice, fetchCarts } = props;
   const [quantityCart, setQuantityCart] = useState(quantity);
-
-  useEffect(() => {
-    // onClickMinus();
-    // onClickPlus();
-    // totalPrice();
-    // fetchCarts();
-  }, []);
+  const toast = useToast();
 
   totalPrice(quantityCart);
 
@@ -35,7 +28,16 @@ export default function CartCards(props) {
       const res = await axiosInstance.delete(`carts/${product_id}`, config);
       window.location.reload();
     } catch (error) {
-      alert(error.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -56,7 +58,16 @@ export default function CartCards(props) {
       await axiosInstance.patch(`carts/patchCart/${product_id}`, body, config);
       fetchCarts();
     } catch (error) {
-      alert(error.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -77,7 +88,16 @@ export default function CartCards(props) {
       await axiosInstance.patch(`carts/patchCart/${product_id}`, body, config);
       fetchCarts();
     } catch (error) {
-      alert(error.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 

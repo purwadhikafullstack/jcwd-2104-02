@@ -9,6 +9,7 @@ import {
   Image,
   HStack,
   Button,
+  useToast,
 } from '@chakra-ui/react';
 import { getSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
@@ -21,8 +22,9 @@ function Transaction(props) {
   const [transac, setTransac] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(3);
-  console.warn(transac);
   const [selected, setSelected] = useState(0);
+
+  const toast = useToast();
 
   useEffect(() => {
     fetchTransactions();
@@ -46,13 +48,23 @@ function Transaction(props) {
         params: { page, pageSize },
         headers: { Authorization: `Bearer ${user_token}` },
       };
+
       const res = await axiosInstance.get(
         `/transactions/getTransactionsByIndex/${user_id}/${selected}`,
         config,
       );
       setTransac(res.data.data.resFetchTransactions);
     } catch (error) {
-      alert(error.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 

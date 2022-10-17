@@ -13,8 +13,8 @@ const credentialInstance = CredentialsProvider({
 
       return user;
     } catch (error) {
-      console.log(error.response.data.message);
-      throw error.response.data;
+      console.log({ error });
+      throw error.response?.data ? error.response.data : error;
     }
   },
 });

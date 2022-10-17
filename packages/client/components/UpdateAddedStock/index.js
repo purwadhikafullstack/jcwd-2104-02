@@ -9,7 +9,7 @@ import {
   VStack,
   HStack,
   Button,
-  useToast
+  useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import axiosInstance from '../../src/config/api';
@@ -46,10 +46,19 @@ function UpdateAddedStock(props) {
         duration: 3000,
         isClosable: true,
       });
-      fetchStockOpname()
+      fetchStockOpname();
     } catch (error) {
       console.log({ error });
-      alert(error.response?.data.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 

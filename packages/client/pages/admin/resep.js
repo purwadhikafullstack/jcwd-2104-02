@@ -8,6 +8,7 @@ import {
   Image,
   ChakraProvider,
   Box,
+  useToast,
 } from '@chakra-ui/react';
 import { getSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
@@ -23,7 +24,7 @@ function DaftarTransaksiRacikan(props) {
   const [prods, setProds] = useState([]);
 
   const router = useRouter();
-
+  const toast = useToast();
   const path = router.pathname;
 
   useEffect(() => {
@@ -44,7 +45,16 @@ function DaftarTransaksiRacikan(props) {
       const res = await axiosInstance.get('products');
       setProds(res.data.data.resGetAllProducts);
     } catch (error) {
-      alert(error.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -64,7 +74,16 @@ function DaftarTransaksiRacikan(props) {
       );
       setTransac(res.data.data.resFetchTransactions);
     } catch (error) {
-      alert(error.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 

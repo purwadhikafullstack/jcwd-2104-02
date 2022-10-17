@@ -15,6 +15,7 @@ import {
   Input,
   Box,
   Select,
+  useToast,
 } from '@chakra-ui/react';
 import { getSession, useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
@@ -34,6 +35,7 @@ function Transaksi(props) {
 
   const router = useRouter();
   const session = useSession();
+  const toast = useToast();
 
   if (session.data) {
     if (!session.data.user.user.isAdmin) {
@@ -117,7 +119,16 @@ function Transaksi(props) {
       setTransac(res.data.data.resFetchTransactions);
       setFilteredTransactions(res.data.data.resFetchTransactions);
     } catch (error) {
-      alert(error.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 

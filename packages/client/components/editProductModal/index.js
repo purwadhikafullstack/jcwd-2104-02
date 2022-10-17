@@ -12,6 +12,7 @@ import {
   Select,
   Textarea,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import axiosInstance from '../../src/config/api';
@@ -40,7 +41,7 @@ function EditProductModal({
   const [newProductImage, setNewProductImage] = useState(
     currentProduct.productImage,
   );
-
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -76,7 +77,14 @@ function EditProductModal({
         Object.values(productInputs).includes('') ||
         Object.values(productInputs).includes(undefined)
       ) {
-        alert('tolong isi semua');
+        toast({
+          title: 'Warning!',
+          description: 'Tolong isi semua field',
+          position: 'top',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
         setLoading(false);
         return;
       }
@@ -201,6 +209,7 @@ function EditProductModal({
             <Button size="lg">Tambah +</Button>
           </div>
           <Input
+            type={'number'}
             value={productInputs.productPrice}
             onChange={handleChange('productPrice')}
             size="lg"
@@ -222,6 +231,7 @@ function EditProductModal({
             placeholder="Unit Satuan"
           />
           <Input
+            type={'number'}
             value={productInputs.defaultQuantity}
             onChange={handleChange('defaultQuantity')}
             size="lg"
@@ -240,48 +250,19 @@ function EditProductModal({
 
         <ModalFooter justifyContent="space-between">
           <div className="flex w-[50%] justify-evenly">
-            {/* <Button
-              colorScheme="linkedin"
-              variant="ghost"
-              disabled={productStock <= 1}
-              onClick={() => {
-                setProductStock(parseInt(productStock) - 1);
-              }}
-            >
+            <Button colorScheme="linkedin" variant="ghost" disabled>
               {'<'}
-            </Button> */}
+            </Button>
 
             <Input
               disabled
               value={productStock}
-              onChange={(event) => {
-                if (
-                  parseInt(event.target.value) <= 0 ||
-                  !parseInt(event.target.value)
-                ) {
-                  alert('Minimal produk 1');
-                  setProductStock(1);
-                  return;
-                } else if (parseInt(event.target.value) > 9999) {
-                  alert('Max stock reached');
-                  setProductStock(9999);
-                  return;
-                }
-                setProductStock(event.target.value);
-              }}
               className="w-[2.5vw] mx-[1vw] flex items-center justify-center bg-gray-200 rounded-[.2vw]"
             />
 
-            {/* <Button
-              colorScheme="linkedin"
-              variant="ghost"
-              disabled={productStock >= 9999}
-              onClick={() => {
-                setProductStock(parseInt(productStock) + 1);
-              }}
-            >
+            <Button colorScheme="linkedin" variant="ghost" disabled>
               {'>'}
-            </Button> */}
+            </Button>
           </div>
           <div className="flex w-[50%] justify-end">
             <Button

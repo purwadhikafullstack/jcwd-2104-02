@@ -9,18 +9,13 @@ import {
   VStack,
   HStack,
   Button,
-  useToast
+  useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import axiosInstance from '../../src/config/api';
 
 function AddProductStock(props) {
-  const {
-    isOpen,
-    onClose,
-    product_id,
-    fetchStockOpname,
-  } = props;
+  const { isOpen, onClose, product_id, fetchStockOpname } = props;
   const [quantity, setQuantity] = useState(1);
   const toast = useToast();
   const onPrevClick = () => {
@@ -51,7 +46,16 @@ function AddProductStock(props) {
       fetchStockOpname();
     } catch (error) {
       console.log({ error });
-      alert(error.response?.data.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -98,7 +102,7 @@ function AddProductStock(props) {
                   fontSize={13}
                   fontWeight={500}
                   onClick={() => {
-                  addStock(product_id), onClose();
+                    addStock(product_id), onClose();
                   }}
                 >
                   Tambah Stok

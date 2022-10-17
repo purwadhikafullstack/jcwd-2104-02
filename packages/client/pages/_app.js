@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }) {
             rel="stylesheet"
           />
           <meta name="description" content="Buy your medicine here" />
-          <link rel="icon" href="/admin/medbox.png" />
+          <link rel="icon" href="/admin/Medbox.png" />
         </Head>
         <div className="font-[poppins]">
           <Component {...pageProps} />

@@ -151,7 +151,7 @@ const postNewConvertedProduct = async (req, res, next) => {
             const newStock = resProduct.productStock - buka;
 
             if (newStock < 0) {
-              throw Error;
+              throw Error('Produk tidak mencukupi');
             }
 
             const updateStock = await resProduct.update(
@@ -208,7 +208,7 @@ const postNewConvertedProduct = async (req, res, next) => {
             const newStock = resProduct.productStock - buka;
 
             if (newStock < 0) {
-              throw Error;
+              throw Error('Produk tidak mencukupi');
             }
 
             const updateStock = await resProduct.update(

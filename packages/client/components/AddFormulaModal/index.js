@@ -107,8 +107,17 @@ function AddFormulaModal({
         setDeleted(0), setName(''), setAmount(0);
       }
     } catch (error) {
-      alert(error);
-      console.log({ error });
+      toast({
+        title: 'Create Concoction Failed!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      console.log({ Error: error.response.data });
       setLoading(false);
       setAddFormulaButton(false);
       setTempFormula([]), setQuantity(0);

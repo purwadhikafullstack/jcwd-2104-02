@@ -51,7 +51,16 @@ export default function AdminPaymentConfirm(props) {
       fetchTransactions();
     } catch (error) {
       console.log({ Error });
-      alert(error.response?.data.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -70,7 +79,16 @@ export default function AdminPaymentConfirm(props) {
       fetchTransactions();
     } catch (error) {
       console.log({ Error });
-      alert(error.response?.data.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 

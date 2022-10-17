@@ -49,6 +49,7 @@ function Inventory(props) {
   });
 
   const session = useSession();
+  const toast = useToast();
 
   if (session.data) {
     if (!session.data.user.user.isAdmin) {
@@ -164,7 +165,6 @@ function Inventory(props) {
                 colorScheme="red"
                 onClick={() => {
                   deleteProduct(product.product_id);
-                  setProductList(props.products.splice(index, 1));
                 }}
                 sx={{ width: '100%', height: '5vh' }}
               >
@@ -180,8 +180,18 @@ function Inventory(props) {
   async function deleteProduct(product_id) {
     try {
       await axiosInstance.delete(`/products/${product_id}`);
+      setProductList(props.products.splice(index, 1));
     } catch (error) {
-      console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   }
 

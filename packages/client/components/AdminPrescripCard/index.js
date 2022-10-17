@@ -77,7 +77,16 @@ export default function AdminPrescripCard(props) {
         }, 3000);
       }
     } catch (error) {
-      alert(error.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
       setLoading(false);
       setOption('');
     }

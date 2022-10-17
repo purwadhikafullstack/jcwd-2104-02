@@ -113,10 +113,26 @@ function TransactionDetails(props) {
       );
       setTrans({ ...trans, status: 'order_cancelled' });
 
-      alert(res.data.message);
+      toast({
+        title: 'Success!',
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       console.log({ Error });
-      alert(error.response?.data.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -128,10 +144,26 @@ function TransactionDetails(props) {
       );
       setTrans({ ...trans, status: 'order_confirmed' });
 
-      alert(res.data.message);
+      toast({
+        title: 'Confirmed!',
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       console.log({ Error });
-      alert(error.response?.data.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 

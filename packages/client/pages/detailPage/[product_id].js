@@ -19,8 +19,6 @@ import { api_origin } from '../../constraint/index';
 function DetailPage(props) {
   const { products } = props;
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const { user_id } = props;
   const { product_id } = products;
   const [quantity, setQuantity] = useState(1);
 
@@ -56,9 +54,17 @@ function DetailPage(props) {
         duration: 3000,
         isClosable: true,
       });
-      //setSuccess(true);
     } catch (error) {
-      alert(error);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     } finally {
       setLoading(false);
     }
