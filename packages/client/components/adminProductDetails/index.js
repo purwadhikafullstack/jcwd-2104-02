@@ -92,7 +92,7 @@ function AdminProductDetails({
             value={category}
             size="lg"
             marginY=".1vh"
-            placeholder="Harga"
+            placeholder="Kategori"
           />
           Harga
           <Input

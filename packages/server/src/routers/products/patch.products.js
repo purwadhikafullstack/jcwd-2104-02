@@ -17,8 +17,6 @@ async function updateProductController(req, res, next) {
   try {
     const { productInputs, currentProduct } = req.body;
 
-    const { API_URL } = process.env;
-
     const { product_id } = req.params;
 
     const categorySplit = productInputs.categoryInfo.split('=-=');
@@ -37,19 +35,20 @@ async function updateProductController(req, res, next) {
       servingType: productInputs.servingType,
     });
 
-    const resCreateCategory = await categories.create({
+    const resFindAvailableCategory = await categories.findOne({
+      where: { product_id: resUpdateProduct.dataValues.product_id },
+    });
+
+    const resUpdateCategory = await resFindAvailableCategory.update({
       category_lists_id: categorySplit[0],
       product_id: resUpdateProduct.dataValues.product_id,
       categoryName: categorySplit[1],
     });
 
-    const resDeleteProductDetails = await product_details.destroy({
-      where: { product_id },
-    });
-
     res.send({
       status: 'success',
       resUpdateProduct,
+      resUpdateCategory,
     });
   } catch (error) {
     next(error);

@@ -103,6 +103,16 @@ function EditCategoryModal({
       setLoading(false);
     } catch (error) {
       console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
       setLoading(false);
       setEditCategoryButton(false);
     }

@@ -23,6 +23,7 @@ module.exports = {
           model: 'products',
           key: 'product_id',
         },
+        unique: true,
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },

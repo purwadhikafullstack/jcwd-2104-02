@@ -162,7 +162,7 @@ function AddFormulaModal({
   }
 
   function productNameMap() {
-    return allProducts.map((product) => {
+    return allProducts?.map((product) => {
       if (!product.formula) {
         return (
           <option key={product.product_id} value={`${product.productName}`}>

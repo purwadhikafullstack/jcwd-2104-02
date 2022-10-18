@@ -126,7 +126,7 @@ function AddProductModal({
   }
 
   function categoriesMap() {
-    return categoriesLists.map((category) => {
+    return categoriesLists?.map((category) => {
       return (
         <option
           key={category.category_lists_id}

@@ -164,7 +164,7 @@ function Inventory(props) {
                 variant="outline"
                 colorScheme="red"
                 onClick={() => {
-                  deleteProduct(product.product_id);
+                  deleteProduct(product.product_id, index);
                 }}
                 sx={{ width: '100%', height: '5vh' }}
               >
@@ -177,7 +177,7 @@ function Inventory(props) {
     });
   }
 
-  async function deleteProduct(product_id) {
+  async function deleteProduct(product_id, index) {
     try {
       await axiosInstance.delete(`/products/${product_id}`);
       setProductList(props.products.splice(index, 1));
@@ -185,7 +185,7 @@ function Inventory(props) {
       console.log({ error });
       toast({
         title: 'Unexpected Fail!',
-        description: error.response.data?.message
+        description: error.response?.data?.message
           ? error.response.data.message
           : error.message,
         position: 'top',
@@ -216,6 +216,8 @@ function Inventory(props) {
         <EditProductModal
           currentProduct={currentProduct}
           editProductButton={editProductButton}
+          productList={productList}
+          setProductList={setProductList}
           setEditProductButton={setEditProductButton}
           categoriesLists={props.categoriesLists.categories}
         />

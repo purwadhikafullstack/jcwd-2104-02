@@ -17,12 +17,15 @@ import {
 import Image from 'next/image';
 import axiosInstance from '../../src/config/api';
 import { api_origin } from '../../constraint';
+import { useRouter } from 'next/router';
 
 function EditProductModal({
   currentProduct,
   editProductButton,
   setEditProductButton,
   categoriesLists,
+  productList,
+  setProductList,
 }) {
   const [productStock, setProductStock] = useState(currentProduct.productStock);
   const [loading, setLoading] = useState(false);
@@ -41,6 +44,7 @@ function EditProductModal({
   const [newProductImage, setNewProductImage] = useState(
     currentProduct.productImage,
   );
+  const router = useRouter();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -52,7 +56,9 @@ function EditProductModal({
     }
 
     setProductInputs({
-      categoryInfo: `${currentProduct.category_lists_id}=-=${currentProduct.category}`,
+      categoryInfo: currentProduct.category_lists_id
+        ? `${currentProduct.category_lists_id}=-=${currentProduct.category}`
+        : undefined,
       description: currentProduct.description,
       packageType: currentProduct.packageType,
       productImage: currentProduct.productImage,
@@ -73,10 +79,7 @@ function EditProductModal({
     try {
       setLoading(true);
 
-      if (
-        Object.values(productInputs).includes('') ||
-        Object.values(productInputs).includes(undefined)
-      ) {
+      if (Object.values(productInputs).includes('' || undefined)) {
         toast({
           title: 'Warning!',
           description: 'Tolong isi semua field',
@@ -107,20 +110,36 @@ function EditProductModal({
 
       const extName = productInputs.productImage.split('.');
 
-      const resAddProductImage = await axiosInstance.post(
+      await axiosInstance.post(
         `/products/newProductImage/${resAddProduct.data.resUpdateProduct.product_id}.${extName[1]}`,
         productImageFileBody,
         config,
       );
 
-      if (resAddProduct) {
-        setLoading(false);
-        setEditProductButton(false);
-      }
-    } catch (error) {
-      console.log({ error });
+      toast({
+        title: 'Success!',
+        description: 'Success edit product',
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
       setLoading(false);
       setEditProductButton(false);
+    } catch (error) {
+      console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      setLoading(false);
     }
   }
 
@@ -206,7 +225,14 @@ function EditProductModal({
             >
               {categoriesMap()}
             </Select>
-            <Button size="lg">Tambah +</Button>
+            <Button
+              onClick={() => {
+                router.replace('/admin/category');
+              }}
+              size="lg"
+            >
+              Tambah +
+            </Button>
           </div>
           <Input
             type={'number'}
