@@ -91,6 +91,7 @@ function AddCategoryModal({ addCategoryButton, setAddCategoryButton }) {
       setLoading(false);
       setAddCategoryButton(false);
     } catch (error) {
+      console.log({ error });
       setAddCategoryButton(false);
       setLoading(false);
     }

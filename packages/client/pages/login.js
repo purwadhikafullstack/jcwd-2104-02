@@ -190,6 +190,7 @@ export async function getServerSideProps() {
 
     return { props: {} };
   } catch (error) {
+    console.log({ error });
     return { props: { error: error.message } };
   }
 }

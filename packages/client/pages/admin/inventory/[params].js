@@ -182,6 +182,7 @@ function Inventory(props) {
       await axiosInstance.delete(`/products/${product_id}`);
       setProductList(props.products.splice(index, 1));
     } catch (error) {
+      console.log({ error });
       toast({
         title: 'Unexpected Fail!',
         description: error.response.data?.message
@@ -513,6 +514,7 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
+    console.log({ error });
     return { props: { error: error.message } };
   }
 }

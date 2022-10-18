@@ -19,6 +19,7 @@ export async function getServerSideProps(context) {
 
     return { redirect: { destination: 'admin/inventory' } };
   } catch (error) {
+    console.log({ error });
     return { props: { error: error.message } };
   }
 }

@@ -28,6 +28,7 @@ export default function CartCards(props) {
       const res = await axiosInstance.delete(`carts/${product_id}`, config);
       window.location.reload();
     } catch (error) {
+      console.log({ error });
       toast({
         title: 'Unexpected Fail!',
         description: error.response.data?.message
@@ -58,6 +59,7 @@ export default function CartCards(props) {
       await axiosInstance.patch(`carts/patchCart/${product_id}`, body, config);
       fetchCarts();
     } catch (error) {
+      console.log({ error });
       toast({
         title: 'Unexpected Fail!',
         description: error.response.data?.message
@@ -88,6 +90,7 @@ export default function CartCards(props) {
       await axiosInstance.patch(`carts/patchCart/${product_id}`, body, config);
       fetchCarts();
     } catch (error) {
+      console.log({ error });
       toast({
         title: 'Unexpected Fail!',
         description: error.response.data?.message

@@ -72,6 +72,16 @@ function Cart(props) {
       setSelectAddress(defaultAddress.data.data);
     } catch (error) {
       console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -91,6 +101,7 @@ function Cart(props) {
         setEmpty(true);
       }
     } catch (error) {
+      console.log({ error });
       toast({
         title: 'Unexpected Fail!',
         description: error.response.data?.message
@@ -145,6 +156,7 @@ function Cart(props) {
         router.replace(`/transaction/${user_id}`);
       }, 1000);
     } catch (error) {
+      console.log({ error });
       toast({
         description: 'Alamat dan Kurir Tidak Boleh Kosong',
         position: 'top',
@@ -418,7 +430,7 @@ export async function getServerSideProps(context) {
     };
   } catch (error) {
     console.log({ error });
-    return { props: {} };
+    return { props: { error } };
   }
 }
 

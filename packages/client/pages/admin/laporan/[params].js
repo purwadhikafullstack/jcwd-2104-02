@@ -417,6 +417,7 @@ export async function getServerSideProps(context) {
 
     return { props: { byProduct: byProduct.data } };
   } catch (error) {
+    console.log({ error });
     return { props: { error: error.message } };
   }
 }

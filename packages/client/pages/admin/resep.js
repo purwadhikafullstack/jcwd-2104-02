@@ -45,6 +45,7 @@ function DaftarTransaksiRacikan(props) {
       const res = await axiosInstance.get('products');
       setProds(res.data.data.resGetAllProducts);
     } catch (error) {
+      console.log({ error });
       toast({
         title: 'Unexpected Fail!',
         description: error.response.data?.message
@@ -74,6 +75,7 @@ function DaftarTransaksiRacikan(props) {
       );
       setTransac(res.data.data.resFetchTransactions);
     } catch (error) {
+      console.log({ error });
       toast({
         title: 'Unexpected Fail!',
         description: error.response.data?.message

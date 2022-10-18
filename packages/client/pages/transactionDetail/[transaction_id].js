@@ -195,11 +195,13 @@ function TransactionDetails(props) {
           <div>
             <p className="text-[1rem] font-[500] ml-3">Alamat Lengkap</p>
             <br />
-            <p>Nama Pembeli : {penerima}</p>
-            <p>Alamat Pembeli : {jalan}</p>
-            <p>Provinsi : {provinsi}</p>
-            <p>Kota: {kota}</p>
-            <p>Kode Pos : {kodePos}</p>
+            <div className="flex flex-col ml-3">
+              <p>Nama Pembeli : {penerima}</p>
+              <p>Alamat Pembeli : {jalan}</p>
+              <p>Provinsi : {provinsi}</p>
+              <p>Kota: {kota}</p>
+              <p>Kode Pos : {kodePos}</p>
+            </div>
             <br />
             <p className="text-[1rem] font-[500] ml-3">Daftar Pesanan</p>
             <div>{mappedTransactionDetails()}</div>
@@ -328,8 +330,8 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
+    console.log({ error });
     const { message } = error;
-
     return { props: { message } };
   }
 }

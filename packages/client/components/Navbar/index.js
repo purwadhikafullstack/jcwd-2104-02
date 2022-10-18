@@ -218,11 +218,8 @@ export async function getServerSideProps(context) {
 
     return { props: { session } };
   } catch (error) {
-    return {
-      props: {
-        error,
-      },
-    };
+    console.log({ error });
+    return { props: { error } };
   }
 }
 

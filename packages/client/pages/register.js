@@ -92,6 +92,7 @@ export default function Register() {
 
       // window.location.reload();
     } catch (error) {
+      console.log({ error });
       if (error.response?.data) {
         toast({
           title: 'Error',
