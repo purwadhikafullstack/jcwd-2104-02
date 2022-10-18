@@ -1,5 +1,4 @@
 import { getSession, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 function Index() {
@@ -17,7 +16,10 @@ export async function getServerSideProps(context) {
     if (!session.user.user.isAdmin) {
       return { redirect: { destination: '/' } };
     }
+
+    return { redirect: { destination: 'admin/inventory' } };
   } catch (error) {
+    console.log({ error });
     return { props: { error: error.message } };
   }
 }

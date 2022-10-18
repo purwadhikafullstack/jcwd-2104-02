@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const stock_opnames = require('./stock_opnames');
 module.exports = (sequelize, DataTypes) => {
   class transactions extends Model {
     /**
@@ -11,11 +12,13 @@ module.exports = (sequelize, DataTypes) => {
       transactions.belongsTo(models.users, {
         foreignKey: 'user_id',
       });
-
       transactions.hasOne(models.addresses, {
         foreignKey: 'address_id',
       });
       transactions.hasMany(models.transaction_details, {
+        foreignKey: 'transaction_id',
+      });
+      transactions.hasMany(models.stock_opnames, {
         foreignKey: 'transaction_id',
       });
     }

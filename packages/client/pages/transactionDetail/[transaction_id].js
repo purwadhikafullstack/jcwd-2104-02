@@ -11,35 +11,47 @@ import {
 } from '@chakra-ui/react';
 import Navbar from '../../components/Navbar';
 import axiosInstance from '../../src/config/api';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { getSession } from 'next-auth/react';
-import Image from 'next/image';
-import next from 'next';
 import { useToast } from '@chakra-ui/react';
+import Image from 'next/image';
 import TransDetailCard from '../../components/TransDetailCard';
+<<<<<<< HEAD
+=======
+import { useRouter } from 'next/router';
+>>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
 
 function TransactionDetails(props) {
-  const { transaction_details, transactions } = props;
+  const router = useRouter();
+  const { transaction_details, transactions, user_id } = props;
   const [transac, setTransac] = useState(
     transaction_details.resFetchTransactionDetails,
   );
   const [trans, setTrans] = useState(transactions.resFetchTransactions);
+<<<<<<< HEAD
   // console.log(trans.totalPrice)
   console.log(transactions);
+=======
+>>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
   const [transByAddress, setTransByAddress] = useState(
     transactions.resFetchAddress,
   );
   const [payment, setPayment] = useState({});
-
   const onFileChange = (event) => {
     setPayment(event.target.files[0]);
   };
 
+<<<<<<< HEAD
+=======
+  const toast = useToast();
+
+>>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
   let penerima;
   let jalan;
   let kodePos;
   let provinsi;
   let kota;
+<<<<<<< HEAD
 
   transByAddress.forEach(async (data) => {
     // console.log(data)
@@ -51,6 +63,17 @@ function TransactionDetails(props) {
   });
   // console.log(jalan)
 
+=======
+
+  transByAddress.forEach(async (data) => {
+    penerima = data.recipient;
+    jalan = data.addressDetail;
+    kodePos = data.postalCode;
+    provinsi = data.province;
+    kota = data.city_name;
+  });
+
+>>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
   const onSavePayment = async () => {
     try {
       const session = await getSession();
@@ -67,7 +90,6 @@ function TransactionDetails(props) {
         transStatus: 'awaiting_payment_confirmation',
         trans,
       };
-      console.log(bods);
 
       const config = {
         headers: { Authorization: `Bearer ${user_token}` },
@@ -87,50 +109,90 @@ function TransactionDetails(props) {
 
       setTrans({ ...trans, status: 'awaiting_payment_confirmation' });
 
-      alert(res.data.message);
-      // alert(res2.data.message);
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      setTimeout(() => {
+        router.replace(`/transaction/${user_id}`);
+      }, 1000);
     } catch (error) {
-      console.log({ Error });
-      alert(error.response?.data.message);
+      console.log({ error });
+      toast({
+        description: 'Bukti Pembayaran Belum Dipilih',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
   const onCancelClick = async () => {
     try {
-      // const session = await getSession();
-      // const { user_token } = session.user;
-      // const config = {
-      //   headers: { Authorization: `Bearer ${user_token}` },
-      // };
       const transaction_id = trans.transaction_id;
       const res = await axiosInstance.patch(
         `/transactions/cancelTransaction/${transaction_id}`,
       );
       setTrans({ ...trans, status: 'order_cancelled' });
 
+<<<<<<< HEAD
       alert(res.data.message);
+=======
+      toast({
+        title: 'Success!',
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+>>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
     } catch (error) {
       console.log({ Error });
-      alert(error.response?.data.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
   const onConfirmClick = async () => {
     try {
-      // const session = await getSession();
-      // const { user_token } = session.user;
-      // const config = {
-      //   headers: { Authorization: `Bearer ${user_token}` },
-      // };
       const transaction_id = trans.transaction_id;
       const res = await axiosInstance.patch(
         `/transactions/confirmTransaction/${transaction_id}`,
       );
       setTrans({ ...trans, status: 'order_confirmed' });
 
-      alert(res.data.message);
+      toast({
+        title: 'Confirmed!',
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       console.log({ Error });
-      alert(error.response?.data.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -139,15 +201,10 @@ function TransactionDetails(props) {
       return (
         <TransDetailCard
           key={transaction.transaction_details_id}
-          // // transactions={transac.transactions}
           productName={transaction.product.productName}
           productImage={transaction.product.productImage}
-          // status={transaction.status}
           productPrice={transaction.product.productPrice}
           quantity={transaction.quantity}
-          // trans_id={transaction.transaction_id}
-          // quantity={transaction.transaction_details.product.quantity}
-          // fetchTransactions={fetchTransactions}
           props={props}
         />
       );
@@ -164,15 +221,16 @@ function TransactionDetails(props) {
       <Navbar />
       <div className="w-[100%] h-[100%] flex">
         <div className="w-[50%]">
-          {/* <div className="h-[30%] w-[100%] bg-gray-500">kotak atas</div> */}
           <div>
             <p className="text-[1rem] font-[500] ml-3">Alamat Lengkap</p>
             <br />
-            <p>Nama Pembeli : {penerima}</p>
-            <p>Alamat Pembeli : {jalan}</p>
-            <p>Provinsi : {provinsi}</p>
-            <p>Kota: {kota}</p>
-            <p>Kode Pos : {kodePos}</p>
+            <div className="flex flex-col ml-3">
+              <p>Nama Pembeli : {penerima}</p>
+              <p>Alamat Pembeli : {jalan}</p>
+              <p>Provinsi : {provinsi}</p>
+              <p>Kota: {kota}</p>
+              <p>Kode Pos : {kodePos}</p>
+            </div>
             <br />
             <p className="text-[1rem] font-[500] ml-3">Daftar Pesanan</p>
             <div>{mappedTransactionDetails()}</div>
@@ -277,15 +335,12 @@ export async function getServerSideProps(context) {
 
     if (!session) return { redirect: { destination: '/login' } };
     const { user_token } = session.user;
-    // const { user_id } = session.user.user;
-    // console.log(session.user.user.user_id);
+    const { user_id } = session.user.user;
 
     const config = {
       headers: { Authorization: `Bearer ${user_token}` },
     };
     const { transaction_id } = context.params;
-    // console.log(transaction_id);
-    // console.log('disini');
 
     const resGetTransactionDetail = await axiosInstance.get(
       `/transactions/getDetails/${transaction_id}`,
@@ -296,22 +351,16 @@ export async function getServerSideProps(context) {
       config,
     );
 
-    // console.log(resgetTransactionById.data);
-
-    // if (!resGetProduct) return { redirect: { destination: '/' } };
-
-    // console.log(resGetTransactionDetail.data.data);
     return {
       props: {
+        user_id,
         transaction_details: resGetTransactionDetail.data.data,
         transactions: resgetTransactionById.data.data,
-        // transactions: resgetTransactionById.data.resFetchAddress
-        // user_id,
       },
     };
   } catch (error) {
+    console.log({ error });
     const { message } = error;
-
     return { props: { message } };
   }
 }

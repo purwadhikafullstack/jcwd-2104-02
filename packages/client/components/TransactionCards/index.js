@@ -14,10 +14,7 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
-import { getSession } from 'next-auth/react';
-import axiosInstance from '../../src/config/api';
-import { DeleteIcon, AddIcon, WarningIcon } from '@chakra-ui/icons';
-import axios from 'axios';
+import { api_origin } from '../../constraint';
 
 export default function TransactionCards(props) {
   const {
@@ -28,6 +25,7 @@ export default function TransactionCards(props) {
     status,
     productImage,
   } = props;
+<<<<<<< HEAD
   const [isPrescription, setIsPrescription] = useState(false);
   // console.log(props)
   // console.log(trans_id)
@@ -37,6 +35,8 @@ export default function TransactionCards(props) {
   // } else if (productImage && productName){
   // setIsPrescription(false)
   // }
+=======
+>>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
 
   const rawStatus = status.split('_');
   return (
@@ -57,7 +57,11 @@ export default function TransactionCards(props) {
           alt="resep-logo"
           width={70}
           height={70}
+<<<<<<< HEAD
           src={productImage}
+=======
+          src={api_origin + productImage}
+>>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
         />
         <Box w="180px" fontSize={'md'} fontWeight={'bold'}>
           {productName}

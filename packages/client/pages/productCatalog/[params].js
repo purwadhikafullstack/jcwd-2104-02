@@ -6,26 +6,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { userAgent } from 'next/server';
-import { config } from '@fortawesome/fontawesome-svg-core';
 import { getSession } from 'next-auth/react';
+import { api_origin } from '../../constraint/index';
 
 function ProductCatalog(props) {
   const [selected, setSelected] = useState('');
   const [showCategories, setShowCategories] = useState(false);
-  const [showFilter, setShowFilter] = useState(false);
   const [showSort, setShowSort] = useState(false);
   const [productList, setProductList] = useState(props.products);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
-  // const [user, setProduct] = useState(props.users);
-  const [verified, setVerified] = useState(false);
 
   const router = useRouter();
   const { session } = props;
-  // console.log(session);
-  // console.log({ props });
-  // console.log(props.products);
 
   useEffect(() => {
     const { params } = router.query;
@@ -33,12 +26,16 @@ function ProductCatalog(props) {
     setProductList(props.products);
   });
 
+  useEffect(() => {
+    const { params } = router.query;
+    if (params.includes('key')) {
+      const splitParams = params.split('=');
+      setSearchKeyword(splitParams[0]);
+    }
+  }, []);
+
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);
-  }
-
-  function showFilterSwitch() {
-    setShowFilter(!showFilter);
   }
 
   function showSortSwitch() {
@@ -59,9 +56,9 @@ function ProductCatalog(props) {
               layout="responsive"
               width={100}
               height={70}
-              src={product.productImage}
+              src={api_origin + product.productImage}
               loader={() => {
-                return product.productImage;
+                return api_origin + product.productImage;
               }}
             />
           </div>
@@ -85,13 +82,15 @@ function ProductCatalog(props) {
             <Button
               variant="outline"
               onClick={() => {
-                if (props.session?.user.user.isVerified) {
+                if (session?.user.user.isVerified) {
                   router.replace(`/detailPage/${product.product_id}`);
+                } else {
+                  router.replace('/login');
                 }
               }}
               colorScheme="linkedin"
               sx={{ width: '100%', height: '5vh' }}
-              disabled={!props.session?.user.user.isVerified}
+              disabled={!session?.user.user.isVerified}
             >
               <p className="text-[12px]">Tambah</p>
             </Button>
@@ -110,17 +109,21 @@ function ProductCatalog(props) {
   }
 
   function categoriesMap() {
-    return props.categoriesLists.categories.map((category) => {
+    return props.categoriesLists?.categories.map((category) => {
+      const selectedCategoryListsId = selected.split('=')[0];
+
       return (
         <div
-          key={category.category_id}
+          key={category.category_lists_id}
           onClick={() => {
-            router.replace(`/productCatalog/${category.category}=1`);
+            router.replace(
+              `/productCatalog/${category.category_lists_id}=category=1`,
+            );
             setCurrentPage(1);
             setSearchKeyword('');
           }}
           className={
-            selected.includes(category.category)
+            selectedCategoryListsId == category.category_lists_id
               ? 'p-[1vh] my-[1vh] font-[400] text-[1.1rem] rounded-[2vw] border-solid border-[1px] border-[#008DEB] cursor-pointer bg-cyan-100'
               : 'p-[1vh] my-[1vh] font-[400] text-[1.1rem] rounded-[2vw] border-solid border-[1px] border-transparent hover:border-[#008DEB] hover:cursor-pointer hover:bg-cyan-100'
           }
@@ -276,7 +279,7 @@ function ProductCatalog(props) {
                 />
                 <div
                   onClick={() => {
-                    router.replace(`/productCatalog/${searchKeyword}=1`);
+                    router.replace(`/productCatalog/${searchKeyword}=key=1`);
                     setCurrentPage(1);
                   }}
                   className="bg-[#008DEB] flex items-center justify-center w-[20%] hover:cursor-pointer"
@@ -353,8 +356,6 @@ export async function getServerSideProps(context) {
     const session = await getSession({ req: context.req });
     const resGetCategoriesLists = await axiosInstance.get('categories/getAll');
 
-    // console.log({session});
-
     let resGetProducts = '';
 
     if (context.params.params.includes('semuaObat')) {
@@ -362,38 +363,42 @@ export async function getServerSideProps(context) {
 
       const page = splitParams[1];
 
-      resGetProducts = await axiosInstance.post('products/', {
-        page,
-        limit: 10,
+      resGetProducts = await axiosInstance.get('products/all', {
+        params: { page, limit: 10 },
       });
     } else if (context.params.params.includes('sort')) {
       const splitParams = context.params.params.split('=');
 
       const page = splitParams[splitParams.length - 1];
 
-      resGetProducts = await axiosInstance.post(
+      resGetProducts = await axiosInstance.get(
         `products/sort/${context.params.params}`,
-        { page, limit: 10 },
+        { params: { page, limit: 10 } },
       );
-    } else {
+    } else if (context.params.params.includes('category')) {
       const splitParams = context.params.params.split('=');
 
       const page = splitParams[splitParams.length - 1];
 
-      resGetProducts = await axiosInstance.post(
+      resGetProducts = await axiosInstance.get(
+        `products/byCategory/${context.params.params}`,
+        { params: { page, limit: 10 } },
+      );
+    } else if (context.params.params.includes('key')) {
+      const splitParams = context.params.params.split('=');
+
+      const page = splitParams[splitParams.length - 1];
+
+      resGetProducts = await axiosInstance.get(
         `products/specifics/${splitParams[0]}`,
         {
-          page,
-          limit: 10,
+          params: { page, limit: 10 },
         },
       );
     }
     const { user_id } = context.params;
 
     const res = await axiosInstance.get(`/users/${user_id}`);
-
-    // console.log(context.params);
-    // console.log({ resGetProducts });
 
     return {
       props: {
@@ -406,7 +411,8 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
-    return { props: {} };
+    console.log({ error });
+    return { props: { Error: error.message } };
   }
 }
 

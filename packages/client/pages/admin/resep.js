@@ -8,6 +8,7 @@ import {
   Image,
   ChakraProvider,
   Box,
+  useToast,
 } from '@chakra-ui/react';
 import { getSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
@@ -20,13 +21,15 @@ function DaftarTransaksiRacikan(props) {
   const [selected, setSelected] = useState(0);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(3);
+  const [prods, setProds] = useState([]);
 
   const router = useRouter();
-
+  const toast = useToast();
   const path = router.pathname;
 
   useEffect(() => {
     fetchTransactions();
+    fetchProducts();
   }, [selected, page]);
 
   const onPrevClick = () => {
@@ -35,6 +38,25 @@ function DaftarTransaksiRacikan(props) {
 
   const onNextClick = () => {
     setPage(page + 1);
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const res = await axiosInstance.get('products');
+      setProds(res.data.data.resGetAllProducts);
+    } catch (error) {
+      console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   const fetchTransactions = async () => {
@@ -53,7 +75,17 @@ function DaftarTransaksiRacikan(props) {
       );
       setTransac(res.data.data.resFetchTransactions);
     } catch (error) {
-      alert(error.message);
+      console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -64,10 +96,12 @@ function DaftarTransaksiRacikan(props) {
           key={transaction.transaction_id}
           prescriptionImage={transaction.prescriptionImage}
           trans_id={transaction.transaction_id}
+          userId={transaction.user_id}
           deliveryCost={transaction.deliveryCost}
           createdAt={transaction.createdAt}
           transac={transac}
           props={props}
+          products={prods}
         />
       );
     });
@@ -77,7 +111,7 @@ function DaftarTransaksiRacikan(props) {
     <ChakraProvider theme={theme}>
       <div className="flex w-[100vw] h-[100vh]">
         <AdminNavbar path={path} />
-        <VStack align="start">
+        <VStack align="start" w={'85%'} h={'100%'}>
           <Box>
             <Text
               fontSize={21}
@@ -93,12 +127,13 @@ function DaftarTransaksiRacikan(props) {
           {transac.length ? (
             <div>{mappedTransactions()}</div>
           ) : (
-            <VStack paddingTop={100} alignSelf="center" width="180vH">
+            <VStack paddingTop={100} alignSelf="center">
               <Box align="center">
                 <Image
                   src="/admin/Empty-Transaction.png"
                   width={250}
                   height={250}
+                  alt={''}
                 />
                 <Text paddingTop={6} fontSize={18}>
                   Tidak Ada Pesanan
@@ -125,9 +160,7 @@ function DaftarTransaksiRacikan(props) {
                 Next
               </Button>
             </HStack>
-          ) : (
-            <VStack></VStack>
-          )}
+          ) : null}
         </VStack>
       </div>
     </ChakraProvider>

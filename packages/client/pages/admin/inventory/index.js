@@ -1,14 +1,13 @@
-import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
+import { signIn, getSession } from 'next-auth/react';
+import axiosInstance from '../../../src/config/api';
 
 function Index() {
   const router = useRouter();
 
   return <div></div>;
 }
-
-export default Index;
 
 export async function getServerSideProps(context) {
   try {
@@ -21,6 +20,9 @@ export async function getServerSideProps(context) {
     }
     return { redirect: { destination: '/admin/inventory/byId=1' } };
   } catch (error) {
+    console.log({ error });
     return { props: { error: error.message } };
   }
 }
+
+export default Index;

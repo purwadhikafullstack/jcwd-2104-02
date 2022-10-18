@@ -11,6 +11,8 @@ import {
   useDisclosure,
   HStack,
   Checkbox,
+  useToast,
+  Link,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import '@fontsource/poppins';
@@ -20,9 +22,11 @@ import theme from '../../components/theme';
 import SelectAddress from '../../components/SelectAddress';
 import AddAddress from '../../components/AddAddress';
 import { AddIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/router';
 import GetDeliveryCost from '../../components/GetDeliveryCost';
 
 function Cart(props) {
+  const router = useRouter();
   const [carts, setCarts] = useState([]);
   const [empty, setEmpty] = useState(false);
   const [userAllAddress, setUserAllAddress] = useState(props.userAllAddress);
@@ -32,9 +36,10 @@ function Cart(props) {
   const [modalSelectAddress, setModalSelectAddress] = useState(false);
   const [modalSelectCourier, setModalSelectCourier] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user_id, user_token } = props;
+  const { user_id } = props;
   const [cartsPrice, setCartsPrice] = useState([]);
-  // console.log(cartsPrice)
+
+  const toast = useToast();
 
   useEffect(() => {
     fetchCarts();
@@ -67,6 +72,16 @@ function Cart(props) {
       setSelectAddress(defaultAddress.data.data);
     } catch (error) {
       console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -74,7 +89,6 @@ function Cart(props) {
     try {
       const session = await getSession();
       const { user_id } = props;
-      // console.log(user_id)
 
       const { user_token } = session.user;
 
@@ -87,10 +101,19 @@ function Cart(props) {
         setEmpty(true);
       }
     } catch (error) {
-      alert(error.message);
+      console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
-  // console.log({ fetchCarts });
 
   const countTotalPrice = (body) => {
     const result = carts.reduce(
@@ -99,7 +122,6 @@ function Cart(props) {
     );
     return result;
   };
-  // console.log(")
 
   const onCheckoutClick = async () => {
     try {
@@ -112,23 +134,36 @@ function Cart(props) {
       };
       const deliveryCost = selectedDeliveryCost.split(',');
       const getDeliveryCost = parseInt(deliveryCost[1]);
-      console.log(getDeliveryCost);
       const body = {
         totalPrice: countTotalPrice(),
         address_id: selectAddress.address_id,
         courier: selectedCourier,
         deliveryCost: getDeliveryCost,
       };
-
-      console.log(body);
       const res = await axiosInstance.post(
         `/transactions/createTransaction/`,
         body,
         config,
       );
-      alert('sukses');
+      toast({
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      setTimeout(() => {
+        router.replace(`/transaction/${user_id}`);
+      }, 1000);
     } catch (error) {
-      alert(alert.message);
+      console.log({ error });
+      toast({
+        description: 'Alamat dan Kurir Tidak Boleh Kosong',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -162,7 +197,7 @@ function Cart(props) {
         fontWeight={500}
         fontSize={15}
         justify="space-between"
-        minWidth={354}
+        minWidth={'219%'}
       >
         <HStack color="gray.600">
           <Text>Biaya Pengiriman :</Text>;
@@ -237,9 +272,7 @@ function Cart(props) {
                         />
                       </Button>
                     </VStack>
-                  ) : (
-                    <VStack></VStack>
-                  )}
+                  ) : null}
                 </VStack>
               ) : (
                 <VStack align="start" marginTop={5}>
@@ -310,7 +343,7 @@ function Cart(props) {
                 <Text fontWeight={500} fontSize={15} color="gray.600">
                   Sub Total
                 </Text>
-                <HStack fontWeight={550} fontSize={15} paddingRight={2}>
+                <HStack fontWeight={550} fontSize={15} paddingRight={''}>
                   <Text>Rp {countTotalPrice().toLocaleString('id')}</Text>
                 </HStack>
               </HStack>
@@ -318,8 +351,9 @@ function Cart(props) {
                 justifyContent="space-between"
                 marginTop={4}
                 marginBottom={2}
+                w={'100%'}
               >
-                <HStack>
+                <HStack w={'100%'}>
                   <Text>{selectedDeliveryCost && renderDeliveryCost()}</Text>
                 </HStack>
               </HStack>
@@ -328,12 +362,7 @@ function Cart(props) {
                 <Text fontWeight={600} fontSize={15} color="gray.600">
                   Total
                 </Text>
-                <Text
-                  fontWeight={550}
-                  fontSize={15}
-                  color="#004776"
-                  paddingRight={3}
-                >
+                <Text fontWeight={550} fontSize={15} color="#004776">
                   {selectedDeliveryCost && renderTotalPrice()}
                 </Text>
               </HStack>
@@ -401,7 +430,7 @@ export async function getServerSideProps(context) {
     };
   } catch (error) {
     console.log({ error });
-    return { props: {} };
+    return { props: { error } };
   }
 }
 

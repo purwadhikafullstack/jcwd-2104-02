@@ -7,6 +7,7 @@ const { createToken, verifyToken } = require('../../lib/token');
 const { users } = require('../../../models');
 const { sendMail, sendResetPasswordMail } = require('../../lib/nodemailer');
 const { Op } = require('sequelize');
+const { NUMBER } = require('sequelize');
 
 const registerUserController = async (req, res, next) => {
   try {
@@ -95,36 +96,12 @@ async function sendResetPasswordMailController(req, res, next) {
   }
 }
 
-// const resendEmailVerification = async (req, res, next) => {
-//   try {
-//     const { email, userId } = req.body;
-    
-//     const token = createToken({ userId, email });
-    
-//     await users.update({ user_token: token }, { where: { user_id: userId } });
-    
-//   await sendMail({ email, token });
-
-//   res.send({
-//     status: 'success',
-//     message: 'success resend verification',
-//     data: {
-//       result: updateToken,
-//     },
-//   });
-
-
-// } catch (error) {
-//   next(error)
-// }
-// }
-
 async function resetPassword(req, res, next) {
   try {
     const { token } = req.params;
-const verifiedToken = verifyToken(token);
+    const verifiedToken = verifyToken(token);
 
-const { email } = verifiedToken;
+    const { email } = verifiedToken;
 
     const hashedPassword = hash(req.body.newPassword);
 
@@ -188,9 +165,34 @@ const loginUser = async (req, res, next) => {
   }
 };
 
+const resendEmailVerification = async (req, res, next) => {
+  try {
+    const { email, user_id } = req.body;
+
+    const token = createToken({ user_id });
+
+    const updateToken = await users.update(
+      { user_token: token },
+      { where: { user_id } },
+    );
+
+    await sendMail({ email, token });
+
+    res.send({
+      status: 'success',
+      message: 'Success Resend Email Verification',
+      data: {
+        result: updateToken,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 router.post('/sendResetPasswordMail', sendResetPasswordMailController);
 router.post('/resetPassword/:token', resetPassword);
-// router.post('/resendVerif', resendEmailVerification);
+router.post('/resendVerif', resendEmailVerification);
 router.post('/register', registerUserController);
 router.post('/login', loginUser);
 

@@ -13,19 +13,16 @@ import axiosInstance from '../../src/config/api';
 import React, { useEffect, useState } from 'react';
 import { getSession } from 'next-auth/react';
 import Image from 'next/image';
-import next from 'next';
 import { useToast } from '@chakra-ui/react';
+import { api_origin } from '../../constraint/index';
 
 function DetailPage(props) {
   const { products } = props;
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const { user_id } = props;
   const { product_id } = products;
   const [quantity, setQuantity] = useState(1);
 
   const toast = useToast();
-  // console.log(quantity);
 
   const onAddClick = async () => {
     setLoading(true);
@@ -57,9 +54,18 @@ function DetailPage(props) {
         duration: 3000,
         isClosable: true,
       });
-      //setSuccess(true);
     } catch (error) {
-      alert(error);
+      console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     } finally {
       setLoading(false);
     }
@@ -68,7 +74,7 @@ function DetailPage(props) {
   return (
     <div>
       <Navbar />
-      <div className="container" >
+      <div className="container">
         <div className="flex-col">
           <div className="w-[65%] ml-[1vw] my-[3vh] columns-2">
             <Image
@@ -77,7 +83,10 @@ function DetailPage(props) {
               layout="responsive"
               width={50}
               height={50}
-              src={products.productImage}
+              src={api_origin + products.productImage}
+              loader={() => {
+                return api_origin + products.productImage;
+              }}
             />
             <div className="flex-row font-semibold">
               <p className="text-[25px]">{products.productName}</p>
@@ -174,23 +183,19 @@ export async function getServerSideProps(context) {
     if (!session) return { redirect: { destination: '/login' } };
     const { user_token } = session.user;
     const { user_id } = session.user.user;
-    // console.log(session.user.user.user_id);
 
     const config = {
       headers: { Authorization: `Bearer ${user_token}` },
     };
     const { product_id } = context.params;
-    // console.log(product_id);
 
     const resGetProduct = await axiosInstance.get(
-      `/products/${product_id}`,
+      `/products/byId/${product_id}`,
       config,
     );
-    // console.log(resGetProduct);
 
     if (!resGetProduct) return { redirect: { destination: '/' } };
 
-    // console.log(productDetail);
     return {
       props: {
         products: resGetProduct.data.data,
@@ -198,8 +203,8 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
+    console.log({ error });
     const { message } = error;
-
     return { props: { message } };
   }
 }

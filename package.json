@@ -20,5 +20,11 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "react-datepicker": "^4.8.0",
+    "react-paginate": "^8.1.3",
+    "dotenv": "^16.0.3",
+    "fs": "^0.0.1-security"
+  }
 }

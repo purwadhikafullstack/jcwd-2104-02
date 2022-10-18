@@ -8,15 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      user_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'users',
-          key: 'user_id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-      },
       product_id: {
         type: Sequelize.INTEGER,
         references: {
@@ -29,8 +20,8 @@ module.exports = {
       transaction_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'transactions',
-          key: 'transaction_id',
+          model: 'products',
+          key: 'product_id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
@@ -38,11 +29,17 @@ module.exports = {
       transaction_details_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'transaction_details',
-          key: 'transaction_details_id',
+          model: 'products',
+          key: 'product_id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
+      },
+      stock: {
+        type: Sequelize.INTEGER,
+      },
+      activity: {
+        type: Sequelize.ENUM('terjual', 'tambah_stok', 'unit_conversion'),
       },
       createdAt: {
         allowNull: false,

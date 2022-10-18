@@ -20,6 +20,9 @@ module.exports = {
       description: {
         type: Sequelize.STRING,
       },
+      defaultQuantity: {
+        type: Sequelize.INTEGER,
+      },
       productStock: {
         type: Sequelize.INTEGER,
       },

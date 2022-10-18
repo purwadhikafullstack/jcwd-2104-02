@@ -9,30 +9,36 @@ import {
   InputGroup,
   InputRightElement,
   Image,
+  useToast,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { Icon, ViewOffIcon, ViewIcon } from '@chakra-ui/icons';
 import { signIn, getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { redirect } from 'next/dist/server/api-utils';
+import axiosInstance from '../../client/src/config/api';
 
 function Login() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [isLogin, setIsLogin] = useState(false);
+  const [login, setLogin] = useState(false);
   const router = useRouter();
+  const toast = useToast();
 
   async function getSessionAsync() {
     const session = await getSession();
 
-    // console.log({ session });
-    if (session) {
-      // router.replace('/');
+    if (session?.user.user.isAdmin) {
+      router.replace('/admin');
+    } else if (session) {
+      router.replace('/');
     }
-    // console.log({ session });
   }
 
   useEffect(() => {
     getSessionAsync();
-  }, []);
+  }, [isLogin]);
 
   function PasswordInput() {
     const [show, setShow] = useState(false);
@@ -50,7 +56,7 @@ function Login() {
           mb={6}
         />
         <InputRightElement>
-          <Button rounded="50%" size="lg" onClick={handleClick}>
+          <Button rounded="10%" size="lg" onClick={handleClick}>
             {show ? (
               <ViewOffIcon onClick={handleClick} />
             ) : (
@@ -69,13 +75,18 @@ function Login() {
       password,
     });
 
-    // console.log(`ini dia ${res}`);
-    // console.log({ res });
     if (!res.error) {
-      router.replace('/');
+      getSessionAsync();
     } else {
-      // console.log(res.error);
-      alert(res.error);
+      console.log({ Error: res.error });
+      toast({
+        title: 'Error!',
+        description: res.error,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -166,3 +177,20 @@ function Login() {
 }
 
 export default Login;
+
+export async function getServerSideProps() {
+  try {
+    const session = await getSession();
+
+    if (session?.user.user.isAdmin) {
+      return { redirect: { destination: '/admin' } };
+    } else if (session) {
+      return { redirect: { destination: '/' } };
+    }
+
+    return { props: {} };
+  } catch (error) {
+    console.log({ error });
+    return { props: { error: error.message } };
+  }
+}

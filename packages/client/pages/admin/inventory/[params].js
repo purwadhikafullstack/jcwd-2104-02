@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import AdminNavbar from '../../../components/AdminNavbar';
 import { useRouter } from 'next/router';
-import { Button, Input } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  HStack,
+  Text,
+  Input,
+  VStack,
+  useDisclosure,
+  useToast,
+} from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
@@ -11,14 +20,20 @@ import AddFormulaModal from '../../../components/AddFormulaModal';
 import AddProductModal from '../../../components/AddProductModal';
 import AdminProductDetails from '../../../components/adminProductDetails';
 import EditProductModal from '../../../components/editProductModal';
-import { useSession } from 'next-auth/react';
+import AddCategoryModal from '../../../components/AddCategoryModal';
+import { getSession, useSession } from 'next-auth/react';
+import { api_origin } from '../../../constraint/index';
 
 function Inventory(props) {
   const router = useRouter();
+  const { params } = router.query;
+  const splitParams = params.split('=');
   const [selected, setSelected] = useState('');
   const [showCategories, setShowCategories] = useState(false);
   const [productList, setProductList] = useState(props.products);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(splitParams[splitParams.length - 1]),
+  );
   const [searchKeyword, setSearchKeyword] = useState('');
   const [currentProduct, setCurrentProduct] = useState(props.products[0]);
   const [addProductButton, setAddProductButton] = useState(false);
@@ -28,7 +43,6 @@ function Inventory(props) {
   const [addFormulaButton, setAddFormulaButton] = useState(false);
 
   useEffect(() => {
-    const { params } = router.query;
     setProductList(props.products);
     setProductsAll(props.productsAll);
     setSelected(params);
@@ -37,6 +51,7 @@ function Inventory(props) {
   // console.log(addFormulaButton, addProductButton);
 
   const session = useSession();
+  const toast = useToast();
 
   if (session.data) {
     if (!session.data.user.user.isAdmin) {
@@ -61,23 +76,27 @@ function Inventory(props) {
 
   function categoriesMap() {
     return props.categoriesLists.categories.map((category) => {
+      const selectedCategoryListsId = selected.split('=')[0];
+
       return (
         <div
           key={category.category_lists_id}
           onClick={() => {
-            router.replace(`/admin/inventory/${category.category}=1`);
+            router.replace(
+              `/admin/inventory/${category.category_lists_id}=category=1`,
+            );
             setCurrentPage(1);
             setSearchKeyword('');
           }}
           className={
-            selected.includes(category.category)
+            selectedCategoryListsId == category.category_lists_id
               ? 'h-[7vh] pl-[1vw] flex items-center font-[400] text-[1.1rem] text-white cursor-pointer bg-[#008DEB]'
               : 'h-[7vh] pl-[1vw] flex items-center font-[400] text-[1.1rem] border-transparent hover:text-white hover:cursor-pointer hover:bg-[#008DEB] bg-white'
           }
         >
-          {category.category.length <= 25
+          {category.category.length <= 20
             ? category.category
-            : `${category.category.slice(0, 25)}...`}
+            : `${category.category.slice(0, 20)}...`}
         </div>
       );
     });
@@ -108,14 +127,14 @@ function Inventory(props) {
                 layout="responsive"
                 width={1}
                 height={1}
-                src={product.productImage}
+                src={api_origin + product.productImage}
                 loader={() => {
-                  return product.productImage;
+                  return api_origin + product.productImage;
                 }}
               />
             </div>
 
-            <div className="flex flex-col w-[40%] text-black h-[7vw] justify-center pl-[2vw] text-[#6E6E6E]">
+            <div className="flex flex-col w-[70%] text-black h-[7vw] justify-center pl-[2vw] text-[#6E6E6E]">
               <p className="font-[500] text-[1.5rem]">
                 {product.productName.length <= 40
                   ? product.productName
@@ -127,6 +146,17 @@ function Inventory(props) {
               <p className="text-[1.1rem] font-[400]">
                 Stok {product.productStock}
               </p>
+              <Link href={`/admin/adminDetailProduct/${product.product_id}`}>
+                <Button
+                  width={125}
+                  bgColor="white"
+                  _hover="white"
+                  variant="solid"
+                  color="blue.400"
+                >
+                  Riwayat Produk
+                </Button>
+              </Link>
             </div>
 
             <div className="grow" />
@@ -147,8 +177,7 @@ function Inventory(props) {
                 variant="outline"
                 colorScheme="red"
                 onClick={() => {
-                  deleteProduct(product.product_id);
-                  setProductList(props.products.splice(index, 1));
+                  deleteProduct(product.product_id, index);
                 }}
                 sx={{ width: '100%', height: '5vh' }}
               >
@@ -161,15 +190,22 @@ function Inventory(props) {
     });
   }
 
-  async function deleteProduct(product_id) {
+  async function deleteProduct(product_id, index) {
     try {
-      const resDeleteProduct = await axiosInstance.delete(
-        `/products/${product_id}`,
-      );
-
-      console.log({ resDeleteProduct });
+      await axiosInstance.delete(`/products/${product_id}`);
+      setProductList(props.products.splice(index, 1));
     } catch (error) {
       console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response?.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   }
 
@@ -193,6 +229,8 @@ function Inventory(props) {
         <EditProductModal
           currentProduct={currentProduct}
           editProductButton={editProductButton}
+          productList={productList}
+          setProductList={setProductList}
           setEditProductButton={setEditProductButton}
           categoriesLists={props.categoriesLists.categories}
         />
@@ -292,7 +330,7 @@ function Inventory(props) {
                 />
                 <div
                   onClick={() => {
-                    router.replace(`/admin/inventory/${searchKeyword}=1`);
+                    router.replace(`/admin/inventory/${searchKeyword}=key=1`);
                     setCurrentPage(1);
                   }}
                   className="bg-[#008DEB] flex items-center justify-center w-[20%] hover:cursor-pointer"
@@ -404,15 +442,18 @@ function Inventory(props) {
                   onClick={() => {
                     setAddFormulaButton(true);
                   }}
+<<<<<<< HEAD
                   className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
                 >
                   + Tambah Obat Racikan
                 </div>
                 <div
                   onClick={() => {}}
+=======
+>>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
                   className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
                 >
-                  + Tambah Kategori
+                  + Tambah Obat Racikan
                 </div>
 
                 <div
@@ -434,32 +475,60 @@ function Inventory(props) {
 
 export async function getServerSideProps(context) {
   try {
+    const session = await getSession({ req: context.req });
+
+    if (!session) return { redirect: { destination: '/login' } };
+
+    if (!session.user.user.isAdmin) {
+      return { redirect: { destination: '/' } };
+    }
+
     const resGetCategoriesLists = await axiosInstance.get('categories/getAll');
 
     let resGetProducts = '';
 
     if (context.params.params.includes('byId')) {
       const splitParams = context.params.params.split('=');
+
       const page = splitParams[1];
-      resGetProducts = await axiosInstance.post('products/', {
-        page,
-        limit: 3,
+
+      resGetProducts = await axiosInstance.get('products/all', {
+        params: { page, limit: 3 },
       });
     } else if (context.params.params.includes('sort')) {
       const splitParams = context.params.params.split('=');
+
       const page = splitParams[splitParams.length - 1];
-      resGetProducts = await axiosInstance.post(
+
+      resGetProducts = await axiosInstance.get(
         `products/sort/${context.params.params}`,
-        { page, limit: 3 },
+        { params: { page, limit: 3 } },
       );
-    } else {
+    } else if (context.params.params.includes('category')) {
       const splitParams = context.params.params.split('=');
+
       const page = splitParams[splitParams.length - 1];
-      resGetProducts = await axiosInstance.post(
+
+      resGetProducts = await axiosInstance.get(
+        `products/byCategory/${context.params.params}`,
+        { params: { page, limit: 3 } },
+      );
+    } else if (context.params.params.includes('key')) {
+      const splitParams = context.params.params.split('=');
+
+      const page = splitParams[splitParams.length - 1];
+
+      resGetProducts = await axiosInstance.get(
         `products/specifics/${splitParams[0]}`,
-        { page, limit: 3 },
+        {
+          params: { page, limit: 3 },
+        },
       );
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
     const resGetAllProductsAll = await axiosInstance.get('products');
 
     return {
@@ -472,6 +541,7 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
+    console.log({ error });
     return { props: { error: error.message } };
   }
 }

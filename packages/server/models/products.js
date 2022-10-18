@@ -14,13 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       products.hasMany(models.categories, {
         foreignKey: 'product_id',
       });
-      products.hasMany(models.prescriptions, {
-        foreignKey: 'product_id',
-      });
       products.hasMany(models.product_details, {
         foreignKey: 'product_id',
       });
-      products.hasMany(models.stock_opname, {
+      products.hasMany(models.stock_opnames, {
         foreignKey: 'product_id',
       });
       products.hasMany(models.transactions, {
@@ -51,6 +48,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       description: {
         type: DataTypes.STRING,
+      },
+      defaultQuantity: {
+        type: DataTypes.INTEGER,
       },
       productStock: {
         type: DataTypes.INTEGER,

@@ -1,16 +1,26 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const router = express.Router();
 const {
   transactions,
   products,
   transaction_details,
   addresses,
+  users,
 } = require('../../../models');
 const { auth } = require('../../helpers/auth');
 
 const adminGetTransactionsByIndex = async (req, res, next) => {
   try {
     const { selected } = req.params;
+    let order_by = req.query.order_by;
+    let ordered_method = req.query.ordered_method;
+    let transactionID = req.query.transaction;
+
+    if (order_by == 'undefined' || ordered_method == 'undefined') {
+      order_by = 'transaction_id';
+      ordered_method = 'DESC';
+    }
 
     let { page, pageSize } = req.query;
 
@@ -21,6 +31,10 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
     const offset = (page - 1) * pageSize;
 
     var statusFind;
+    let whereController = { prescriptionImage: null };
+    if (transactionID != 'undefined') {
+      whereController['transaction_id'] = parseInt(transactionID);
+    }
 
     switch (selected) {
       case '1' || 1:
@@ -44,7 +58,7 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
 
       default:
         const resFetchTransactions = await transactions.findAll({
-          where: { prescriptionImage: null },
+          where: whereController,
           attributes: [
             'transaction_id',
             'user_id',
@@ -67,7 +81,7 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
               ],
             },
           ],
-          order: [['transaction_id', 'DESC']],
+          order: [[order_by, ordered_method]],
         });
 
         res.send({
@@ -79,7 +93,6 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
         });
     }
 
-    console.log({ statusFind, selected });
     const resFetchTransactions = await transactions.findAll({
       where: { status: statusFind, prescriptionImage: null },
       attributes: [
@@ -298,6 +311,7 @@ const getTransactionDetails = async (req, res, next) => {
 
 const getTransactionsByIndex = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     const { selected } = req.params;
     const { user_id } = req.params;
     let { page, pageSize } = req.query;
@@ -307,30 +321,42 @@ const getTransactionsByIndex = async (req, res, next) => {
 
     const limit = pageSize;
     const offset = (page - 1) * pageSize;
+=======
+    const selected = parseInt(req.params.selected);
+    const user_id = parseInt(req.params.user_id);
+    let { page, pageSize } = req.query;
+>>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
 
-    var statusFind;
+    page = +page;
+    pageSize = +pageSize;
+
+    const limit = pageSize;
+    const offset = (page - 1) * pageSize;
+
+    let statusFind;
 
     switch (selected) {
-      case '1' || 1:
+      case 1:
         statusFind = 'processing_order';
         break;
-      case '2' || 2:
+      case 2:
         statusFind = 'delivering_order';
         break;
-      case '3' || 3:
+      case 3:
         statusFind = 'order_confirmed';
         break;
-      case '4' || 4:
+      case 4:
         statusFind = 'order_cancelled';
         break;
-      case '5' || 5:
+      case 5:
         statusFind = 'awaiting_payment';
         break;
-      case '6' || 6:
+      case 6:
         statusFind = 'awaiting_payment_confirmation';
         break;
 
       default:
+<<<<<<< HEAD
         const { user_id } = req.params;
         const resFetchTransactions = await transactions.findAll({
           where: { user_id, prescriptionImage: null },
@@ -362,6 +388,44 @@ const getTransactionsByIndex = async (req, res, next) => {
             resFetchTransactions,
           },
         });
+=======
+        statusFind = 0;
+        break;
+    }
+
+    if (!statusFind) {
+      const resFetchTransactions = await transactions.findAll({
+        where: { user_id, prescriptionImage: null },
+        attributes: [
+          'transaction_id',
+          'user_id',
+          'address_id',
+          'totalPrice',
+          'status',
+        ],
+        limit: limit,
+        offset: offset,
+        include: [
+          {
+            model: transaction_details,
+            include: [
+              {
+                model: products,
+              },
+            ],
+          },
+        ],
+      });
+
+      res.send({
+        status: 'success',
+        message: 'Fetch Transaction Success',
+        data: {
+          resFetchTransactions,
+        },
+      });
+      return;
+>>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
     }
 
     const resFetchTransactions = await transactions.findAll({
@@ -399,6 +463,146 @@ const getTransactionsByIndex = async (req, res, next) => {
   }
 };
 
+const getAllTransactions = async (req, res, next) => {
+  try {
+    let { paramsStartDate, paramsEndDate } = req.query;
+
+    let allTransaction;
+
+    if (paramsStartDate && paramsEndDate) {
+      allTransaction = await transactions.findAll({
+        where: {
+          status: 'order_confirmed',
+          createdAt: { [Op.between]: [paramsStartDate, paramsEndDate] },
+        },
+        attributes: [
+          'transaction_id',
+          'user_id',
+          'address_id',
+          'totalPrice',
+          'status',
+          'courier',
+          'deliveryCost',
+          'createdAt',
+          'updatedAt',
+        ],
+        include: [
+          {
+            model: transaction_details,
+            include: [
+              {
+                model: products,
+              },
+            ],
+          },
+          {
+            model: users,
+          },
+        ],
+      });
+    } else if (paramsStartDate) {
+      paramsEndDate = new Date('July 21, 3000 01:15:00');
+      allTransaction = await transactions.findAll({
+        where: {
+          status: 'order_confirmed',
+          createdAt: { [Op.between]: [paramsStartDate, paramsEndDate] },
+        },
+        attributes: [
+          'transaction_id',
+          'user_id',
+          'address_id',
+          'totalPrice',
+          'status',
+          'courier',
+          'deliveryCost',
+          'createdAt',
+          'updatedAt',
+        ],
+        include: [
+          {
+            model: transaction_details,
+            include: [
+              {
+                model: products,
+              },
+            ],
+          },
+          {
+            model: users,
+          },
+        ],
+      });
+    } else if (paramsEndDate) {
+      paramsStartDate = new Date(1970);
+      allTransaction = await transactions.findAll({
+        where: {
+          status: 'order_confirmed',
+          createdAt: { [Op.between]: [paramsStartDate, paramsEndDate] },
+        },
+        attributes: [
+          'transaction_id',
+          'user_id',
+          'address_id',
+          'totalPrice',
+          'status',
+          'courier',
+          'deliveryCost',
+          'createdAt',
+          'updatedAt',
+        ],
+        include: [
+          {
+            model: transaction_details,
+            include: [
+              {
+                model: products,
+              },
+            ],
+          },
+          {
+            model: users,
+          },
+        ],
+      });
+    } else {
+      allTransaction = await transactions.findAll({
+        where: { status: 'order_confirmed' },
+        attributes: [
+          'transaction_id',
+          'user_id',
+          'address_id',
+          'totalPrice',
+          'status',
+          'courier',
+          'deliveryCost',
+          'createdAt',
+          'updatedAt',
+        ],
+        include: [
+          {
+            model: transaction_details,
+            include: [
+              {
+                model: products,
+              },
+            ],
+          },
+          {
+            model: users,
+          },
+        ],
+      });
+    }
+
+    res.send({
+      status: 'Success',
+      allTransaction,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 router.get(
   '/admin/transactionsByIndex/:selected',
   auth,
@@ -417,5 +621,6 @@ router.get(
   auth,
   getTransactionsByIndex,
 );
+router.get('/all/products/', getAllTransactions);
 
 module.exports = router;

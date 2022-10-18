@@ -15,8 +15,13 @@ axios.defaults.headers.post['Content-Type'] =
 router.get('/provinsi', (req, res) => {
   axios
     .get('/province')
-    .then((response) => res.json(response.data))
-    .catch((err) => res.send(err));
+    .then((response) => {
+      res.json(response.data);
+    })
+    .catch((err) => {
+      res.send(err);
+      console.log({ err });
+    });
 });
 
 // Router GET city by province_id
@@ -25,7 +30,10 @@ router.get('/kota/:provId', (req, res) => {
   axios
     .get(`/city?province=${id}`)
     .then((response) => res.json(response.data))
-    .catch((err) => res.send(err));
+    .catch((err) => {
+      res.send(err);
+      console.log({ err });
+    });
 });
 
 // Router GET costs
@@ -39,7 +47,10 @@ router.get('/ongkos/:asal/:tujuan/:berat/:kurir', (req, res) => {
       courier: param.kurir,
     })
     .then((response) => res.json(response.data))
-    .catch((err) => res.send(err));
+    .catch((err) => {
+      res.send(err);
+      console.log({ err });
+    });
 });
 
 module.exports = router;

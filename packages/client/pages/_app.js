@@ -1,4 +1,4 @@
-import '../styles/globals.css'
+import '../styles/globals.css';
 import { ChakraProvider } from '@chakra-ui/react';
 import { SessionProvider } from 'next-auth/react';
 import Head from 'next/head';
@@ -16,6 +16,7 @@ function MyApp({ Component, pageProps }) {
             rel="stylesheet"
           />
           <meta name="description" content="Buy your medicine here" />
+          <link rel="icon" href="/admin/Medbox.png" />
         </Head>
         <div className="font-[poppins]">
           <Component {...pageProps} />

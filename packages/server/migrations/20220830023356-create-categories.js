@@ -23,8 +23,9 @@ module.exports = {
           model: 'products',
           key: 'product_id',
         },
+        unique: true,
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onDelete: 'DELETE',
       },
       categoryName: {
         type: Sequelize.STRING,

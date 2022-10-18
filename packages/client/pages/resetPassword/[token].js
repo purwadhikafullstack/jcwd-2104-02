@@ -1,4 +1,4 @@
-import { Button, Input } from '@chakra-ui/react';
+import { Button, Input, useToast } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -11,6 +11,7 @@ function ResetPassword(props) {
   });
 
   const router = useRouter();
+  const toast = useToast();
 
   const handleChange = (prop) => (event) => {
     setInputs({ ...inputs, [prop]: event.target.value });
@@ -19,19 +20,39 @@ function ResetPassword(props) {
   const onChangePasswordClick = async () => {
     try {
       if (inputs.newPassword != inputs.confirmNewPassword) {
-        return alert('Password does not match');
+        return toast({
+          title: 'Error!',
+          description: `Password doesn't match`,
+          position: 'top',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
       }
 
-      const resUpdatePassword = await axiosInstance.post(
-        `users/resetPassword/${props.token}`,
-        inputs,
-      );
+      await axiosInstance.post(`users/resetPassword/${props.token}`, inputs);
 
-      console.log({ resUpdatePassword });
-      alert('Success');
+      toast({
+        title: 'Success!',
+        description: 'Success reset password',
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
       router.replace('/');
     } catch (error) {
       console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -110,6 +131,7 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
+    console.log({ error });
     const errorMessage = error.message;
     return { props: { errorMessage } };
   }
