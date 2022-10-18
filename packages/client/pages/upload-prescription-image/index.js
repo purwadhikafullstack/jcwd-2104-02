@@ -73,6 +73,16 @@ function UploadPrescriptionImage(props) {
       setSelectAddress(defaultAddress.data.data);
     } catch (error) {
       console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -436,7 +446,10 @@ function UploadPrescriptionImage(props) {
           />
           <VStack>
             <Text marginTop={2} fontSize={17} fontWeight={500}>
-              Resep sedang divalidasi
+              Resep sedang divalidasi.
+            </Text>
+            <Text marginTop={2} fontSize={17} fontWeight={500}>
+              Resep yang berhasil divalidasi akan masuk ke riwayat pesanan.
             </Text>
           </VStack>
         </VStack>
@@ -484,7 +497,7 @@ export async function getServerSideProps(context) {
     };
   } catch (error) {
     console.log({ error });
-    return { props: {} };
+    return { props: { error } };
   }
 }
 

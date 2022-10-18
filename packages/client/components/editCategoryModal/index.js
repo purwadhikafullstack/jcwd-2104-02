@@ -90,8 +90,6 @@ function EditCategoryModal({
       );
 
       if (resPatchCategory) {
-        // console.log({ resPatchCategory, extName, resPatchCategoryImage });
-
         setEditCategoryButton(false);
       }
       toast({
@@ -105,6 +103,16 @@ function EditCategoryModal({
       setLoading(false);
     } catch (error) {
       console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
       setLoading(false);
       setEditCategoryButton(false);
     }
@@ -122,21 +130,6 @@ function EditCategoryModal({
   const handleChange = (prop) => (event) => {
     setNewCategory({ ...newCategory, [prop]: event.target.value });
   };
-
-  // const { isOpen, onClose, onSaveUpdate, categoriesLists } = props;
-  // // console.log(categoriesLists)
-  // const [newCategory, setNewCategory] = useState({
-  //   categoriesLists,
-  // });
-  // const [categoryImageFile, setCategoryImageFile] = useState(
-  //   categoriesLists.categoryImage,
-  // );
-
-  // const onHandleChange = (prop) => (e) => {
-  //   setNewCategory({ ...newCategory, [prop]: e.target.value });
-  // };
-
-  // console.log({ api_origin, newCategoryImage });
 
   return (
     <Modal

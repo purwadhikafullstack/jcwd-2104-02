@@ -11,6 +11,7 @@ module.exports = {
         birthDate: new Date('10-17-2021 07:00:00'),
         phoneNumber: '3213212878',
         isAdmin: true,
+        isVerified: true,
         password:
           '$2a$10$XB3xnB6q2icy.a1YG388ZO/eNWAo6AMR/O6.MUFpIJhpGwm0t1LP6',
         createdAt: new Date(),
@@ -18,7 +19,7 @@ module.exports = {
       },
       {
         user_id: 2,
-        name: 'user2',
+        name: 'user1',
         email: 'user1@mail.com',
         gender: 'Female',
         birthDate: new Date('10-11-2021 07:00:00'),
@@ -32,8 +33,8 @@ module.exports = {
       },
       {
         user_id: 3,
-        name: 'user3',
-        email: 'user3@mail.com',
+        name: 'user2',
+        email: 'user2@mail.com',
         gender: 'Male',
         birthDate: new Date('10-27-2021 07:00:00'),
         phoneNumber: '9213212878',
@@ -52,6 +53,7 @@ module.exports = {
         birthDate: new Date('10-17-2021 07:00:00'),
         phoneNumber: '3213212832',
         isAdmin: false,
+        isVerified: true,
         password:
           '$2a$10$XB3xnB6q2icy.a1YG388ZO/eNWAo6AMR/O6.MUFpIJhpGwm0t1LP6',
         createdAt: new Date(),

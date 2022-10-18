@@ -6,11 +6,9 @@ const { uploadCategories } = require('../../lib/multer');
 const postNewCategories = async (req, res, next) => {
   try {
     const { category, categoryImage } = req.body;
-    // console.log(category)
     const getCategories = await categories_list.findAll({
       where: { category },
     });
-    // console.log(getCategories)
     if (getCategories.length) {
       throw { code: 400, message: 'Category already exist' };
     }
@@ -40,7 +38,6 @@ const postNewCategories = async (req, res, next) => {
 };
 
 const uploadCategoryImage = async (req, res, next) => {
-  console.log('jalan');
   try {
     return res.send({
       status: 'Success',

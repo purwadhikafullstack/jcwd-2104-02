@@ -13,6 +13,7 @@ function NotFound() {
           height={1080}
           src={'/others/back1.jpg'}
           layout="responsive"
+          alt={'kocheng'}
         />
       </div>
       <div className="absolute top-[10vh] flex flex-col items-center text-white">

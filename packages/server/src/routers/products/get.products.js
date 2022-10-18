@@ -58,6 +58,23 @@ const landingPageProducts = async (req, res, next) => {
   }
 };
 
+async function getAllProducts(req, res, next) {
+  try {
+    const resGetAllProducts = await products.findAll({
+      order: [['productName', 'ASC']],
+    });
+    res.send({
+      status: 'success',
+      message: 'get products success',
+      data: {
+        resGetAllProducts,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function getAllProductsController(req, res, next) {
   try {
     const page = parseInt(req.query.page);
@@ -112,24 +129,6 @@ async function getAllProductsController(req, res, next) {
       products: resGetAllProducts,
     });
   } catch (error) {
-    next(error)
-  }
-}
-    
-
-async function getAllProducts(req, res, next) {
-  try {
-    const resGetAllProducts = await products.findAll({
-      order: [['productName', 'ASC']],
-    });
-    res.send({
-      status: 'success',
-      message: 'get products success',
-      data: {
-        resGetAllProducts,
-      },
-    });
-  } catch (error) {
     next(error);
   }
 }
@@ -142,9 +141,6 @@ async function getAllProductsSortedController(req, res, next) {
     const { sortOrder } = req.params;
 
     const splitOrder = sortOrder.split('=');
-
-    console.log({ sortOrder, splitOrder });
-    console.log({ page });
 
     const resGetAllProducts = await products.findAll({
       order: [[splitOrder[1], splitOrder[2]]],
@@ -169,8 +165,6 @@ async function getAllProductsSortedController(req, res, next) {
         where: { product_id: product.product_id },
       });
 
-      console.log(resGetEachCategory?.dataValues.category_lists_id);
-
       const resGetCategoriesLists = resGetEachCategory
         ? await categories_list.findOne({
             where: {
@@ -183,8 +177,6 @@ async function getAllProductsSortedController(req, res, next) {
       const resGetProductDefaultQuantity = await product_details.findOne({
         where: { product_id: product.product_id },
       });
-
-      console.log({ resGetCategoriesLists });
 
       product.dataValues.category = resGetEachCategory?.dataValues.categoryName;
 
@@ -221,8 +213,6 @@ async function getSpecificProductsController(req, res, next) {
       where: { category: specifics },
     });
 
-    console.log({ categoryAvailable: resCheckCategories.length });
-
     if (!resCheckCategories.length) {
       const resGetByKeyword = await sequelize.query(
         `SELECT * FROM medbox.products WHERE productName LIKE '%${specifics}%' LIMIT ${
@@ -237,8 +227,6 @@ async function getSpecificProductsController(req, res, next) {
         },${limit};`,
         { type: QueryTypes.SELECT },
       );
-
-      console.log({ resGetByKeyword });
 
       let hasMore = true;
 
@@ -301,7 +289,82 @@ async function getSpecificProductsController(req, res, next) {
 
     for (let product_id of productsIdMap) {
       resGetProducts = await products.findOne({ where: { product_id } });
-      console.log({ resGetProducts });
+      finalProducts.push(resGetProducts.dataValues);
+    }
+
+    for (let product of finalProducts) {
+      const resGetEachCategory = await categories.findOne({
+        where: { product_id: product.product_id },
+      });
+
+      const resGetProductDefaultQuantity = await product_details.findOne({
+        where: { product_id: product.product_id },
+      });
+
+      const resGetCategoriesLists = resGetEachCategory
+        ? await categories_list.findOne({
+            where: {
+              category_lists_id:
+                resGetEachCategory?.dataValues.category_lists_id,
+            },
+          })
+        : '';
+
+      product.category = resGetEachCategory?.dataValues.categoryName;
+
+      product.category_lists_id =
+        resGetCategoriesLists?.dataValues?.category_lists_id;
+
+      product.category_id = resGetEachCategory?.dataValues.category_id;
+    }
+
+    res.send({
+      status: 'success',
+      products: finalProducts,
+      hasMore,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getProductsByCategoryController(req, res, next) {
+  try {
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+    const { categoryListId } = req.params;
+    const destroy = await categories.destroy({ where: { product_id: null } });
+
+    console.log({ destroy });
+
+    const resGetCategories = await categories.findAll({
+      where: { category_lists_id: categoryListId },
+      offset: (page - 1) * limit,
+      limit,
+    });
+
+    const resGetNextPage = await categories.findAll({
+      where: { category_lists_id: categoryListId },
+      offset: page * limit,
+      limit,
+    });
+
+    let hasMore = true;
+
+    if (!resGetNextPage.length) {
+      hasMore = false;
+    }
+
+    const productsIdMap = resGetCategories.map((category) => {
+      return category.dataValues.product_id;
+    });
+
+    let finalProducts = [];
+
+    let resGetProducts;
+
+    for (let product_id of productsIdMap) {
+      resGetProducts = await products.findOne({ where: { product_id } });
       finalProducts.push(resGetProducts.dataValues);
     }
 
@@ -345,6 +408,7 @@ router.get('/byId/:product_id', auth, getProductDetail);
 router.get('/landingPage', landingPageProducts);
 router.get('/specifics/:specifics', getSpecificProductsController);
 router.get('/sort/:sortOrder', getAllProductsSortedController);
+router.get('/byCategory/:categoryListId', getProductsByCategoryController);
 router.get('/all', getAllProductsController);
 router.get('/', getAllProducts);
 module.exports = router;

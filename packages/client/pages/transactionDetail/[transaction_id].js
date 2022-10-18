@@ -65,7 +65,6 @@ function TransactionDetails(props) {
         transStatus: 'awaiting_payment_confirmation',
         trans,
       };
-      console.log(bods);
 
       const config = {
         headers: { Authorization: `Bearer ${user_token}` },
@@ -114,10 +113,26 @@ function TransactionDetails(props) {
       );
       setTrans({ ...trans, status: 'order_cancelled' });
 
-      alert(res.data.message);
+      toast({
+        title: 'Success!',
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       console.log({ Error });
-      alert(error.response?.data.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -129,10 +144,26 @@ function TransactionDetails(props) {
       );
       setTrans({ ...trans, status: 'order_confirmed' });
 
-      alert(res.data.message);
+      toast({
+        title: 'Confirmed!',
+        description: res.data.message,
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       console.log({ Error });
-      alert(error.response?.data.message);
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -164,11 +195,13 @@ function TransactionDetails(props) {
           <div>
             <p className="text-[1rem] font-[500] ml-3">Alamat Lengkap</p>
             <br />
-            <p>Nama Pembeli : {penerima}</p>
-            <p>Alamat Pembeli : {jalan}</p>
-            <p>Provinsi : {provinsi}</p>
-            <p>Kota: {kota}</p>
-            <p>Kode Pos : {kodePos}</p>
+            <div className="flex flex-col ml-3">
+              <p>Nama Pembeli : {penerima}</p>
+              <p>Alamat Pembeli : {jalan}</p>
+              <p>Provinsi : {provinsi}</p>
+              <p>Kota: {kota}</p>
+              <p>Kode Pos : {kodePos}</p>
+            </div>
             <br />
             <p className="text-[1rem] font-[500] ml-3">Daftar Pesanan</p>
             <div>{mappedTransactionDetails()}</div>
@@ -297,8 +330,8 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
+    console.log({ error });
     const { message } = error;
-
     return { props: { message } };
   }
 }

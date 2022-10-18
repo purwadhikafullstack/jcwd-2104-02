@@ -10,6 +10,7 @@ export async function getServerSideProps() {
   try {
     return { redirect: { destination: '/admin/laporan/product' } };
   } catch (error) {
-    return { props: {} };
+    console.log({ error });
+    return { props: { error } };
   }
 }

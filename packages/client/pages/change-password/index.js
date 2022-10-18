@@ -9,6 +9,7 @@ import {
   InputRightElement,
   ChakraProvider,
   Image,
+  useToast,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { Icon, ViewOffIcon, ViewIcon } from '@chakra-ui/icons';
@@ -31,6 +32,7 @@ function ChangePassword(props) {
   });
 
   const router = useRouter();
+  const toast = useToast();
 
   const onHandleSubmit = async ({ oldPassword, password }) => {
     try {
@@ -52,11 +54,27 @@ function ChangePassword(props) {
         body,
         config,
       );
-      // console.log({ resUpdatePassword });
-      alert('Password Updated');
+      toast({
+        title: 'Success!',
+        description: 'Password updated',
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
       router.replace('/');
     } catch (error) {
-      alert('Incorrect Password');
+      console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -195,7 +213,7 @@ export async function getServerSideProps(context) {
     };
   } catch (error) {
     console.log({ error });
-    return { props: {} };
+    return { props: { error } };
   }
 }
 

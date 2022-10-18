@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminNavbar from '../../../components/AdminNavbar';
 import { useRouter } from 'next/router';
 import axiosInstance from '../../../src/config/api';
@@ -20,16 +20,17 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { api_origin } from '../../../constraint/index';
+import AddCategoryModal from '../../../components/AddCategoryModal';
 
 function Category(props) {
   const [categoryList, setCategoryList] = useState(props.categoriesLists);
-  const [currentCategory, setCurrentCategory] = useState(
-    props.categoriesLists[0],
-  );
-
+  const [addCategoryButton, setAddCategoryButton] = useState(false);
   const [page, setPage] = useState(1);
   const [editCategoryButton, setEditCategoryButton] = useState(false);
   const [selected, setSelected] = useState('');
+  const [currentCategory, setCurrentCategory] = useState(
+    props.categoriesLists[0],
+  );
 
   useEffect(() => {
     const { params } = router.query;
@@ -39,18 +40,17 @@ function Category(props) {
 
   function categoryMap() {
     return categoryList?.map((category, index) => {
-      console.log(category);
       return (
         <div
           key={category.category_lists_id}
-          className="w-[90%] mb-[1%] h-[15%] flex-none flex flex-col items-end bg-white"
+          className="w-[90%] mb-[1vh] h-[15%] flex-none flex flex-col items-end shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]"
         >
-          <div className="pl-[1.5vw] flex w-[100%] bg-[#008DEB] text-white">
+          <div className="flex w-[100%] h-[15%] pl-[1.5vw] bg-[#008DEB] text-white">
             Category ID: {category.category_lists_id}
           </div>
 
-          <div className="w-[120%] h-[70%] flex-none flex justify-center items-center">
-            <div className="w-[2.5vw] ml-[1.5vw]">
+          <div className="w-[100%] h-[85%] flex items-center justify-start">
+            <div className="w-[7%] ml-[1.5vw]">
               <Image
                 unoptimized
                 alt="resep-logo"
@@ -64,10 +64,11 @@ function Category(props) {
               />
             </div>
 
-            <div className="flex flex-col w-[40%] text-black h-[7vw] justify-center pl-[2vw] text-[#6E6E6E]">
-              <p className="font-[650] text-[1rem]">{category.category}</p>
-            </div>
-            <div className="w-[15%] flex h-[35px]  gap-4 mr-[1.5vw]">
+            <p className="w-[73%] font-[650] text-[1.1rem] pl-[2vw]">
+              {category.category}
+            </p>
+
+            <div className="w-[20%] h-[100%] flex items-center justify-evenly">
               <Button
                 variant="outline"
                 colorScheme="linkedin"
@@ -76,7 +77,7 @@ function Category(props) {
                   setEditCategoryButton(true);
                   setCategoryList([...categoryList]);
                 }}
-                sx={{ width: '100%', height: '5vh' }}
+                sx={{ width: '45%', height: '5vh' }}
               >
                 <p className="text-[12px]">Edit</p>
               </Button>
@@ -87,13 +88,12 @@ function Category(props) {
                   deleteProduct(category.category_lists_id);
                   setCategoryList(props.categoriesLists.splice(index, 1));
                 }}
-                sx={{ width: '100%', height: '5vh' }}
+                sx={{ width: '45%', height: '5vh' }}
               >
                 <p className="text-[12px]">Hapus</p>
               </Button>
             </div>
           </div>
-          <div className="grow" />
         </div>
       );
     });
@@ -104,8 +104,6 @@ function Category(props) {
       const resDeleteProduct = await axiosInstance.delete(
         `/categoriesLists/${category_lists_id}`,
       );
-
-      console.log({ resDeleteProduct });
     } catch (error) {
       console.log({ error });
     }
@@ -123,17 +121,27 @@ function Category(props) {
         editCategoryButton={editCategoryButton}
         setEditCategoryButton={setEditCategoryButton}
       />
-      <div className="h-[55%]  w-[50%] flex flex-col items-center">
+      <AddCategoryModal
+        addCategoryButton={addCategoryButton}
+        setAddCategoryButton={setAddCategoryButton}
+      />
+
+      <div className="h-[100%] w-[85%] flex flex-col items-center justify-evenly">
         <div className="h-[10%] w-[90%] flex items-center font-[500] text-[3vh]">
           Category
         </div>
-        <br />
-        {categoryMap()}
 
-        <div className="flex w-[50%]">
+        <div className="flex flex-col w-[100%] h-[85%] items-center">
+          {categoryMap()}
+        </div>
+
+        <div className="flex w-[90%] h-[5%] items-center">
           <Button
             disabled={page <= 1}
-            colorScheme="linkedin"
+            borderRadius={'none'}
+            size={'lg'}
+            backgroundColor={'#008DEB'}
+            color={'white'}
             onClick={() => {
               setPage(page - 1);
 
@@ -146,11 +154,16 @@ function Category(props) {
 
               router.replace(`/admin/category/${joinParams}`);
             }}
+            style={{ marginRight: '1vw' }}
           >
             {'Previous'}
           </Button>
+
           <Button
-            colorScheme="linkedin"
+            borderRadius={'none'}
+            size={'lg'}
+            backgroundColor={'#008DEB'}
+            color={'white'}
             onClick={() => {
               setPage(page + 1);
 
@@ -167,6 +180,17 @@ function Category(props) {
           >
             {'Next'}
           </Button>
+
+          <div className={'grow'} />
+
+          <div
+            onClick={() => {
+              setAddCategoryButton(true);
+            }}
+            className="h-[90%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1 font-[700]"
+          >
+            + Tambah Kategori
+          </div>
         </div>
       </div>
     </div>
@@ -185,7 +209,7 @@ export async function getServerSideProps(context) {
         {
           params: {
             page,
-            limit: 5,
+            limit: 6,
           },
         },
       );
@@ -198,6 +222,7 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
+    console.log({ error });
     return { props: { error: error.message } };
   }
 }

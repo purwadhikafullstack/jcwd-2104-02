@@ -25,9 +25,6 @@ export default function TransactionCards(props) {
     status,
     productImage,
   } = props;
-  // console.log(props)
-  // console.log(trans_id)
-  //   console.log(productName)
 
   const rawStatus = status.split('_');
   return (

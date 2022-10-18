@@ -40,7 +40,6 @@ const registerUserController = async (req, res, next) => {
     const checkedUser = await users.findOne({ where: { phoneNumber } });
     if (checkedUser) {
       if (checkedUser.phoneNumber == phoneNumber) {
-        console.log(checkedUser.phoneNumber[0]);
         throw {
           code: 400,
           message: 'Phone Number already exist',
@@ -122,7 +121,6 @@ async function resetPassword(req, res, next) {
 }
 
 const loginUser = async (req, res, next) => {
-  // user
   try {
     const { email, password } = req.body;
     const resFindUser = await users.findOne({

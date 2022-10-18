@@ -16,7 +16,6 @@ function ProductCatalog(props) {
   const [productList, setProductList] = useState(props.products);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [verified, setVerified] = useState(false);
 
   const router = useRouter();
   const { session } = props;
@@ -25,11 +24,15 @@ function ProductCatalog(props) {
     const { params } = router.query;
     setSelected(params);
     setProductList(props.products);
-    if (!params.includes('sort') && !params.includes('semuaObat')) {
+  });
+
+  useEffect(() => {
+    const { params } = router.query;
+    if (params.includes('key')) {
       const splitParams = params.split('=');
       setSearchKeyword(splitParams[0]);
     }
-  });
+  }, []);
 
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);
@@ -79,7 +82,7 @@ function ProductCatalog(props) {
             <Button
               variant="outline"
               onClick={() => {
-                if (props.session?.user.user.isVerified) {
+                if (session?.user.user.isVerified) {
                   router.replace(`/detailPage/${product.product_id}`);
                 } else {
                   router.replace('/login');
@@ -87,7 +90,7 @@ function ProductCatalog(props) {
               }}
               colorScheme="linkedin"
               sx={{ width: '100%', height: '5vh' }}
-              disabled={!props.session?.user.user.isVerified}
+              disabled={!session?.user.user.isVerified}
             >
               <p className="text-[12px]">Tambah</p>
             </Button>
@@ -106,17 +109,21 @@ function ProductCatalog(props) {
   }
 
   function categoriesMap() {
-    return props.categoriesLists.categories.map((category) => {
+    return props.categoriesLists?.categories.map((category) => {
+      const selectedCategoryListsId = selected.split('=')[0];
+
       return (
         <div
-          key={category.category_id}
+          key={category.category_lists_id}
           onClick={() => {
-            router.replace(`/productCatalog/${category.category}=1`);
+            router.replace(
+              `/productCatalog/${category.category_lists_id}=category=1`,
+            );
             setCurrentPage(1);
             setSearchKeyword('');
           }}
           className={
-            selected.includes(category.category)
+            selectedCategoryListsId == category.category_lists_id
               ? 'p-[1vh] my-[1vh] font-[400] text-[1.1rem] rounded-[2vw] border-solid border-[1px] border-[#008DEB] cursor-pointer bg-cyan-100'
               : 'p-[1vh] my-[1vh] font-[400] text-[1.1rem] rounded-[2vw] border-solid border-[1px] border-transparent hover:border-[#008DEB] hover:cursor-pointer hover:bg-cyan-100'
           }
@@ -272,7 +279,7 @@ function ProductCatalog(props) {
                 />
                 <div
                   onClick={() => {
-                    router.replace(`/productCatalog/${searchKeyword}=1`);
+                    router.replace(`/productCatalog/${searchKeyword}=key=1`);
                     setCurrentPage(1);
                   }}
                   className="bg-[#008DEB] flex items-center justify-center w-[20%] hover:cursor-pointer"
@@ -349,8 +356,6 @@ export async function getServerSideProps(context) {
     const session = await getSession({ req: context.req });
     const resGetCategoriesLists = await axiosInstance.get('categories/getAll');
 
-    // console.log({session});
-
     let resGetProducts = '';
 
     if (context.params.params.includes('semuaObat')) {
@@ -370,7 +375,16 @@ export async function getServerSideProps(context) {
         `products/sort/${context.params.params}`,
         { params: { page, limit: 10 } },
       );
-    } else {
+    } else if (context.params.params.includes('category')) {
+      const splitParams = context.params.params.split('=');
+
+      const page = splitParams[splitParams.length - 1];
+
+      resGetProducts = await axiosInstance.get(
+        `products/byCategory/${context.params.params}`,
+        { params: { page, limit: 10 } },
+      );
+    } else if (context.params.params.includes('key')) {
       const splitParams = context.params.params.split('=');
 
       const page = splitParams[splitParams.length - 1];
@@ -386,9 +400,6 @@ export async function getServerSideProps(context) {
 
     const res = await axiosInstance.get(`/users/${user_id}`);
 
-    // console.log(context.params);
-    // console.log({ resGetProducts });
-
     return {
       props: {
         params: context.params,
@@ -400,7 +411,8 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
-    return { props: {} };
+    console.log({ error });
+    return { props: { Error: error.message } };
   }
 }
 

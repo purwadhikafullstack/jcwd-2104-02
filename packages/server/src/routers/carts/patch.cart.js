@@ -21,8 +21,6 @@ const patchCart = async (req, res, next) => {
     const resFindProduct = await carts.findOne({
       where: { product_id, user_id },
     });
-    console.log(resFindProduct.dataValues);
-    console.log(product_id, user_id, quantity);
 
     if (resFindProduct.dataValues) {
       const quantityPatched = await carts.update(

@@ -72,6 +72,16 @@ function Cart(props) {
       setSelectAddress(defaultAddress.data.data);
     } catch (error) {
       console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -91,7 +101,17 @@ function Cart(props) {
         setEmpty(true);
       }
     } catch (error) {
-      alert(error.message);
+      console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -107,19 +127,18 @@ function Cart(props) {
     try {
       setCartsPrice(countTotalPrice());
       const session = await getSession();
-      const {user_id} = props;
-      const {user_token} = session.user;
+      const { user_id } = props;
+      const { user_token } = session.user;
       const config = {
-        headers: {Authorization: `Bearer ${user_token}`}
-      }
+        headers: { Authorization: `Bearer ${user_token}` },
+      };
       const deliveryCost = selectedDeliveryCost.split(',');
-  const getDeliveryCost = parseInt(deliveryCost[1])
-  console.log(getDeliveryCost);
+      const getDeliveryCost = parseInt(deliveryCost[1]);
       const body = {
         totalPrice: countTotalPrice(),
         address_id: selectAddress.address_id,
         courier: selectedCourier,
-        deliveryCost: getDeliveryCost
+        deliveryCost: getDeliveryCost,
       };
       const res = await axiosInstance.post(
         `/transactions/createTransaction/`,
@@ -137,6 +156,7 @@ function Cart(props) {
         router.replace(`/transaction/${user_id}`);
       }, 1000);
     } catch (error) {
+      console.log({ error });
       toast({
         description: 'Alamat dan Kurir Tidak Boleh Kosong',
         position: 'top',
@@ -145,13 +165,7 @@ function Cart(props) {
         isClosable: true,
       });
     }
-  }
-
-  // const total = countTotalPrice();
-  // const PPN = subTotal * 0.11;
-  // const total = subTotal + PPN;
-
-  // console.log(`TOTALNYAAAAAAAAAA BOSQQQQQ ${subTotal}`);
+  };
 
   function mappedProducts() {
     return carts.map((cart, index) => {
@@ -183,7 +197,7 @@ function Cart(props) {
         fontWeight={500}
         fontSize={15}
         justify="space-between"
-        minWidth={354}
+        minWidth={'219%'}
       >
         <HStack color="gray.600">
           <Text>Biaya Pengiriman :</Text>;
@@ -329,7 +343,7 @@ function Cart(props) {
                 <Text fontWeight={500} fontSize={15} color="gray.600">
                   Sub Total
                 </Text>
-                <HStack fontWeight={550} fontSize={15} paddingRight={2}>
+                <HStack fontWeight={550} fontSize={15} paddingRight={''}>
                   <Text>Rp {countTotalPrice().toLocaleString('id')}</Text>
                 </HStack>
               </HStack>
@@ -337,8 +351,9 @@ function Cart(props) {
                 justifyContent="space-between"
                 marginTop={4}
                 marginBottom={2}
+                w={'100%'}
               >
-                <HStack>
+                <HStack w={'100%'}>
                   <Text>{selectedDeliveryCost && renderDeliveryCost()}</Text>
                 </HStack>
               </HStack>
@@ -347,12 +362,7 @@ function Cart(props) {
                 <Text fontWeight={600} fontSize={15} color="gray.600">
                   Total
                 </Text>
-                <Text
-                  fontWeight={550}
-                  fontSize={15}
-                  color="#004776"
-                  paddingRight={3}
-                >
+                <Text fontWeight={550} fontSize={15} color="#004776">
                   {selectedDeliveryCost && renderTotalPrice()}
                 </Text>
               </HStack>
@@ -420,7 +430,7 @@ export async function getServerSideProps(context) {
     };
   } catch (error) {
     console.log({ error });
-    return { props: {} };
+    return { props: { error } };
   }
 }
 

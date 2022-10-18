@@ -26,7 +26,6 @@ function AddCategoryModal({ addCategoryButton, setAddCategoryButton }) {
   const toast = useToast();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  //    console.log(categoryImage)
 
   useEffect(() => {
     if (addCategoryButton) {
@@ -77,9 +76,6 @@ function AddCategoryModal({ addCategoryButton, setAddCategoryButton }) {
         category,
       );
       const extName = category.categoryImage.split('.');
-      console.log(extName);
-
-      console.log(resAddCategory.data.data.newCategories.category_lists_id);
 
       const resAddCategoryImage = await axiosInstance.post(
         `/categoriesLists/upload/${resAddCategory.data.data.newCategories.category_lists_id}.${extName[1]}`,
@@ -95,6 +91,7 @@ function AddCategoryModal({ addCategoryButton, setAddCategoryButton }) {
       setLoading(false);
       setAddCategoryButton(false);
     } catch (error) {
+      console.log({ error });
       setAddCategoryButton(false);
       setLoading(false);
     }

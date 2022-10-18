@@ -12,16 +12,20 @@ import {
   Select,
   Textarea,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import axiosInstance from '../../src/config/api';
 import { api_origin } from '../../constraint';
+import { useRouter } from 'next/router';
 
 function EditProductModal({
   currentProduct,
   editProductButton,
   setEditProductButton,
   categoriesLists,
+  productList,
+  setProductList,
 }) {
   const [productStock, setProductStock] = useState(currentProduct.productStock);
   const [loading, setLoading] = useState(false);
@@ -40,7 +44,8 @@ function EditProductModal({
   const [newProductImage, setNewProductImage] = useState(
     currentProduct.productImage,
   );
-
+  const router = useRouter();
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -51,7 +56,9 @@ function EditProductModal({
     }
 
     setProductInputs({
-      categoryInfo: `${currentProduct.category_lists_id}=-=${currentProduct.category}`,
+      categoryInfo: currentProduct.category_lists_id
+        ? `${currentProduct.category_lists_id}=-=${currentProduct.category}`
+        : undefined,
       description: currentProduct.description,
       packageType: currentProduct.packageType,
       productImage: currentProduct.productImage,
@@ -64,23 +71,23 @@ function EditProductModal({
     setNewProductImage(currentProduct.productImage);
   }, [editProductButton, productStock]);
 
-  // console.log({ currentProduct });
-
   useEffect(() => {
     setProductStock(currentProduct.productStock);
   }, [currentProduct]);
-
-  // console.log(productInputs);
 
   async function updateProductClick() {
     try {
       setLoading(true);
 
-      if (
-        Object.values(productInputs).includes('') ||
-        Object.values(productInputs).includes(undefined)
-      ) {
-        alert('tolong isi semua');
+      if (Object.values(productInputs).includes('' || undefined)) {
+        toast({
+          title: 'Warning!',
+          description: 'Tolong isi semua field',
+          position: 'top',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
         setLoading(false);
         return;
       }
@@ -101,25 +108,38 @@ function EditProductModal({
         },
       );
 
-      // console.log({ resAddProduct });
-
       const extName = productInputs.productImage.split('.');
 
-      const resAddProductImage = await axiosInstance.post(
+      await axiosInstance.post(
         `/products/newProductImage/${resAddProduct.data.resUpdateProduct.product_id}.${extName[1]}`,
         productImageFileBody,
         config,
       );
 
-      if (resAddProduct) {
-        console.log({ resAddProduct, extName, resAddProductImage });
-        setLoading(false);
-        setEditProductButton(false);
-      }
-    } catch (error) {
-      console.log({ error });
+      toast({
+        title: 'Success!',
+        description: 'Success edit product',
+        position: 'top',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
       setLoading(false);
       setEditProductButton(false);
+    } catch (error) {
+      console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      setLoading(false);
     }
   }
 
@@ -148,8 +168,6 @@ function EditProductModal({
   const handleChange = (prop) => (event) => {
     setProductInputs({ ...productInputs, [prop]: event.target.value });
   };
-
-  // console.log({ api_origin, newProductImage });
 
   return (
     <Modal
@@ -207,9 +225,17 @@ function EditProductModal({
             >
               {categoriesMap()}
             </Select>
-            <Button size="lg">Tambah +</Button>
+            <Button
+              onClick={() => {
+                router.replace('/admin/category');
+              }}
+              size="lg"
+            >
+              Tambah +
+            </Button>
           </div>
           <Input
+            type={'number'}
             value={productInputs.productPrice}
             onChange={handleChange('productPrice')}
             size="lg"
@@ -231,6 +257,7 @@ function EditProductModal({
             placeholder="Unit Satuan"
           />
           <Input
+            type={'number'}
             value={productInputs.defaultQuantity}
             onChange={handleChange('defaultQuantity')}
             size="lg"
@@ -249,48 +276,19 @@ function EditProductModal({
 
         <ModalFooter justifyContent="space-between">
           <div className="flex w-[50%] justify-evenly">
-            {/* <Button
-              colorScheme="linkedin"
-              variant="ghost"
-              disabled={productStock <= 1}
-              onClick={() => {
-                setProductStock(parseInt(productStock) - 1);
-              }}
-            >
+            <Button colorScheme="linkedin" variant="ghost" disabled>
               {'<'}
-            </Button> */}
+            </Button>
 
             <Input
               disabled
               value={productStock}
-              onChange={(event) => {
-                if (
-                  parseInt(event.target.value) <= 0 ||
-                  !parseInt(event.target.value)
-                ) {
-                  alert('Minimal produk 1');
-                  setProductStock(1);
-                  return;
-                } else if (parseInt(event.target.value) > 9999) {
-                  alert('Max stock reached');
-                  setProductStock(9999);
-                  return;
-                }
-                setProductStock(event.target.value);
-              }}
               className="w-[2.5vw] mx-[1vw] flex items-center justify-center bg-gray-200 rounded-[.2vw]"
             />
 
-            {/* <Button
-              colorScheme="linkedin"
-              variant="ghost"
-              disabled={productStock >= 9999}
-              onClick={() => {
-                setProductStock(parseInt(productStock) + 1);
-              }}
-            >
+            <Button colorScheme="linkedin" variant="ghost" disabled>
               {'>'}
-            </Button> */}
+            </Button>
           </div>
           <div className="flex w-[50%] justify-end">
             <Button

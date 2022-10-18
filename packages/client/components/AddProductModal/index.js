@@ -11,11 +11,11 @@ import {
   Select,
   Textarea,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import axiosInstance from '../../src/config/api';
 import { useRouter } from 'next/router';
-import { api_origin } from '../../constraint';
 
 function AddProductModal({
   addProductButton,
@@ -39,7 +39,8 @@ function AddProductModal({
     defaultQuantity: '',
     servingType: '',
   });
-  
+  const router = useRouter();
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -70,7 +71,14 @@ function AddProductModal({
       setLoading(true);
 
       if (Object.values(productInputs).includes('')) {
-        alert('tolong isi semua');
+        toast({
+          title: 'Alert!',
+          description: 'Tolong isi semua field',
+          position: 'top',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
         setLoading(false);
         return;
       }
@@ -90,18 +98,27 @@ function AddProductModal({
 
       const extName = productInputs.productImage.split('.');
 
-      const resAddProductImage = await axiosInstance.post(
+      await axiosInstance.post(
         `/products/newProductImage/${resAddProduct.data.resCreateProduct.product_id}.${extName[1]}`,
         productImageFileBody,
         config,
       );
 
       if (resAddProduct) {
-        console.log({ resAddProduct, resAddProductImage });
         setLoading(false);
         setAddProductButton(false);
       }
     } catch (error) {
+      toast({
+        title: 'Add Product Failed!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
       console.log({ error });
       setLoading(false);
       setAddProductButton(false);
@@ -109,7 +126,7 @@ function AddProductModal({
   }
 
   function categoriesMap() {
-    return categoriesLists.map((category) => {
+    return categoriesLists?.map((category) => {
       return (
         <option
           key={category.category_lists_id}
@@ -168,9 +185,17 @@ function AddProductModal({
             >
               {categoriesMap()}
             </Select>
-            <Button size="lg">Tambah +</Button>
+            <Button
+              onClick={() => {
+                router.replace('/admin/category');
+              }}
+              size="lg"
+            >
+              Tambah +
+            </Button>
           </div>
           <Input
+            type={'number'}
             value={productInputs.productPrice}
             onChange={handleChange('productPrice')}
             size="lg"
@@ -192,6 +217,7 @@ function AddProductModal({
             placeholder="Unit Satuan"
           />
           <Input
+            type={'number'}
             value={productInputs.defaultQuantity}
             onChange={handleChange('defaultQuantity')}
             size="lg"
@@ -210,49 +236,21 @@ function AddProductModal({
 
         <ModalFooter justifyContent="space-between">
           <div className="flex w-[50%] justify-evenly">
-            {/* <Button
-              colorScheme="linkedin"
-              variant="ghost"
-              disabled={productStock <= 1}
-              onClick={() => {
-                setProductStock(parseInt(productStock) - 1);
-              }}
-            >
+            <Button colorScheme="linkedin" variant="ghost" disabled>
               {'<'}
-            </Button> */}
+            </Button>
 
             <Input
               value={productStock}
               disabled
-              onChange={(event) => {
-                if (
-                  parseInt(event.target.value) <= 0 ||
-                  !parseInt(event.target.value)
-                ) {
-                  alert('Minimal produk 1');
-                  setProductStock(1);
-                  return;
-                } else if (parseInt(event.target.value) > 9999) {
-                  alert('Max stock reached');
-                  setProductStock(9999);
-                  return;
-                }
-                setProductStock(event.target.value);
-              }}
               className="w-[2.5vw] mx-[1vw] flex items-center justify-center bg-gray-200 rounded-[.2vw]"
             />
 
-            {/* <Button
-              colorScheme="linkedin"
-              variant="ghost"
-              disabled={productStock >= 9999}
-              onClick={() => {
-                setProductStock(parseInt(productStock) + 1);
-              }}
-            >
+            <Button colorScheme="linkedin" variant="ghost" disabled>
               {'>'}
-            </Button> */}
+            </Button>
           </div>
+
           <div className="flex w-[50%] justify-end">
             <Button
               style={{ width: '40%', marginRight: '.3vw' }}

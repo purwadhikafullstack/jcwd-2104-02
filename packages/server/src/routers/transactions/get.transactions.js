@@ -93,7 +93,6 @@ const adminGetTransactionsByIndex = async (req, res, next) => {
         });
     }
 
-    console.log({ statusFind, selected });
     const resFetchTransactions = await transactions.findAll({
       where: { status: statusFind, prescriptionImage: null },
       attributes: [
@@ -232,7 +231,6 @@ const getTransactions = async (req, res, next) => {
         `isDefault`,
       ],
     });
-    console.log(resFetchAddress);
 
     res.send({
       status: 'success',
@@ -313,8 +311,8 @@ const getTransactionDetails = async (req, res, next) => {
 
 const getTransactionsByIndex = async (req, res, next) => {
   try {
-    const { selected } = req.params;
-    const { user_id } = req.params;
+    const selected = parseInt(req.params.selected);
+    const user_id = parseInt(req.params.user_id);
     let { page, pageSize } = req.query;
 
     page = +page;
@@ -323,60 +321,65 @@ const getTransactionsByIndex = async (req, res, next) => {
     const limit = pageSize;
     const offset = (page - 1) * pageSize;
 
-    var statusFind;
+    let statusFind;
 
     switch (selected) {
-      case '1' || 1:
+      case 1:
         statusFind = 'processing_order';
         break;
-      case '2' || 2:
+      case 2:
         statusFind = 'delivering_order';
         break;
-      case '3' || 3:
+      case 3:
         statusFind = 'order_confirmed';
         break;
-      case '4' || 4:
+      case 4:
         statusFind = 'order_cancelled';
         break;
-      case '5' || 5:
+      case 5:
         statusFind = 'awaiting_payment';
         break;
-      case '6' || 6:
+      case 6:
         statusFind = 'awaiting_payment_confirmation';
         break;
 
       default:
-        const { user_id } = req.params;
-        const resFetchTransactions = await transactions.findAll({
-          where: { user_id, prescriptionImage: null },
-          attributes: [
-            'transaction_id',
-            'user_id',
-            'address_id',
-            'totalPrice',
-            'status',
-          ],
-          limit: limit,
-          offset: offset,
-          include: [
-            {
-              model: transaction_details,
-              include: [
-                {
-                  model: products,
-                },
-              ],
-            },
-          ],
-        });
+        statusFind = 0;
+        break;
+    }
 
-        res.send({
-          status: 'success',
-          message: 'Fetch Transaction Success',
-          data: {
-            resFetchTransactions,
+    if (!statusFind) {
+      const resFetchTransactions = await transactions.findAll({
+        where: { user_id, prescriptionImage: null },
+        attributes: [
+          'transaction_id',
+          'user_id',
+          'address_id',
+          'totalPrice',
+          'status',
+        ],
+        limit: limit,
+        offset: offset,
+        include: [
+          {
+            model: transaction_details,
+            include: [
+              {
+                model: products,
+              },
+            ],
           },
-        });
+        ],
+      });
+
+      res.send({
+        status: 'success',
+        message: 'Fetch Transaction Success',
+        data: {
+          resFetchTransactions,
+        },
+      });
+      return;
     }
 
     const resFetchTransactions = await transactions.findAll({
@@ -418,16 +421,9 @@ const getAllTransactions = async (req, res, next) => {
   try {
     let { paramsStartDate, paramsEndDate } = req.query;
 
-    // paramsStartDate?.setDate(paramsStartDate.getDate() + 1);
-    // paramsEndDate?.setDate(paramsEndDate.getDate() + 1);
-
-    // console.log({ paramsEndDate, paramsStartDate });
-
     let allTransaction;
 
     if (paramsStartDate && paramsEndDate) {
-      console.log('jalan1');
-      console.log({ paramsStartDate, paramsEndDate });
       allTransaction = await transactions.findAll({
         where: {
           status: 'order_confirmed',
@@ -460,8 +456,6 @@ const getAllTransactions = async (req, res, next) => {
       });
     } else if (paramsStartDate) {
       paramsEndDate = new Date('July 21, 3000 01:15:00');
-      console.log('jalan2');
-      console.log({ paramsStartDate, paramsEndDate });
       allTransaction = await transactions.findAll({
         where: {
           status: 'order_confirmed',
@@ -494,8 +488,6 @@ const getAllTransactions = async (req, res, next) => {
       });
     } else if (paramsEndDate) {
       paramsStartDate = new Date(1970);
-      console.log('jalan3');
-      console.log({ paramsStartDate, paramsEndDate });
       allTransaction = await transactions.findAll({
         where: {
           status: 'order_confirmed',
@@ -527,7 +519,6 @@ const getAllTransactions = async (req, res, next) => {
         ],
       });
     } else {
-      console.log({ paramsStartDate, paramsEndDate });
       allTransaction = await transactions.findAll({
         where: { status: 'order_confirmed' },
         attributes: [
@@ -556,8 +547,6 @@ const getAllTransactions = async (req, res, next) => {
         ],
       });
     }
-
-    console.log({ length: allTransaction.length });
 
     res.send({
       status: 'Success',

@@ -65,7 +65,6 @@ function AddFormulaModal({
 
   function checkSameProduct() {
     tempFormula.forEach((product) => {
-      console.log(option == product.productName);
       if (option == product.productName) {
         setDisabled(true);
       } else {
@@ -91,9 +90,7 @@ function AddFormulaModal({
   async function onSaveClick() {
     try {
       setLoading(true);
-      console.log(name, tempFormula);
       const body = { productName: name, formula: tempFormula, amount: amount };
-      console.log(body);
       const res = await axiosInstance.post('/products/concoction', body);
       if (res) {
         toast({
@@ -110,8 +107,17 @@ function AddFormulaModal({
         setDeleted(0), setName(''), setAmount(0);
       }
     } catch (error) {
-      alert(error);
-      console.log({ error });
+      toast({
+        title: 'Create Concoction Failed!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      console.log({ Error: error.response.data });
       setLoading(false);
       setAddFormulaButton(false);
       setTempFormula([]), setQuantity(0);
@@ -154,11 +160,9 @@ function AddFormulaModal({
       );
     });
   }
-  // console.log( name, option, quantity);
-  console.log(tempFormula, name);
 
   function productNameMap() {
-    return allProducts.map((product) => {
+    return allProducts?.map((product) => {
       if (!product.formula) {
         return (
           <option key={product.product_id} value={`${product.productName}`}>

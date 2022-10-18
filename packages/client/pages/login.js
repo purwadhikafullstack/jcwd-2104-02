@@ -9,6 +9,7 @@ import {
   InputGroup,
   InputRightElement,
   Image,
+  useToast,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { Icon, ViewOffIcon, ViewIcon } from '@chakra-ui/icons';
@@ -23,6 +24,7 @@ function Login() {
   const [isLogin, setIsLogin] = useState(false);
   const [login, setLogin] = useState(false);
   const router = useRouter();
+  const toast = useToast();
 
   async function getSessionAsync() {
     const session = await getSession();
@@ -54,7 +56,7 @@ function Login() {
           mb={6}
         />
         <InputRightElement>
-          <Button rounded="50%" size="lg" onClick={handleClick}>
+          <Button rounded="10%" size="lg" onClick={handleClick}>
             {show ? (
               <ViewOffIcon onClick={handleClick} />
             ) : (
@@ -72,12 +74,19 @@ function Login() {
       email,
       password,
     });
+
     if (!res.error) {
-      console.log('success login');
-      setIsLogin(true);
+      getSessionAsync();
     } else {
-      console.log(res.error);
-      alert(res.error);
+      console.log({ Error: res.error });
+      toast({
+        title: 'Error!',
+        description: res.error,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -181,6 +190,7 @@ export async function getServerSideProps() {
 
     return { props: {} };
   } catch (error) {
+    console.log({ error });
     return { props: { error: error.message } };
   }
 }

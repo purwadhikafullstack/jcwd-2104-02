@@ -19,13 +19,10 @@ import { api_origin } from '../../constraint/index';
 function DetailPage(props) {
   const { products } = props;
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const { user_id } = props;
   const { product_id } = products;
   const [quantity, setQuantity] = useState(1);
 
   const toast = useToast();
-  // console.log(quantity);
 
   const onAddClick = async () => {
     setLoading(true);
@@ -57,9 +54,18 @@ function DetailPage(props) {
         duration: 3000,
         isClosable: true,
       });
-      //setSuccess(true);
     } catch (error) {
-      alert(error);
+      console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     } finally {
       setLoading(false);
     }
@@ -177,23 +183,19 @@ export async function getServerSideProps(context) {
     if (!session) return { redirect: { destination: '/login' } };
     const { user_token } = session.user;
     const { user_id } = session.user.user;
-    // console.log(session.user.user.user_id);
 
     const config = {
       headers: { Authorization: `Bearer ${user_token}` },
     };
     const { product_id } = context.params;
-    // console.log(product_id);
 
     const resGetProduct = await axiosInstance.get(
       `/products/byId/${product_id}`,
       config,
     );
-    // console.log(resGetProduct);
 
     if (!resGetProduct) return { redirect: { destination: '/' } };
 
-    // console.log(productDetail);
     return {
       props: {
         products: resGetProduct.data.data,
@@ -201,8 +203,8 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
+    console.log({ error });
     const { message } = error;
-
     return { props: { message } };
   }
 }

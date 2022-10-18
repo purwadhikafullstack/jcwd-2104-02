@@ -32,9 +32,6 @@ function Laporan(props) {
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
 
-  // console.log(startDate, endDate);
-  // console.log({ props: props.byProduct.allTransaction[0].createdAt });
-
   useEffect(() => {
     setSelected(params);
     setMainAsc(true);
@@ -64,8 +61,6 @@ function Laporan(props) {
         paramsEndDate.setHours(endDate.getHours() + 7);
       }
 
-      console.log({ paramsStartDate, paramsEndDate });
-
       const fetchNewProduct = await axiosInstance.get(
         'transactions/all/products',
         {
@@ -80,8 +75,6 @@ function Laporan(props) {
   }
 
   function tableSort() {
-    // console.log({ allTransaction });
-
     let saleObjArray = [];
 
     if (transactions.length) {
@@ -422,10 +415,9 @@ export async function getServerSideProps(context) {
 
     const byProduct = await axiosInstance.get('transactions/all/products');
 
-    // console.log(byProduct.data.allTransaction);
-
     return { props: { byProduct: byProduct.data } };
   } catch (error) {
+    console.log({ error });
     return { props: { error: error.message } };
   }
 }

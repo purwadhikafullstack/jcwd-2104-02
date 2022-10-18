@@ -59,7 +59,6 @@ const postTransaction = async (req, res, next) => {
       });
 
       resFindCarts.forEach(async (data) => {
-        console.log(data);
         if (checkingStatus.dataValues.transaction_id) {
           await transactions.update(
             { status: 'order_cancelled' },
@@ -114,10 +113,6 @@ const postTransaction = async (req, res, next) => {
         transaction_id: resCreateTransaction.dataValues.transaction_id,
       });
     });
-    // console.log("disini")
-
-    // if(a){
-    // }
   } catch (error) {
     next(error);
   }
@@ -151,7 +146,6 @@ const getTransactionsByIndex = async (req, res, next) => {
 
       default:
         const { user_id } = req.params;
-        console.log(user_id);
         const resFetchTransactions = await transactions.findAll({
           where: { user_id },
           attributes: [
@@ -187,7 +181,6 @@ const getTransactionsByIndex = async (req, res, next) => {
     console.log({ statusFind, selected });
 
     const { user_id } = req.params;
-    console.log(user_id);
     const resFetchTransactions = await transactions.findAll({
       where: { user_id, status: statusFind },
       attributes: [

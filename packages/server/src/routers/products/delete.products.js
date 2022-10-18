@@ -16,8 +16,6 @@ async function deleteProductController(req, res, next) {
   try {
     const { product_id } = req.params;
 
-    console.log({ product_id });
-
     const resDeleteProduct = await products.destroy({
       where: { product_id },
     });
@@ -25,8 +23,6 @@ async function deleteProductController(req, res, next) {
     const resDeleteProductDetail = await product_details.destroy({
       where: { product_id },
     });
-
-    console.log({ resDeleteProduct, resDeleteProductDetail });
 
     res.send({
       status: 'success',

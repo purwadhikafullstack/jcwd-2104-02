@@ -189,8 +189,6 @@ const getUserProfileController = async (req, res, next) => {
       },
     };
 
-    console.log(result);
-
     res.send(result);
   } catch (error) {
     next(error);

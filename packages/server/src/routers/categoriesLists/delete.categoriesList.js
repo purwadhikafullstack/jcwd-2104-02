@@ -15,14 +15,9 @@ async function deleteCategoryController(req, res, next) {
   try {
     const { category_lists_id } = req.params;
 
-    console.log({ category_lists_id });
-
     const resDeleteProduct = await categories_list.destroy({
       where: { category_lists_id },
     });
-
-    
-    console.log({ resDeleteProduct});
 
     res.send({
       status: 'success',

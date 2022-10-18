@@ -25,7 +25,6 @@ import { getSession, useSession } from 'next-auth/react';
 import { api_origin } from '../../../constraint/index';
 
 function Inventory(props) {
-  console.log({ props });
   const router = useRouter();
   const { params } = router.query;
   const splitParams = params.split('=');
@@ -38,7 +37,6 @@ function Inventory(props) {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [currentProduct, setCurrentProduct] = useState(props.products[0]);
   const [addProductButton, setAddProductButton] = useState(false);
-  const [addCategoryButton, setAddCategoryButton] = useState(false);
   const [openProductDetails, setOpenProductDetails] = useState(false);
   const [editProductButton, setEditProductButton] = useState(false);
   const [productsAll, setProductsAll] = useState(props.productsAll);
@@ -49,10 +47,9 @@ function Inventory(props) {
     setProductsAll(props.productsAll);
     setSelected(params);
   });
-  // console.log(productsAll);
-  // console.log(addFormulaButton, addProductButton);
 
   const session = useSession();
+  const toast = useToast();
 
   if (session.data) {
     if (!session.data.user.user.isAdmin) {
@@ -60,33 +57,26 @@ function Inventory(props) {
     }
   }
 
-  // const fetchProducts = async () => {
-  //   try {
-  //     console.log('jalan fetch product');
-  //     const res = await axiosInstance.get(`/products`);
-  //     console.log(res.data.data.resGetAllProducts);
-  //     // setProductsAll(res.data.data.resGetAllProducts);
-  //   } catch (error) {
-  //     alert(error.message);
-  //   }
-  // };
-
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);
   }
 
   function categoriesMap() {
     return props.categoriesLists.categories.map((category) => {
+      const selectedCategoryListsId = selected.split('=')[0];
+
       return (
         <div
           key={category.category_lists_id}
           onClick={() => {
-            router.replace(`/admin/inventory/${category.category}=1`);
+            router.replace(
+              `/admin/inventory/${category.category_lists_id}=category=1`,
+            );
             setCurrentPage(1);
             setSearchKeyword('');
           }}
           className={
-            selected.includes(category.category)
+            selectedCategoryListsId == category.category_lists_id
               ? 'h-[7vh] pl-[1vw] flex items-center font-[400] text-[1.1rem] text-white cursor-pointer bg-[#008DEB]'
               : 'h-[7vh] pl-[1vw] flex items-center font-[400] text-[1.1rem] border-transparent hover:text-white hover:cursor-pointer hover:bg-[#008DEB] bg-white'
           }
@@ -174,8 +164,7 @@ function Inventory(props) {
                 variant="outline"
                 colorScheme="red"
                 onClick={() => {
-                  deleteProduct(product.product_id);
-                  setProductList(props.products.splice(index, 1));
+                  deleteProduct(product.product_id, index);
                 }}
                 sx={{ width: '100%', height: '5vh' }}
               >
@@ -188,13 +177,22 @@ function Inventory(props) {
     });
   }
 
-  async function deleteProduct(product_id) {
+  async function deleteProduct(product_id, index) {
     try {
-      const resDeleteProduct = await axiosInstance.delete(
-        `/products/${product_id}`,
-      );
+      await axiosInstance.delete(`/products/${product_id}`);
+      setProductList(props.products.splice(index, 1));
     } catch (error) {
       console.log({ error });
+      toast({
+        title: 'Unexpected Fail!',
+        description: error.response?.data?.message
+          ? error.response.data.message
+          : error.message,
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   }
 
@@ -218,6 +216,8 @@ function Inventory(props) {
         <EditProductModal
           currentProduct={currentProduct}
           editProductButton={editProductButton}
+          productList={productList}
+          setProductList={setProductList}
           setEditProductButton={setEditProductButton}
           categoriesLists={props.categoriesLists.categories}
         />
@@ -225,10 +225,6 @@ function Inventory(props) {
           currentProduct={currentProduct}
           openProductDetails={openProductDetails}
           setOpenProductDetails={setOpenProductDetails}
-        />
-        <AddCategoryModal
-          addCategoryButton={addCategoryButton}
-          setAddCategoryButton={setAddCategoryButton}
         />
         <div className="h-[90%] w-[90%]">
           <div className="flex flex-col w-[100%] bg-[#F5F6F6] h-[100%]">
@@ -321,7 +317,7 @@ function Inventory(props) {
                 />
                 <div
                   onClick={() => {
-                    router.replace(`/admin/inventory/${searchKeyword}=1`);
+                    router.replace(`/admin/inventory/${searchKeyword}=key=1`);
                     setCurrentPage(1);
                   }}
                   className="bg-[#008DEB] flex items-center justify-center w-[20%] hover:cursor-pointer"
@@ -437,14 +433,6 @@ function Inventory(props) {
                 >
                   + Tambah Obat Racikan
                 </div>
-                <div
-                  onClick={() => {
-                    setAddCategoryButton(true);
-                  }}
-                  className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
-                >
-                  + Tambah Kategori
-                </div>
 
                 <div
                   onClick={() => {
@@ -479,25 +467,43 @@ export async function getServerSideProps(context) {
 
     if (context.params.params.includes('byId')) {
       const splitParams = context.params.params.split('=');
+
       const page = splitParams[1];
+
       resGetProducts = await axiosInstance.get('products/all', {
         params: { page, limit: 3 },
       });
     } else if (context.params.params.includes('sort')) {
       const splitParams = context.params.params.split('=');
+
       const page = splitParams[splitParams.length - 1];
+
       resGetProducts = await axiosInstance.get(
         `products/sort/${context.params.params}`,
         { params: { page, limit: 3 } },
       );
-    } else {
+    } else if (context.params.params.includes('category')) {
       const splitParams = context.params.params.split('=');
+
       const page = splitParams[splitParams.length - 1];
+
       resGetProducts = await axiosInstance.get(
-        `products/specifics/${splitParams[0]}`,
+        `products/byCategory/${context.params.params}`,
         { params: { page, limit: 3 } },
       );
+    } else if (context.params.params.includes('key')) {
+      const splitParams = context.params.params.split('=');
+
+      const page = splitParams[splitParams.length - 1];
+
+      resGetProducts = await axiosInstance.get(
+        `products/specifics/${splitParams[0]}`,
+        {
+          params: { page, limit: 3 },
+        },
+      );
     }
+
     const resGetAllProductsAll = await axiosInstance.get('products');
 
     return {
@@ -510,6 +516,7 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
+    console.log({ error });
     return { props: { error: error.message } };
   }
 }
