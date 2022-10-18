@@ -333,6 +333,9 @@ async function getProductsByCategoryController(req, res, next) {
     const page = parseInt(req.query.page);
     const limit = parseInt(req.query.limit);
     const { categoryListId } = req.params;
+    const destroy = await categories.destroy({ where: { product_id: null } });
+
+    console.log({ destroy });
 
     const resGetCategories = await categories.findAll({
       where: { category_lists_id: categoryListId },

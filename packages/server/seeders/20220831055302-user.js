@@ -53,7 +53,7 @@ module.exports = {
         birthDate: new Date('10-17-2021 07:00:00'),
         phoneNumber: '3213212832',
         isAdmin: false,
-        isVerified: false,
+        isVerified: true,
         password:
           '$2a$10$XB3xnB6q2icy.a1YG388ZO/eNWAo6AMR/O6.MUFpIJhpGwm0t1LP6',
         createdAt: new Date(),
