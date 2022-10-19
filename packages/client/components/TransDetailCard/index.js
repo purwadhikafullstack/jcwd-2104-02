@@ -25,9 +25,6 @@ export default function TransDetailCard(props) {
     status,
     city_name,
   } = props;
-  // console.log(name)
-  //   const [quantityCart, setQuantityCart] = useState(quantity);
-  // const rawStatus = status.split("_")
 
   return (
     <div className="flex items-center h-[20vh] w-[100%] my-[3vh] rounded-[1vw] shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]">

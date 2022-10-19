@@ -22,6 +22,7 @@ function DaftarTransaksiRacikan(props) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(3);
   const [prods, setProds] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
 
   const router = useRouter();
   const toast = useToast();
@@ -74,6 +75,7 @@ function DaftarTransaksiRacikan(props) {
         config,
       );
       setTransac(res.data.data.resFetchTransactions);
+      setHasMore(!res.data.data.resFetchTransactionsNext.length);
     } catch (error) {
       console.log({ error });
       toast({
@@ -154,7 +156,7 @@ function DaftarTransaksiRacikan(props) {
               <Text paddingRight={2}>{page}</Text>
               <Button
                 onClick={onNextClick}
-                isDisabled={page >= transac.prescriptionImage}
+                isDisabled={hasMore}
                 colorScheme="messenger"
               >
                 Next

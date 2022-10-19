@@ -57,6 +57,7 @@ function Inventory(props) {
     }
   }
 
+
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);
   }
@@ -503,7 +504,6 @@ export async function getServerSideProps(context) {
         },
       );
     }
-
     const resGetAllProductsAll = await axiosInstance.get('products');
 
     return {

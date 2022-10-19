@@ -213,91 +213,28 @@ async function getSpecificProductsController(req, res, next) {
       where: { category: specifics },
     });
 
-    if (!resCheckCategories.length) {
-      const resGetByKeyword = await sequelize.query(
-        `SELECT * FROM medbox.products WHERE productName LIKE '%${specifics}%' LIMIT ${
-          (page - 1) * limit
-        },${limit};`,
-        { type: QueryTypes.SELECT },
-      );
+    const resGetByKeyword = await sequelize.query(
+      `SELECT * FROM medbox.products WHERE productName LIKE '%${specifics}%' LIMIT ${
+        (page - 1) * limit
+      },${limit};`,
+      { type: QueryTypes.SELECT },
+    );
 
-      const resGetByKeywordNext = await sequelize.query(
-        `SELECT * FROM medbox.products WHERE productName LIKE '%${specifics}%' LIMIT ${
-          page * limit
-        },${limit};`,
-        { type: QueryTypes.SELECT },
-      );
-
-      let hasMore = true;
-
-      if (!resGetByKeywordNext.length) {
-        hasMore = false;
-      }
-
-      for (let product of resGetByKeyword) {
-        const resGetEachCategory = await categories.findOne({
-          where: { product_id: product.product_id },
-        });
-
-        const resGetProductDefaultQuantity = await product_details.findOne({
-          where: { product_id: product.product_id },
-        });
-
-        const resGetCategoriesLists = resGetEachCategory
-          ? await categories_list.findOne({
-              where: {
-                category_lists_id:
-                  resGetEachCategory?.dataValues.category_lists_id,
-              },
-            })
-          : '';
-
-        product.category_lists_id =
-          resGetCategoriesLists?.dataValues?.category_lists_id;
-
-        product.category = resGetEachCategory?.dataValues.categoryName;
-
-        product.category_id = resGetEachCategory?.dataValues.category_id;
-      }
-
-      res.send({
-        status: 'success',
-        products: resGetByKeyword,
-        hasMore,
-      });
-    }
-
-    const resGetNextPage = await categories.findAll({
-      where: { categoryName: specifics },
-      offset: page * limit,
-      limit,
-    });
+    const resGetByKeywordNext = await sequelize.query(
+      `SELECT * FROM medbox.products WHERE productName LIKE '%${specifics}%' LIMIT ${
+        page * limit
+      },${limit};`,
+      { type: QueryTypes.SELECT },
+    );
 
     let hasMore = true;
 
-    if (!resGetNextPage.length) {
+    if (!resGetByKeywordNext.length) {
       hasMore = false;
     }
 
-    const productsIdMap = resGetCategories.map((category) => {
-      return category.dataValues.product_id;
-    });
-
-    let finalProducts = [];
-
-    let resGetProducts;
-
-    for (let product_id of productsIdMap) {
-      resGetProducts = await products.findOne({ where: { product_id } });
-      finalProducts.push(resGetProducts.dataValues);
-    }
-
-    for (let product of finalProducts) {
+    for (let product of resGetByKeyword) {
       const resGetEachCategory = await categories.findOne({
-        where: { product_id: product.product_id },
-      });
-
-      const resGetProductDefaultQuantity = await product_details.findOne({
         where: { product_id: product.product_id },
       });
 
@@ -310,17 +247,17 @@ async function getSpecificProductsController(req, res, next) {
           })
         : '';
 
-      product.category = resGetEachCategory?.dataValues.categoryName;
-
       product.category_lists_id =
         resGetCategoriesLists?.dataValues?.category_lists_id;
+
+      product.category = resGetEachCategory?.dataValues.categoryName;
 
       product.category_id = resGetEachCategory?.dataValues.category_id;
     }
 
     res.send({
       status: 'success',
-      products: finalProducts,
+      products: resGetByKeyword,
       hasMore,
     });
   } catch (error) {
@@ -334,8 +271,6 @@ async function getProductsByCategoryController(req, res, next) {
     const limit = parseInt(req.query.limit);
     const { categoryListId } = req.params;
     const destroy = await categories.destroy({ where: { product_id: null } });
-
-    console.log({ destroy });
 
     const resGetCategories = await categories.findAll({
       where: { category_lists_id: categoryListId },

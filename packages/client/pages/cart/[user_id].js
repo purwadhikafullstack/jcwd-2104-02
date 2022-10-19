@@ -197,7 +197,7 @@ function Cart(props) {
         fontWeight={500}
         fontSize={15}
         justify="space-between"
-        minWidth={'219%'}
+        minWidth={393}
       >
         <HStack color="gray.600">
           <Text>Biaya Pengiriman :</Text>;
@@ -233,7 +233,7 @@ function Cart(props) {
             <Box
               width="110vH"
               boxShadow="md"
-              marginTop={3}
+              marginTop={5}
               rounded="md"
               padding={6}
             >
@@ -315,7 +315,7 @@ function Cart(props) {
               rounded="md"
               padding={6}
               marginLeft={1}
-              marginTop={3}
+              marginTop={5}
             >
               <Text fontWeight={600}>Metode Pengiriman</Text>
               <HStack marginY={6}>

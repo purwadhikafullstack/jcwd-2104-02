@@ -42,7 +42,6 @@ app.get('/api', (req, res) => {
   res.send(`Hello, this is my API`);
 });
 
-// error handler
 app.use((error, req, res, next) => {
   console.log({ error });
 

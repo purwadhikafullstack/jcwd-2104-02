@@ -48,7 +48,6 @@ function Transaction(props) {
         params: { page, pageSize },
         headers: { Authorization: `Bearer ${user_token}` },
       };
-
       const res = await axiosInstance.get(
         `/transactions/getTransactionsByIndex/${user_id}/${selected}`,
         config,

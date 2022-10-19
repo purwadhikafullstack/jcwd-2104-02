@@ -157,11 +157,19 @@ const adminGetAllTransactionByPrescription = async (req, res, next) => {
       offset: offset,
     });
 
+    const resFetchTransactionsNext = await transactions.findAll({
+      where: { totalPrice: null },
+      attributes: ['transaction_id'],
+      limit: limit,
+      offset: page * pageSize,
+    });
+
     res.send({
       status: 'Success',
       message: 'Fetch All Transaction by Prescription Success',
       data: {
         resFetchTransactions,
+        resFetchTransactionsNext,
       },
     });
   } catch (error) {

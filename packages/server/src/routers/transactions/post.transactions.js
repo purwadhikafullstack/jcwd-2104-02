@@ -178,7 +178,6 @@ const getTransactionsByIndex = async (req, res, next) => {
         });
     }
 
-    console.log({ statusFind, selected });
 
     const { user_id } = req.params;
     const resFetchTransactions = await transactions.findAll({
