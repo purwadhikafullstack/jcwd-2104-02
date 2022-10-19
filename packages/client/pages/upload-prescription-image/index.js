@@ -215,7 +215,15 @@ function UploadPrescriptionImage(props) {
                 Unggah Resep Dokter
               </Text>
               <VStack>
-                <Image src={imgSource} width={235} height={235} />
+                <Image
+                  src={imgSource}
+                  loader={() => {
+                    return imgSource;
+                  }}
+                  layout={'fixed'}
+                  width={235}
+                  height={235}
+                />
                 <VStack paddingLeft="89" paddingTop={1} fontSize={12.5} pb={1}>
                   <input type={'file'} onChange={onFileChange} />
                 </VStack>
@@ -438,17 +446,17 @@ function UploadPrescriptionImage(props) {
           </VStack>
         </HStack>
       ) : (
-        <VStack marginTop="18vH">
+        <VStack marginTop="17vH">
           <Image
             src="/uploadPrescriptionImage/validation.png"
             width={250}
             height={250}
           />
           <VStack>
-            <Text marginTop={2} fontSize={17} fontWeight={500}>
+            <Text marginTop={4} fontSize={17} fontWeight={500}>
               Resep sedang divalidasi.
             </Text>
-            <Text marginTop={2} fontSize={17} fontWeight={500}>
+            <Text paddingTop={2} fontSize={17} fontWeight={500}>
               Resep yang berhasil divalidasi akan masuk ke riwayat pesanan.
             </Text>
           </VStack>

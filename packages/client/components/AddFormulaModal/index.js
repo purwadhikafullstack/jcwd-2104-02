@@ -36,10 +36,7 @@ function AddFormulaModal({
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [disabled, setDisabled] = useState(false);
-<<<<<<< HEAD
-=======
   const [amount, setAmount] = useState(0);
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
   const toast = useToast();
 
   useEffect(() => {
@@ -62,19 +59,12 @@ function AddFormulaModal({
   const onHandleQuantityChange = (e) => {
     setQuantity(e.target.value);
   };
-<<<<<<< HEAD
-
-  function checkSameProduct() {
-    tempFormula.forEach((product) => {
-      console.log(option == product.productName);
-=======
   const onHandleAmountChange = (e) => {
     setAmount(e.target.value);
   };
 
   function checkSameProduct() {
     tempFormula.forEach((product) => {
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
       if (option == product.productName) {
         setDisabled(true);
       } else {
@@ -100,13 +90,7 @@ function AddFormulaModal({
   async function onSaveClick() {
     try {
       setLoading(true);
-<<<<<<< HEAD
-      console.log(name, tempFormula);
-      const body = { productName: name, formula: tempFormula };
-      console.log(body);
-=======
       const body = { productName: name, formula: tempFormula, amount: amount };
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
       const res = await axiosInstance.post('/products/concoction', body);
       if (res) {
         toast({
@@ -119,13 +103,6 @@ function AddFormulaModal({
         });
         setLoading(false);
         setAddFormulaButton(false);
-<<<<<<< HEAD
-      }
-    } catch (error) {
-      console.log({ error });
-      setLoading(false);
-      setAddFormulaButton(false);
-=======
         setTempFormula([]), setQuantity(0);
         setDeleted(0), setName(''), setAmount(0);
       }
@@ -145,7 +122,6 @@ function AddFormulaModal({
       setAddFormulaButton(false);
       setTempFormula([]), setQuantity(0);
       setDeleted(0), setName(''), setAmount(0);
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
     }
   }
 
@@ -184,18 +160,6 @@ function AddFormulaModal({
       );
     });
   }
-<<<<<<< HEAD
-  // console.log( name, option, quantity);
-  console.log(tempFormula, name);
-
-  function productNameMap() {
-    return allProducts.map((product) => {
-      return (
-        <option key={product.product_id} value={`${product.productName}`}>
-          {product.productName}
-        </option>
-      );
-=======
 
   function productNameMap() {
     return allProducts?.map((product) => {
@@ -206,7 +170,6 @@ function AddFormulaModal({
           </option>
         );
       }
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
     });
   }
   {
@@ -215,11 +178,7 @@ function AddFormulaModal({
         isOpen={isOpen}
         onClose={() => {
           setAddFormulaButton(false), setTempFormula([]), setQuantity(0);
-<<<<<<< HEAD
-          setDeleted(0), setName('');
-=======
           setDeleted(0), setName(''), setAmount(0);
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
         }}
       >
         <ModalOverlay />
@@ -233,12 +192,6 @@ function AddFormulaModal({
               placeholder="Nama Obat"
               onChange={onHandleNameChange}
             ></Input>
-<<<<<<< HEAD
-            <HStack>
-              <Select
-                name="productName"
-                placeholder="Select Medicine"
-=======
             <HStack my={3}>
               <Text>Jumlah Racikan:</Text>
               {amount == 0 ? (
@@ -285,18 +238,14 @@ function AddFormulaModal({
               <Select
                 name="productName"
                 placeholder="Pilih Obat"
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
                 onChange={onHandleOptionChange}
               >
                 {productNameMap()}
               </Select>
               {quantity == 0 ? (
                 <Button
-<<<<<<< HEAD
-=======
                   colorScheme={'linkedin'}
                   variant={'ghost'}
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
                   isDisabled
                   onClick={() => {
                     setQuantity(quantity - 1);
@@ -306,11 +255,8 @@ function AddFormulaModal({
                 </Button>
               ) : (
                 <Button
-<<<<<<< HEAD
-=======
                   colorScheme={'linkedin'}
                   variant={'ghost'}
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
                   onClick={() => {
                     setQuantity(quantity - 1);
                   }}
@@ -320,21 +266,14 @@ function AddFormulaModal({
               )}
 
               <Input
-<<<<<<< HEAD
-                name="quantity"
-=======
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
                 type={'text'}
                 width={'70px'}
                 value={quantity}
                 onChange={onHandleQuantityChange}
               ></Input>
               <Button
-<<<<<<< HEAD
-=======
                 colorScheme={'linkedin'}
                 variant={'ghost'}
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
                 onClick={() => {
                   setQuantity(quantity + 1);
                 }}
@@ -375,11 +314,7 @@ function AddFormulaModal({
               mr={3}
               onClick={() => {
                 setAddFormulaButton(false), setTempFormula([]), setQuantity(0);
-<<<<<<< HEAD
-                setDeleted(0), setName('');
-=======
                 setDeleted(0), setName(''), setAmount(0);
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
               }}
             >
               Batal
@@ -413,11 +348,7 @@ function AddFormulaModal({
                 Tambah
               </Button>
             )}
-<<<<<<< HEAD
-            {name && tempFormula.length ? (
-=======
             {name && tempFormula.length && amount > 0 ? (
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
               <Button
                 colorScheme="teal"
                 variant="outline"

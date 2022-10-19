@@ -47,8 +47,6 @@ function Inventory(props) {
     setProductsAll(props.productsAll);
     setSelected(params);
   });
-  // console.log(productsAll);
-  // console.log(addFormulaButton, addProductButton);
 
   const session = useSession();
   const toast = useToast();
@@ -59,16 +57,6 @@ function Inventory(props) {
     }
   }
 
-  // const fetchProducts = async () => {
-  //   try {
-  //     console.log('jalan fetch product');
-  //     const res = await axiosInstance.get(`/products`);
-  //     console.log(res.data.data.resGetAllProducts);
-  //     // setProductsAll(res.data.data.resGetAllProducts);
-  //   } catch (error) {
-  //     alert(error.message);
-  //   }
-  // };
 
   function showCategoriesSwitch() {
     setShowCategories(!showCategories);
@@ -442,15 +430,6 @@ function Inventory(props) {
                   onClick={() => {
                     setAddFormulaButton(true);
                   }}
-<<<<<<< HEAD
-                  className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
-                >
-                  + Tambah Obat Racikan
-                </div>
-                <div
-                  onClick={() => {}}
-=======
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
                   className="h-[100%] px-[2vw] bg-[#008DEB] text-white flex items-center hover:cursor-pointer mx-1"
                 >
                   + Tambah Obat Racikan
@@ -525,10 +504,6 @@ export async function getServerSideProps(context) {
         },
       );
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
     const resGetAllProductsAll = await axiosInstance.get('products');
 
     return {

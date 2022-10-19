@@ -78,7 +78,7 @@ function Laporan(props) {
     let saleObjArray = [];
 
     if (transactions.length) {
-      transactions.forEach((transaction) => {
+      transactions?.forEach((transaction) => {
         transaction.transaction_details.forEach((details) => {
           saleObjArray.push({
             createdAt: details.createdAt.slice(0, 10),
@@ -305,12 +305,12 @@ function Laporan(props) {
             <p className="text-[2rem] mr-[3vw]">Laporan penjualan</p>
           </div>
           <div className="flex items-center h-[10%] w-[100%]">
-            <div className="w-[40%] h-[70%] flex flex-col justify-end pb-[1vh] text-white text-[1.2rem] bg-[#008DEB] px-[2vw] rounded-[.5vw]">
+            <div className="w-[40%] h-[70%] flex flex-col justify-end pb-[.5vh] text-white text-[1rem] bg-[#008DEB] px-[.5vw] rounded-[.5vw]">
               <div>Filter by Date</div>
               <div className="flex w-[100%]">
                 <DatePicker
                   placeholderText="Start date"
-                  className="border-black border-solid border-[2px] rounded-[.3vw] pl-3 text-black"
+                  className="border-black w-[14vw] border-solid border-[2px] rounded-[.3vw] pl-3 text-black"
                   selected={startDate}
                   onChange={(date) => {
                     setStartDate(date);
@@ -318,7 +318,7 @@ function Laporan(props) {
                 />
                 <DatePicker
                   placeholderText="End date"
-                  className="border-black border-solid border-[2px] rounded-[.3vw] pl-3 text-black"
+                  className="border-black w-[14vw] border-solid border-[2px] rounded-[.3vw] pl-3 text-black"
                   selected={endDate}
                   onChange={(date) => {
                     setEndDate(date);

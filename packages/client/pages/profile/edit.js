@@ -126,7 +126,7 @@ function Edit(props) {
 
   const validate = Yup.object({
     fullName: Yup.string()
-      .max(15, 'Must be 15 characters or less')
+      .max(50, 'Must be 50 characters or less')
       .required('Required'),
     phoneNumber: Yup.string()
       .max(15, 'Must be 15 characters or less')

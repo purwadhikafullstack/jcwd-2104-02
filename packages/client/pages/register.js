@@ -40,11 +40,11 @@ export default function Register() {
   if (session) router.replace('/');
 
   const phoneRegExp =
-    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+    /^((\\+[0-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
   const validate = Yup.object({
     fullName: Yup.string()
-      .max(30, 'Must be 30 characters or less')
+      .max(50, 'Must be 50 characters or less')
       .required('Full Name is Required')
       .matches(/^[A-Za-z ]*$/, 'Please enter valid name'),
     email: Yup.string().email('Email is invalid').required('Email is Required'),

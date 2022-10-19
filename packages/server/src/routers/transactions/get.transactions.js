@@ -157,11 +157,19 @@ const adminGetAllTransactionByPrescription = async (req, res, next) => {
       offset: offset,
     });
 
+    const resFetchTransactionsNext = await transactions.findAll({
+      where: { totalPrice: null },
+      attributes: ['transaction_id'],
+      limit: limit,
+      offset: page * pageSize,
+    });
+
     res.send({
       status: 'Success',
       message: 'Fetch All Transaction by Prescription Success',
       data: {
         resFetchTransactions,
+        resFetchTransactionsNext,
       },
     });
   } catch (error) {
@@ -311,21 +319,9 @@ const getTransactionDetails = async (req, res, next) => {
 
 const getTransactionsByIndex = async (req, res, next) => {
   try {
-<<<<<<< HEAD
-    const { selected } = req.params;
-    const { user_id } = req.params;
-    let { page, pageSize } = req.query;
-
-    page = +page;
-    pageSize = +pageSize;
-
-    const limit = pageSize;
-    const offset = (page - 1) * pageSize;
-=======
     const selected = parseInt(req.params.selected);
     const user_id = parseInt(req.params.user_id);
     let { page, pageSize } = req.query;
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
 
     page = +page;
     pageSize = +pageSize;
@@ -356,39 +352,6 @@ const getTransactionsByIndex = async (req, res, next) => {
         break;
 
       default:
-<<<<<<< HEAD
-        const { user_id } = req.params;
-        const resFetchTransactions = await transactions.findAll({
-          where: { user_id, prescriptionImage: null },
-          attributes: [
-            'transaction_id',
-            'user_id',
-            'address_id',
-            'totalPrice',
-            'status',
-          ],
-          limit: limit,
-          offset: offset,
-          include: [
-            {
-              model: transaction_details,
-              include: [
-                {
-                  model: products,
-                },
-              ],
-            },
-          ],
-        });
-
-        res.send({
-          status: 'success',
-          message: 'Fetch Transaction Success',
-          data: {
-            resFetchTransactions,
-          },
-        });
-=======
         statusFind = 0;
         break;
     }
@@ -425,7 +388,6 @@ const getTransactionsByIndex = async (req, res, next) => {
         },
       });
       return;
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
     }
 
     const resFetchTransactions = await transactions.findAll({

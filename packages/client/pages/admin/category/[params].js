@@ -43,14 +43,14 @@ function Category(props) {
       return (
         <div
           key={category.category_lists_id}
-          className="w-[90%] mb-[1vh] h-[15%] flex-none flex flex-col items-end shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]"
+          className="w-[90%] mb-[3vh] h-[15%] flex-none flex flex-col items-end shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]"
         >
-          <div className="flex w-[100%] h-[15%] pl-[1.5vw] bg-[#008DEB] text-white">
+          <div className="flex w-[100%] h-[25%] pl-[1.5vw] bg-[#008DEB] text-white">
             Category ID: {category.category_lists_id}
           </div>
 
           <div className="w-[100%] h-[85%] flex items-center justify-start">
-            <div className="w-[7%] ml-[1.5vw]">
+            <div className="w-[5%] ml-[1.5vw]">
               <Image
                 unoptimized
                 alt="resep-logo"
@@ -135,7 +135,7 @@ function Category(props) {
           {categoryMap()}
         </div>
 
-        <div className="flex w-[90%] h-[5%] items-center">
+        <div className="flex w-[90%] h-[5%] mb-[3vh] items-center">
           <Button
             disabled={page <= 1}
             borderRadius={'none'}
@@ -209,7 +209,7 @@ export async function getServerSideProps(context) {
         {
           params: {
             page,
-            limit: 6,
+            limit: 5,
           },
         },
       );

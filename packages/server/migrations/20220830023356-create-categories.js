@@ -25,7 +25,7 @@ module.exports = {
         },
         unique: true,
         onUpdate: 'CASCADE',
-        onDelete: 'DELETE',
+        onDelete: 'SET NULL',
       },
       categoryName: {
         type: Sequelize.STRING,

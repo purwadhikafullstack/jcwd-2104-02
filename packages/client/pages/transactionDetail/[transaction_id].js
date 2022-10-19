@@ -16,10 +16,7 @@ import { getSession } from 'next-auth/react';
 import { useToast } from '@chakra-ui/react';
 import Image from 'next/image';
 import TransDetailCard from '../../components/TransDetailCard';
-<<<<<<< HEAD
-=======
 import { useRouter } from 'next/router';
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
 
 function TransactionDetails(props) {
   const router = useRouter();
@@ -28,11 +25,6 @@ function TransactionDetails(props) {
     transaction_details.resFetchTransactionDetails,
   );
   const [trans, setTrans] = useState(transactions.resFetchTransactions);
-<<<<<<< HEAD
-  // console.log(trans.totalPrice)
-  console.log(transactions);
-=======
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
   const [transByAddress, setTransByAddress] = useState(
     transactions.resFetchAddress,
   );
@@ -41,29 +33,13 @@ function TransactionDetails(props) {
     setPayment(event.target.files[0]);
   };
 
-<<<<<<< HEAD
-=======
   const toast = useToast();
 
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
   let penerima;
   let jalan;
   let kodePos;
   let provinsi;
   let kota;
-<<<<<<< HEAD
-
-  transByAddress.forEach(async (data) => {
-    // console.log(data)
-    penerima = data.recipient;
-    jalan = data.addressDetail;
-    kodePos = data.postalCode;
-    provinsi = data.province;
-    kota = data.city_name;
-  });
-  // console.log(jalan)
-
-=======
 
   transByAddress.forEach(async (data) => {
     penerima = data.recipient;
@@ -73,7 +49,6 @@ function TransactionDetails(props) {
     kota = data.city_name;
   });
 
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
   const onSavePayment = async () => {
     try {
       const session = await getSession();
@@ -138,9 +113,6 @@ function TransactionDetails(props) {
       );
       setTrans({ ...trans, status: 'order_cancelled' });
 
-<<<<<<< HEAD
-      alert(res.data.message);
-=======
       toast({
         title: 'Success!',
         description: res.data.message,
@@ -149,7 +121,6 @@ function TransactionDetails(props) {
         duration: 3000,
         isClosable: true,
       });
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
     } catch (error) {
       console.log({ Error });
       toast({

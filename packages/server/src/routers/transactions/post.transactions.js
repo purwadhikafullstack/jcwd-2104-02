@@ -94,10 +94,6 @@ const postTransaction = async (req, res, next) => {
         },
         { where: { product_id: data.dataValues.product_id } },
       );
-<<<<<<< HEAD
-      // console.log("jalan")
-=======
->>>>>>> 47a43d9a96d04fa76ec05ed0913496b318c96594
       await carts.destroy({ where: { user_id } });
     });
 
@@ -182,7 +178,6 @@ const getTransactionsByIndex = async (req, res, next) => {
         });
     }
 
-    console.log({ statusFind, selected });
 
     const { user_id } = req.params;
     const resFetchTransactions = await transactions.findAll({

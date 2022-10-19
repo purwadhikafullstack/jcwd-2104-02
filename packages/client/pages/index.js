@@ -35,9 +35,11 @@ export default function Home(props) {
     return fetchedCategories.map((category) => {
       return (
         <div
-          key={category.category_list_id}
+          key={category.category_lists_id}
           onClick={() => {
-            router.replace(`/productCatalog/${category.category}=1`);
+            router.replace(
+              `/productCatalog/${category.category_lists_id}=category=1`,
+            );
           }}
           className="flex flex-col hover:cursor-pointer flex-none items-center justify-start w-[25%] desktop:flex-row desktop:h-[9vh] desktop:w-[31%] desktop:bg-white desktop:shadow-[0px_6px_20px_0px_rgba(0,28,47,0.05)]"
         >
@@ -161,7 +163,7 @@ export default function Home(props) {
         </Link>
         <div
           id="searchbar desktop"
-          className="bg-[#F5F6F6] flex absolute w-[40vw] h-[8vh] z-[2] left-[15vw] bottom-[88px] justify-end"
+          className="bg-[#F5F6F6] flex absolute w-[40vw] h-[8vh] z-[2] left-[15vw] bottom-[10vh] justify-end"
         >
           <Input
             variant="unstyled"

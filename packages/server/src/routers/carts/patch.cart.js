@@ -46,21 +46,6 @@ const patchCart = async (req, res, next) => {
       };
     }
 
-    // const quantityPatched = await carts.create({
-    //   quantity,
-    //   user_id,
-    //   product_id,
-    // });
-    // res.send({
-    //   status: 'Succsess',
-    //   message: 'Succsess Edit Cart',
-    //   data: {
-    //     quantityPatched,
-    //     quantityDeleted,
-    //   },
-    // });
-
-    // console.log(quantityPatched);
   } catch (error) {
     next(error);
   }

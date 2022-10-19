@@ -10,8 +10,6 @@ const {
   CLIENT_URL,
 } = process.env;
 
-console.log({ API_URL });
-
 const courier = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -208,6 +206,7 @@ const sendResetPasswordMail = async ({ email, token }) => {
     await courier.sendMail(mail);
 
     console.log(`reset password mail sent fot ${email}`);
+    console.log({ CLIENT_URL });
   } catch (error) {
     throw error;
   }
